@@ -1,0 +1,3 @@
+python database.py                      >> ./log/my.log.database 2>&1 &
+python app.py                           >> ./log/my.log.app      2>&1 &
+python serial_zmq_multiprocess.py       >> ./log/my.serial_zmq.app      2>&1 &

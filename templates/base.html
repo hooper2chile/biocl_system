@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    {% if title_html %}
+	    <title> {{ title_html }} </title>
+    {% else %}
+	    <title>nada de nada</title>
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
+  </head>
+
+
+  <body>
+    <header> <img src="/static/biocl.jpg" style="width:650px;height:120px;"> </header>
+    <nav>
+      <ul>
+        <li><a href="/">Configuración</a></li>
+        <li><a href="/graphics">Tiempo Real</a></li>
+        <li><a href="/dbase">Base de Datos</a></li>
+        <li><a href="/archivos">Calibrar</a></li>
+      </ul>
+    </nav>
+
+    <section>
+      {% block content %}
+
+      {% endblock %}
+
+        <aside>
+           <h3> Sobre el autor </h3>
+                <p> Sitio en desarrollo. <a href="mailto:felipe.hooper.c@gmail.com">Correo electronico </a></p>
+        </aside>
+    </section>
+
+
+    <footer>
+      <a href="http://www.biocl.cl/">BIOCL, Todos los derechos reservados.</a>
+
+    </footer>
+  </body>
+</html>

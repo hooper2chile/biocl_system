@@ -1,0 +1,62 @@
+<head>
+  <meta charset="utf-8">
+  <title>Descarga y visualización</title>
+</head>
+
+
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript" src="/static/js/Chart.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/static/js/my_db.js"> </script>
+
+      <section>
+        <fieldset>
+            <label for="email-address"><span>Email <span class="required">*</span></span>
+            <input type="email" name="email-address" placeholder="tu_email@abcd.com">
+
+            <label for="interval"> Grabar: </label>
+            <input type="number" name="interval" value="1" min="1">
+
+            <select name="time_process">
+                  <option value="min">[Min]</option>
+                  <option value="hr">[Hr]</option>
+                  <option value="dias">[Días]</option>
+                  <option value="manual" selected> Manual</option>
+            </select>
+            <input type="checkbox" name="day" value="Sunday">
+            <button class="button" type="submit">+</button>
+        </fieldset>
+      </section>
+
+
+
+  <form id="form_db" method="post" action='#'>
+
+          <select id="variable" type="text" value="">
+                <option value="ph" selected > ph   </option>
+                <option value="od"          > od   </option>
+                <option value="temp"        > Temp </option>
+          </select>
+
+
+          <input name="delta"
+                 type="number"
+                 id="dt"
+                 value="1"
+                 min=1
+                 max=3600
+                 step="1"
+          >[s]
+
+          <button class="button" type="submit"
+               id="ventana"
+               name="submit"
+               > + </button>
+
+  </form>
+
+  <div id="db"></div>
+      <canvas id="myChart" width="100" height="25"></canvas>
+
+
+{% endblock %}

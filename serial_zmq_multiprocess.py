@@ -4,10 +4,10 @@ import zmq, time, serial, sys
 #5556: for listen data
 #5557: for publisher data
 
-
-tau_zmq_connect = 0.3 # 300 [ms]
-tau_zmq_while   = 0.3 # 300 [ms]
-tau_serial      = 0.2
+tau_zmq_connect     = 0.3  # 300 [ms]
+tau_zmq_while_write = 0.25  # 200 [ms]
+tau_zmq_while_read  = 0.25  # 200 [ms]
+tau_serial          = 0.01 #  10 [ms]
 
 def listen(q1):
     #####Listen part
@@ -28,7 +28,7 @@ def listen(q1):
         except zmq.Again:
             pass
 
-        time.sleep(tau_zmq_while)
+        time.sleep(tau_zmq_while_write)
 
     return True
 
@@ -51,7 +51,7 @@ def speak(q1,q2):
             data = q2.get()
             socket_pub.send_string("%s %s" % (topic, data))
 
-        time.sleep(1) #Tiempo de muestreo menor para BD.
+        time.sleep(tau_zmq_while_read) #Tiempo de muestreo menor para todas las aplicaciones que recogen datos por ZMQ.
 
     return True
 
@@ -60,9 +60,13 @@ def speak(q1,q2):
 def rs232(q1,q2):
 
     if sys.platform=='darwin':
-        ser = serial.Serial(port='/dev/cu.wchusbserial14210', baudrate=9600)
+        ser = serial.Serial(port='/dev/cu.wchusbserial1410', baudrate=9600)
     else:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
+
+    ser.setDTR(True)
+    time.sleep(1)
+    ser.setDTR(False)
 
     time.sleep(1) #necesario para setear correctamente el puerto serial
     print "SERIAL OPEN: ", ser.is_open
@@ -108,7 +112,6 @@ def rs232(q1,q2):
             print "se entro al while pero no se pudo revisar la cola"
 
         time.sleep(tau_serial)
-
 
     return True
 

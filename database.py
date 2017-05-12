@@ -5,6 +5,7 @@
 '''
 import sys, time, datetime, sqlite3, sqlitebck, communication
 
+TIME_MIN_BD = 1 # 1 [s]
 
 def update_db(real_data, connector, c, first_time, BACKUP):
     #CREACION DE TABLAS PH, OD, TEMP. CADA ITEM ES UNA COLUMNA
@@ -17,15 +18,12 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
     #INSERCION DE LOS DATOS MEDIDOS
     #ph=: real_data[1];  OD=: real_data[2], Temp=: real_data[3]
-
     c.execute("INSERT INTO   PH VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[1]))
     c.execute("INSERT INTO   OD VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[2]))
     c.execute("INSERT INTO TEMP VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[3]))
 
     #se guardan los datos agregados en la db
     connector.commit()
-
-
 
     #Backup DB in RAM to DISK SD
     if BACKUP:
@@ -49,7 +47,7 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
 def main():
     first_time = time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y")
-    TIME_BCK = 180
+    TIME_BCK = 60
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     c = connector.cursor()
 
@@ -66,7 +64,7 @@ def main():
 
         delta = end_time - start_time
 
-        if delta < TIME_BCK:
+        if delta <= TIME_BCK:
             BACKUP = False
             end_time = time.time()
 
@@ -74,6 +72,9 @@ def main():
             start_time = time.time()
             end_time   = time.time()
             BACKUP = True
+
+        #Aqui se determina el tiempo con que guarda datos la BD.-
+        time.sleep(TIME_MIN_BD)
 
 
 if __name__ == "__main__":

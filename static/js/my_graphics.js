@@ -27,7 +27,7 @@ function my_chart(){
               time_axis[i] = "  ";
             }
             else {
-              time_axis[i]= " ' " + time_axis[i] + "[s] ' " ;
+              time_axis[i]= " '0." + time_axis[i] + "[s] ' " ;
             }
           }
 

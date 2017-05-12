@@ -14,7 +14,6 @@ SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port
 #define  INT(x)          (x-48)  //ascii convertion
 #define iINT(x)          (x+48)  //inverse ascii convertion
 
-char    command     = {};
 String  message     = "";
 String  new_write   = "";
 boolean stringComplete = false;  // whether the string is complete
@@ -47,11 +46,28 @@ float Byte1 = 0;  char cByte1[15] = "";
 float Byte2 = 0;  char cByte2[15] = "";
 
 
+// Sensors
+const int SENSOR_PH    = A0;  // Input pin for measuring Vout
+const int SENSOR_TEMP1 = A7;
+const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
+const int RS = 10;          // Shunt resistor value (in ohms)
+const int N  = 250;
+
+float Iph;
+float Itemp;
+
+float pH;        //   ph = 0.896*IpH   - 3.52
+float Temp;      // Temp = 5.31*Itemp - 42.95;
+float aer;
+
+#define mA 1000.0
+#define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
+
+
 
 void clean_strings() {
   //clean strings
-  command = {};   stringComplete = false;  message = "";
-
+  stringComplete = false;  message = "";
 }
 
 
@@ -129,8 +145,6 @@ int validate_write() {
 void crumble() {
   //Serial.println("good");
 
-  command = message[0];
-
   ph_var = message.substring(1, 3);
   ph_set = message.substring(3, 7);
 
@@ -167,15 +181,39 @@ void crumble() {
 
 
 
+float m1 = +0.896; float m2 = +5.31;
+float n1 = -3.52;  float n2 = -42.95;
+
+void easyferm_sensor() {
+ Iph   = 0;
+ Itemp = 0;
+
+ for (int i = 1; i <= N; i++) {
+   Iph   += analogRead(SENSOR_PH);
+   Itemp += analogRead(SENSOR_TEMP1);
+   delayMicroseconds(200);
+ }
+ //Iph   = (K * Iph);
+ //Itemp = (K * Itemp);
+
+ pH   = m1*K*Iph   + n1;
+ Temp = m2*K*Itemp + n2;
+
+ wdt_reset();
+ return;
+}
+
+
 void DAQmx() {
   if (stringComplete) {
-
+    PORTB = 1<<PB0;
     //Read case
     if (message[0] == 'r') {
-      //read the incoming byte:
-      Byte0 = analogRead(0) / 73.07;
+      easyferm_sensor();
+
+      Byte0 = pH;
       Byte1 = analogRead(1) / 10.23;
-      Byte2 = analogRead(2) / 12.78;
+      Byte2 = Temp;
 
       dtostrf(Byte0, 7, 2, cByte0);
       dtostrf(Byte1, 7, 2, cByte1);
@@ -189,7 +227,6 @@ void DAQmx() {
 
       //lcd.clear();
       //lcd.print(message);
-
       //Re-transmition of last command to slave micro controller in each reading
       mySerial.print(new_write);
 
@@ -217,37 +254,28 @@ void DAQmx() {
       clean_strings();
     }
   }
-
+  PORTB = 0<<PB0;
   wdt_reset();
 }
 
-
-
 void setup() {
-  //watch dog disable for reset and first start
   wdt_disable();
-
   //lcd init
   //lcd.begin(16,2);
-
   Serial.begin(9600);
   mySerial.begin(9600);
 
   //reserve 32 bytes for the message:
   message.reserve(65);
 
-  //watch dog enable!!!
+  DDRB = 0b00000001;
+  PORTB = 0<<PB0;
+
   wdt_enable(WDTO_2S);
 }
 
-
-
 void loop() {
-
-
   DAQmx();
 
-
-
-  //wdt_reset();
+  wdt_reset();
 }

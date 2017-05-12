@@ -153,7 +153,7 @@ def background_thread1():
 
                 print "\n Se ejecuto Thread 1 emitiendo %s\n" % set_data
 
-        socketio.sleep(0.25)
+        socketio.sleep(0.1)
 
 
 if __name__ == '__main__':

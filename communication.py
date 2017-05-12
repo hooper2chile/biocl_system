@@ -83,7 +83,7 @@ def send_setpoint(set_data):
     except ValueError:
 
         set_data = temp_save_set_data #esto permite reenviar el ultimo si hay una exception
-        print "hubo una exception de set_data"
+        print "exception de set_data"
         #set_data = [10,10,10,10,10,1,1,1,1,1,1,1,1]
 
 
@@ -188,7 +188,6 @@ def send_setpoint(set_data):
     #write for serial port
     published_setpoint(command)
 
-    '''
     try:
         f = open("command.txt","a+")
         f.write(command)
@@ -196,7 +195,7 @@ def send_setpoint(set_data):
 
     except OSError:
         print("no se pudo guardar el command en el archivo de texto")
-    '''
+
     return True
 
 

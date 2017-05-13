@@ -33,7 +33,6 @@ char rst4 = 1;  char rst5 = 1;  char rst6 = 1;
 char dir1 = 1;  char dir2 = 1;  char dir3 = 1;
 char dir4 = 1;  char dir5 = 1;  char dir6 = 1;
 
-
 float   myphset  = 0;
 uint8_t myfeed   = 0;
 uint8_t myunload = 0;
@@ -45,10 +44,12 @@ float Byte0 = 0;  char cByte0[15] = "";
 float Byte1 = 0;  char cByte1[15] = "";
 float Byte2 = 0;  char cByte2[15] = "";
 
-
 // Sensors
 const int SENSOR_PH    = A0;  // Input pin for measuring Vout
-const int SENSOR_TEMP1 = A7;
+const int SENSOR_TEMP1 = A1;
+const int SENSOR_TEMP2 = A2;
+const int SENSOR_OD    = A3;
+
 const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
 const int RS = 10;          // Shunt resistor value (in ohms)
 const int N  = 250;
@@ -179,12 +180,9 @@ void crumble() {
   return;
 }
 
-
-
-float m1 = +0.896; float m2 = +5.31;
-float n1 = -3.52;  float n2 = -42.95;
-
-void easyferm_sensor() {
+//float m1 = +0.896; float m2 = +5.31;
+//float n1 = -3.52;  float n2 = -42.95;
+void hamilton_sensor() {
  Iph   = 0;
  Itemp = 0;
 
@@ -193,13 +191,13 @@ void easyferm_sensor() {
    Itemp += analogRead(SENSOR_TEMP1);
    delayMicroseconds(200);
  }
- //Iph   = (K * Iph);
- //Itemp = (K * Itemp);
 
- pH   = m1*K*Iph   + n1;
- Temp = m2*K*Itemp + n2;
-
+ Iph   =  (K * Iph  );
+ Itemp =  (K * Itemp);
+ //pH   = m1*K*Iph   + n1;
+ //Temp = m2*K*Itemp + n2;
  wdt_reset();
+
  return;
 }
 
@@ -209,11 +207,11 @@ void DAQmx() {
     PORTB = 1<<PB0;
     //Read case
     if (message[0] == 'r') {
-      easyferm_sensor();
+      hamilton_sensor();
 
-      Byte0 = pH;
-      Byte1 = analogRead(1) / 10.23;
-      Byte2 = Temp;
+      Byte0 = Iph;
+      Byte1 = analogRead(2) / 10.23;
+      Byte2 = Itemp;
 
       dtostrf(Byte0, 7, 2, cByte0);
       dtostrf(Byte1, 7, 2, cByte1);
@@ -277,5 +275,4 @@ void setup() {
 void loop() {
   DAQmx();
 
-  wdt_reset();
 }

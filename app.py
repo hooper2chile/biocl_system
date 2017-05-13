@@ -15,9 +15,10 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
 
-
+ph_set = [0,0,0,0]
+od_set = [0,0,0,0]
+temp_set = [0,0,0,0]
 set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
-
 
 #CONFIGURACION DE PAGINAS WEB
 @app.route('/', methods=['GET', 'POST'])
@@ -41,6 +42,11 @@ def graphics():
 @app.route('/dbase', methods=['GET', 'POST'])
 def viewDB():
     return render_template('dbase.html', title_html="Data Logger")
+
+
+@app.route('/calibrar', methods=['GET', 'POST'])
+def calibrar():
+    return render_template('calibrar.html', title_html="Calibrar")
 
 
 @app.route('/descargar')
@@ -72,6 +78,7 @@ def function_thread():
 
     #Se emite durante la primera conexión de un cliente el estado actual de los setpoints
     emit('Setpoints', {'set': set_data})
+    emit('ph_calibrar', {'set': ph_set})
 
     global thread1
     if thread1 is None:
@@ -127,6 +134,160 @@ def setpoints(dato):
 
     except:
         print "no se pudo guardar en set_data en setpoints.txt"
+
+
+#Sockets de calibración de instrumentación
+#CALIBRACION DE PH
+@socketio.on('ph_calibrar', namespace='/biocl')
+def calibrar_ph(dato):
+    global ph_set
+    #se reciben los parametros para calibración
+    setting = [ dato['ph'], dato['iph'], dato['medx'] ]
+
+    #ORDEN DE: ph_set:
+    #ph_set = [ph1_set, iph1_set, ph2_set, iph2_set]
+    if setting[2] == 'med1':
+        ph_set[0] = float(dato['ph'])   #y1
+        ph_set[1] = float(dato['iph'])  #x1
+
+    elif setting[2] == 'med2':
+        ph_set[2] = float(dato['ph'])   #y2
+        ph_set[3] = float(dato['iph'])  #x2
+
+
+    if (ph_set[3] - ph_set[1])!=0 and ph_set[0]!=0 and ph_set[1]!=0:
+        m_ph = round(( ph_set[2] - ph_set[0] )/( ph_set[3] - ph_set[1] ), 2)
+        n_ph = round(  ph_set[0] - ph_set[1]*(m_ph), 2)
+
+    else:
+        m_ph = 0
+        n_ph = 0
+
+    if ph_set[0]!=0 and ph_set[1]!=0 and ph_set[2]!=0 and ph_set[3]!=0 and m_ph!=0 and n_ph!=0:
+        try:
+            coef_ph_set = [m_ph, n_ph]
+            f = open("coef_ph_set.txt","w")
+            f.write(str(coef_ph_set) + '\n')
+            f.close()
+
+        except:
+            print "no se pudo guardar en coef_ph_set en coef_ph_set.txt"
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('ph_calibrar', {'set': ph_set}, namespace='/biocl', broadcast=True)
+
+    #guardo set_data en un archivo para depurar
+    try:
+        ph_set_txt = str(ph_set)
+        f = open("ph_set.txt","a+")
+        f.write(ph_set_txt + '\n')
+        f.close()
+
+    except:
+        print "no se pudo guardar parameters en ph_set.txt"
+
+#CALIBRACION OXIGENO DISUELTO
+@socketio.on('od_calibrar', namespace='/biocl')
+def calibrar_od(dato):
+    global od_set
+    #se reciben los parametros para calibración
+    setting = [ dato['od'], dato['iod'], dato['medx'] ]
+
+    #ORDEN DE: od_set:
+    #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
+    if setting[2] == 'med1':
+        od_set[0] = float(dato['od'])
+        od_set[1] = float(dato['iod'])
+
+    elif setting[2] == 'med2':
+        od_set[2] = float(dato['od'])
+        od_set[3] = float(dato['iod'])
+
+
+    if od_set[3] - od_set[1]!=0 and od_set[0]!=0 and od_set[1]!=0:
+        m_od = round(( od_set[2] - od_set[0] )/( od_set[3] - od_set[1] ), 2)
+        n_od = round(  od_set[0] - od_set[1]*(m_od), 2)
+
+    else:
+        m_od = 0
+        n_od = 0
+
+    if od_set[0]!=0 and od_set[1]!=0 and od_set[2]!=0 and od_set[3]!=0 and m_od!=0 and n_od!=0:
+        try:
+            coef_od_set = [m_od, n_od]
+            f = open("coef_od_set.txt","w")
+            f.write(str(coef_od_set) + '\n')
+            f.close()
+
+        except:
+            print "no se pudo guardar en coef_ph_set en coef_od_set.txt"
+
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('od_calibrar', {'set': od_set}, namespace='/biocl', broadcast=True)
+
+    #guardo set_data en un archivo para depurar
+    try:
+        od_set_txt = str(od_set)
+        f = open("od_set.txt","a+")
+        f.write(od_set_txt + '\n')
+        f.close()
+
+    except:
+        print "no se pudo guardar parameters en od_set.txt"
+
+
+#CALIBRACIÓN TEMPERATURA
+@socketio.on('temp_calibrar', namespace='/biocl')
+def calibrar_temp(dato):
+    global temp_set
+    #se reciben los parametros para calibración
+    setting = [ dato['temp'], dato['itemp'], dato['medx'] ]
+
+    #ORDEN DE: od_set:
+    #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
+    if setting[2] == 'med1':
+        temp_set[0] = float(dato['temp'])
+        temp_set[1] = float(dato['itemp'])
+
+    elif setting[2] == 'med2':
+        temp_set[2] = float(dato['temp'])
+        temp_set[3] = float(dato['itemp'])
+
+    if temp_set[3] - temp_set[1]!=0 and temp_set[0]!=0 and temp_set[1]!=0:
+        m_temp = round(( temp_set[2] - temp_set[0] )/( temp_set[3] - temp_set[1] ), 2)
+        n_temp = round(  temp_set[0] - temp_set[1]*(m_temp), 2)
+
+    else:
+        m_temp = 0
+        n_temp = 0
+
+    if temp_set[0]!=0 and temp_set[1]!=0 and temp_set[2]!=0 and temp_set[3]!=0 and m_temp!=0 and n_temp!=0:
+        try:
+            coef_temp_set = [m_temp, n_temp]
+            f = open("coef_temp_set.txt","w")
+            f.write(str(coef_temp_set) + '\n')
+            f.close()
+
+        except:
+            print "no se pudo guardar en coef_ph_set en coef_od_set.txt"
+
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('temp_calibrar', {'set': temp_set}, namespace='/biocl', broadcast=True)
+
+    #guardo set_data en un archivo para depurar
+    try:
+        temp_set_txt = str(temp_set)
+        f = open("temp_set.txt","a+")
+        f.write(temp_set_txt + '\n')
+        f.close()
+
+    except:
+        print "no se pudo guardar parameters en temp_set.txt"
+
+
+
 
 
 #CONFIGURACION DE LOS THREADS

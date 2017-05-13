@@ -1,0 +1,113 @@
+<head>
+  <meta charset="utf-8">
+  <title>Calibración de Instrumentos</title>
+</head>
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript" charset="utf-8" src="/static/js/calibrar.js"> </script>
+
+<section>
+  <fieldset>
+      <label for="email-address"><span>Email <span class="required">*</span></span>
+      <input type="email" name="email-address" placeholder="tu_email@abcd.com">
+
+      <label for="interval"> Grabar: </label>
+      <input type="number" name="interval" value="1" min="1">
+
+      <select name="time_process">
+            <option value="min">[Min]</option>
+            <option value="hr">[Hr]</option>
+            <option value="dias">[Días]</option>
+            <option value="manual" selected> Manual</option>
+      </select>
+      <input type="checkbox" name="day" value="Sunday">
+      <button class="button" type="submit">+</button>
+  </fieldset>
+</section>
+
+
+<!calibrar_ph>
+<form id="calibrar_ph" method="POST" action='#'>
+
+    <div id="med1_c">med1_c</div>
+    <select id="medx_ph">
+          <option value="med1" selected>Medición 1</option>
+          <option value="med2"         >Medición 2</option>
+    </select>
+    <div>
+          <input type="number"
+                 id="ph"
+                 style="width: 50px;"
+                 value="4"
+                 MIN="0"
+                 MAX="14"
+                 step="1"
+          />
+          <button  type="submit" class="button_apply"> + </button>
+    </div>
+    <div id="ph1_set" >ph1_set</div>
+    <div id="iph1_set">Iph_set</div>
+    <div id="ph2_set" >ph2_set</div>
+    <div id="iph2_set">Iph2_set</div>
+    <!calibrar_ph>
+</form><br><br>
+
+
+<!calibrar_od>
+<form id="calibrar_od" method="POST" action='#'>
+
+    <div id="med2_c">med2_c</div>
+    <select id="medx_od">
+          <option value="med1" selected>Medición 1</option>
+          <option value="med2"         >Medición 2</option>
+    </select>
+    <div>
+          <input type="number"
+                 id="od"
+                 style="width: 50px;"
+                 value="50"
+                 MIN="0"
+                 MAX="100"
+                 step="1"
+          />
+          <button  type="submit" class="button_apply"> + </button>
+    </div>
+    <div id="od1_set" >OD1_set</div>
+    <div id="iod1_set">IOd1_set</div>
+    <div id="od2_set" >OD2_set</div>
+    <div id="iod2_set">IOd2_set</div>
+    <!calibrar_od>
+</form><br><br>
+
+
+<!calibrar_temp>
+<form id="calibrar_temp" method="POST" action='#'>
+
+    <div id="med3_c">med3_c</div>
+    <select id="medx_temp">
+          <option value="med1" selected>Medición 1</option>
+          <option value="med2"         >Medición 2</option>
+    </select>
+    <div>
+          <input type="number"
+                 id="temp"
+                 style="width: 50px;"
+                 value="50"
+                 MIN="0"
+                 MAX="100"
+                 step="1"
+          />
+          <button  type="submit" class="button_apply"> + </button>
+    </div>
+    <div id="temp1_set" >temp1_set</div>
+    <div id="itemp1_set">Itemp1_set</div>
+    <div id="temp2_set" >temp2_set</div>
+    <div id="itemp2_set">Itemp2_set</div>
+    <!calibrar_temp>
+</form>
+
+
+
+
+
+{% endblock %}

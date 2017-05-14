@@ -89,6 +89,7 @@ def rs232(q1,q2):
                             ser.write('r'+'\n')
                             SERIAL_DATA = ser.readline()
                             q2.put(SERIAL_DATA)
+                            #time.sleep(tau_zmq_while_read)
                         else:
                             ser.open()
                     except:

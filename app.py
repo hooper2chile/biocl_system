@@ -23,6 +23,8 @@ set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 #CONFIGURACION DE PAGINAS WEB
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template("index.html", title_html="Configuracion de Procesos")
+'''
     error = None
     if request.method == 'POST':
         if user_list.auth_login(request.form['username'],request.form['password']):
@@ -32,7 +34,7 @@ def index():
 
     else:
         return render_template("login.html", error="Requiere Credencial")
-
+'''
 
 @app.route('/graphics')
 def graphics():
@@ -79,6 +81,8 @@ def function_thread():
     #Se emite durante la primera conexión de un cliente el estado actual de los setpoints
     emit('Setpoints', {'set': set_data})
     emit('ph_calibrar', {'set': ph_set})
+    emit('od_calibrar', {'set': od_set})
+    emit('temp_calibrar', {'set': temp_set})
 
     global thread1
     if thread1 is None:
@@ -146,14 +150,17 @@ def calibrar_ph(dato):
 
     #ORDEN DE: ph_set:
     #ph_set = [ph1_set, iph1_set, ph2_set, iph2_set]
-    if setting[2] == 'med1':
-        ph_set[0] = float(dato['ph'])   #y1
-        ph_set[1] = float(dato['iph'])  #x1
+    try:
+        if setting[2] == 'med1':
+            ph_set[0] = float(dato['ph'])   #y1
+            ph_set[1] = float(dato['iph'])  #x1
 
-    elif setting[2] == 'med2':
-        ph_set[2] = float(dato['ph'])   #y2
-        ph_set[3] = float(dato['iph'])  #x2
+        elif setting[2] == 'med2':
+            ph_set[2] = float(dato['ph'])   #y2
+            ph_set[3] = float(dato['iph'])  #x2
 
+    except:
+        ph_set = [0,0,0,0]
 
     if (ph_set[3] - ph_set[1])!=0 and ph_set[0]!=0 and ph_set[1]!=0:
         m_ph = round(( ph_set[2] - ph_set[0] )/( ph_set[3] - ph_set[1] ), 2)
@@ -195,13 +202,16 @@ def calibrar_od(dato):
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
-    if setting[2] == 'med1':
-        od_set[0] = float(dato['od'])
-        od_set[1] = float(dato['iod'])
+    try:
+        if setting[2] == 'med1':
+            od_set[0] = float(dato['od'])
+            od_set[1] = float(dato['iod'])
 
-    elif setting[2] == 'med2':
-        od_set[2] = float(dato['od'])
-        od_set[3] = float(dato['iod'])
+        elif setting[2] == 'med2':
+            od_set[2] = float(dato['od'])
+            od_set[3] = float(dato['iod'])
+    except:
+        od_set = [0,0,0,0]
 
 
     if od_set[3] - od_set[1]!=0 and od_set[0]!=0 and od_set[1]!=0:
@@ -246,13 +256,17 @@ def calibrar_temp(dato):
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
-    if setting[2] == 'med1':
-        temp_set[0] = float(dato['temp'])
-        temp_set[1] = float(dato['itemp'])
+    try:
+        if setting[2] == 'med1':
+            temp_set[0] = float(dato['temp'])
+            temp_set[1] = float(dato['itemp'])
 
-    elif setting[2] == 'med2':
-        temp_set[2] = float(dato['temp'])
-        temp_set[3] = float(dato['itemp'])
+        elif setting[2] == 'med2':
+            temp_set[2] = float(dato['temp'])
+            temp_set[3] = float(dato['itemp'])
+
+    except:
+        temp_set = [0,0,0,0]
 
     if temp_set[3] - temp_set[1]!=0 and temp_set[0]!=0 and temp_set[1]!=0:
         m_temp = round(( temp_set[2] - temp_set[0] )/( temp_set[3] - temp_set[1] ), 2)

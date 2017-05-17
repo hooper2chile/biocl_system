@@ -3,6 +3,25 @@ gdrive = google drive in CLI:
 Download, help, readme, etc:  https://github.com/prasmussen/gdrive
 OJO: hay una version para linux, osx, rasbian, etc..
 
+
+La forma rápida de hacerlo es:
+===============================
+
+Luego, crear el directorio de trabajo (en la nube) donde se subirán los archivos:
+
+./gdrive-osx-x64 mkdir biocl_db_csv
+
+Esto devolvera un ID correspondiente a la carpeta que hemos creado, “GUARDARLO”.
+
+Con el ID recién GUARDADO ejecutar en el directorio donde estan los archivos a respaldar y sincronizar:
+
+./gdrive-osx-x64 sync upload . 0Bxw8dfMyxUX2MF80cFlwSFF3S1E
+
+ESO es todo. Se debe crear la app en python que ejecute esto periódicamente y ya esta!
+
+
+
+Otra forma es: (completar)
 * La primera vez que se utilice con una cuenta de correo GMAIL nueva, se necesita obtener el 
 ID de la carpeta desde la interfaz Google Drive en una navegador, esto se realiza con: Boton 
 derecho sobre la carpeta y luego "SHARE" y después "ADVANCED". Desde ahi 
@@ -14,6 +33,4 @@ interrogación
 ejm. de ID, carpeta: biocl_db_full: 
 https://drive.google.com/drive/folders/0Bxw8dfMyxUX2ci0wem0wemx3alU?usp=sharing
 
-donde el ID seria: 0Bxw8dfMyxUX2ci0wem0wemx3alU
-
-
+donde el ID seria: 0Bxw8dfMyxUX2ci0wem0wemx3alU 

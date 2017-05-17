@@ -4,19 +4,19 @@
     Application for synchronization.
 '''
 
-import os, sys, time, datetime 
+import os, sys, time, datetime
 
 TIME_SYNC = 3600 #sync for 3600 [s] = 1 [hr]
 ID = '0Bxw8dfMyxUX2MF80cFlwSFF3S1E'
 
 if(sys.platform=='darwin'):
     gdrive = './gdrive-osx-x64'
-    DIR1 = '/Users/hooper/Dropbox/BIOCL/biocl_system/Archivos_config/'
+    DIR1 = '/Users/hooper/Dropbox/BIOCL/biocl_system/config/'
     DIR2 = '/Users/hooper/Dropbox/BIOCL/biocl_system/database2/'
 
 else:
     gdrive = './gdrive-linux-rpi'
-    DIR1 = '/home/pi/biocl_system/Archivos_config/'
+    DIR1 = '/home/pi/biocl_system/config/'
     DIR2 = '/home/pi/biocl_system/database2/'
 
 while True:
@@ -28,4 +28,3 @@ while True:
 
     except:
         print 'Fallo al subir al cloud:' + hora
-            

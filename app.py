@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, session, request, Response
+from flask import Flask, render_template, session, request, Response, send_from_directory
 from flask_socketio import SocketIO, emit, disconnect
 
-import sys, communication, user_list, reviewDB
+import os, sys, communication, user_list, reviewDB
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
 async_mode = None
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
@@ -31,7 +31,6 @@ def index():
             return render_template('index.html', title_html="Bioreactor Software")
         else:
             return render_template("login.html", error="Credencial Invalida")
-
     else:
         return render_template("login.html", error="Requiere Credencial")
 '''
@@ -51,6 +50,21 @@ def calibrar():
     return render_template('calibrar.html', title_html="Calibrar")
 
 
+
+@app.route('/descargar')
+def descargar():
+    return "<br>".join( os.listdir("./database") )
+
+@app.route('/descargar/<path:path>')
+def descargar_csv(path):
+    #convert path to path2:
+    path2 = os.path.splitext(path)[0]+'.cvs'
+    print path2
+    os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./database2/%s' % (path,path2) )
+    return send_from_directory('./database2', path2)
+
+
+'''
 @app.route('/descargar')
 def csv_get():
     testa = []
@@ -70,7 +84,7 @@ def csv_get():
                         headers={"Content-disposition":
                                  "attachment; filename=myplot.csv"}
                     )
-
+'''
 
 #CONFIGURACION DE FUNCIONES SocketIO
 #Connect to the Socket.IO server. (Este socket es OBLIGACION)
@@ -332,4 +346,4 @@ def background_thread1():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

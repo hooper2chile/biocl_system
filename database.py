@@ -38,10 +38,14 @@ def update_db(real_data, connector, c, first_time, BACKUP):
         sqlitebck.copy(connector, bck)
         print "\n Backup REALIZADO \n"
 
-        #Se guarda el nombre de la db para ser utilizado en app.py
-        f = open("name_db.txt","w")
-        f.write(filedb + '\n')
-        f.close()
+        try:
+            #Se guarda el nombre de la db para ser utilizado en app.py
+            f = open("name_db.txt","w")
+            f.write(filedb + '\n')
+            f.close()
+
+        except:
+            print "no se pudo guardar el nombre de la DB para ser revisada en app.py"
 
         return True
 

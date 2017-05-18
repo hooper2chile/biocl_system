@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, session, request, Response, send_from_directory
+from flask import Flask, render_template, session, request, Response #, send_from_directory
 from flask_socketio import SocketIO, emit, disconnect
 
 import os, sys, communication, user_list, reviewDB
@@ -11,6 +11,7 @@ import os, sys, communication, user_list, reviewDB
 async_mode = None
 
 app = Flask(__name__, static_url_path="")
+#app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
@@ -55,6 +56,7 @@ def calibrar():
 def descargar():
     return "<br>".join( os.listdir("./database") )
 
+'''
 @app.route('/descargar/<path:path>')
 def descargar_csv(path):
     #convert path to path2:
@@ -63,8 +65,6 @@ def descargar_csv(path):
     os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./database2/%s' % (path,path2) )
     return send_from_directory('./database2', path2)
 
-
-'''
 @app.route('/descargar')
 def csv_get():
     testa = []

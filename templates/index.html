@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<script type="text/javascript" charset="utf-8" src="/static/js/my_javascript.js"> </script>
+<!script type="text/javascript" charset="utf-8" src="/static/js/my_javascript.js"> <!/script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/my_javascript.js') }}"></script>
 
 <section>
   <fieldset>

@@ -8,14 +8,16 @@
 	    <title>nada de nada</title>
     {% endif %}
 
-    <link rel="stylesheet" type="text/css" href="../static/style.css">
-    <script type="text/javascript" src="static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+    <!script type="text/javascript" src="static/js/jquery.min.js"><!/script>
+    <!script type="text/javascript" src="/static/js/socket.io.min.js"><!/script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
   </head>
 
 
   <body>
-    <header> <img src="/static/biocl.jpg" style="width:650px;height:120px;"> </header>
+    <header> <img src="{{ url_for('static', filename='stylesheets/biocl.jpg') }}" style="width:650px;height:120px;"> </header>
     <nav>
       <ul>
         <li><a href="/calibrar">Calibración</a></li>

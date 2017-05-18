@@ -4,7 +4,9 @@
 </head>
 {% extends "base.html" %}
 {% block content %}
-<script type="text/javascript" charset="utf-8" src="/static/js/calibrar.js"> </script>
+<!script type="text/javascript" charset="utf-8" src="/static/js/calibrar.js"> <!/script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/calibrar.js') }}"></script>
+
 
 <section>
   <fieldset>

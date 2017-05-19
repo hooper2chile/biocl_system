@@ -4,11 +4,13 @@ import zmq, time, serial, sys
 #5556: for listen data
 #5557: for publisher data
 
-tau_zmq_connect     = 0.3  # 300 [ms]
+tau_zmq_connect     = 0.3   # 300 [ms]
 tau_zmq_while_write = 0.25  # 200 [ms]
 tau_zmq_while_read  = 0.25  # 200 [ms]
-tau_serial          = 0.01 #  10 [ms]
+tau_serial          = 0.01  #  10 [ms]
 
+##### Queue data: q1 is for put data to   serial port #####
+##### Queue data: q2 is for get data from serial port #####
 def listen(q1):
     #####Listen part
     port_sub = "5556"
@@ -60,7 +62,7 @@ def speak(q1,q2):
 def rs232(q1,q2):
 
     if sys.platform=='darwin':
-        ser = serial.Serial(port='/dev/cu.wchusbserial14110', baudrate=9600)
+        ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
     else:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
 
@@ -89,7 +91,7 @@ def rs232(q1,q2):
                             ser.write('r'+'\n')
                             SERIAL_DATA = ser.readline()
                             q2.put(SERIAL_DATA)
-                            #time.sleep(tau_zmq_while_read)
+
                         else:
                             ser.open()
                     except:

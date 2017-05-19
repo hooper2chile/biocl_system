@@ -12,7 +12,7 @@
 
 #include <avr/wdt.h>
 #include <TimerOne.h>
-#include <mylibrary.h>
+#include <slibrary.h>
 
 
 void setup() {
@@ -56,6 +56,7 @@ void loop() {
 
       if ( mytemp != mytemp_save ) {
         time_setup(mytemp, &count_m5_set, &count_m5);  //setear en otra función que reciba este mensaje desde un lazo de control
+        mytemp_save = mytemp;
       }
 
       //Ph: rst3, dir2

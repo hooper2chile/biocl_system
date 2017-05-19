@@ -81,7 +81,6 @@ def send_setpoint(set_data):
         temp_save_set_data = set_data
 
     except ValueError:
-
         set_data = temp_save_set_data #esto permite reenviar el ultimo si hay una exception
         print "exception de set_data"
         #set_data = [10,10,10,10,10,1,1,1,1,1,1,1,1]
@@ -126,7 +125,7 @@ def send_setpoint(set_data):
 
 
 
-
+    #format seetting:
     if set_data[0] < 10:
         string_feed = '00' + str(set_data[0])
     elif set_data[0] < 100:

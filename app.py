@@ -3,15 +3,15 @@
 from flask import Flask, render_template, session, request, Response #, send_from_directory
 from flask_socketio import SocketIO, emit, disconnect
 
-import os, sys, communication, user_list, reviewDB
+import os, sys, communication, reviewDB
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
 async_mode = None
 
-app = Flask(__name__, static_url_path="")
-#app = Flask(__name__)
+#app = Flask(__name__, static_url_path="")
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
@@ -25,16 +25,7 @@ set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template("index.html", title_html="Configuracion de Procesos")
-'''
-    error = None
-    if request.method == 'POST':
-        if user_list.auth_login(request.form['username'],request.form['password']):
-            return render_template('index.html', title_html="Bioreactor Software")
-        else:
-            return render_template("login.html", error="Credencial Invalida")
-    else:
-        return render_template("login.html", error="Requiere Credencial")
-'''
+
 
 @app.route('/graphics')
 def graphics():
@@ -93,9 +84,9 @@ def function_thread():
     print "\n Cliente Conectado al Thread del Bioreactor\n"
 
     #Se emite durante la primera conexión de un cliente el estado actual de los setpoints
-    emit('Setpoints', {'set': set_data})
-    emit('ph_calibrar', {'set': ph_set})
-    emit('od_calibrar', {'set': od_set})
+    emit('Setpoints',     {'set': set_data})
+    emit('ph_calibrar',   {'set': ph_set})
+    emit('od_calibrar',   {'set': od_set})
     emit('temp_calibrar', {'set': temp_set})
 
     global thread1
@@ -318,9 +309,9 @@ def calibrar_temp(dato):
 
 
 
-#CONFIGURACION DE LOS THREADS
+#CONFIGURACION DE THREADS
 def background_thread1():
-    measures = [0,0,0]
+    measures = [0,0,0,0,0,0]
     save_set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 
     while True:
@@ -329,11 +320,14 @@ def background_thread1():
         socketio.emit('Medidas', {'data': measures, 'set': set_data}, namespace='/biocl')
 
         #ZMQ DAQmx download data from micro controller
-        temp = communication.zmq_client().split()
+        temp_ = communication.zmq_client().split()
 
-        measures[0] = temp[1]
-        measures[1] = temp[2]
-        measures[2] = temp[3]
+        measures[0] = temp_[1]  #ph
+        measures[1] = temp_[2]  #oD
+        measures[2] = temp_[3]  #Itemp1
+        measures[3] = temp_[4]  #Iph
+        measures[4] = temp_[5]  #Iod
+        measures[5] = temp_[6]  #Itemp1-Itemp2
 
         for i in range(0,len(set_data)):
             if save_set_data[i] != set_data[i]:

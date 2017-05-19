@@ -59,6 +59,8 @@ void loop() {
         mytemp_save = mytemp;
       }
 
+
+      //RST and DIR SETTING:
       //Ph: rst3, dir2
 
       //feed: rst1=1 (enable); dir1=1 (cw), else ccw.

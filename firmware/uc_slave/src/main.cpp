@@ -63,7 +63,7 @@ void loop() {
       //RST and DIR SETTING:
       //Ph: rst3, dir2
 
-      //feed: rst1=1 (enable); dir1=1 (cw), else ccw.
+      //feed: rst1=0 (enable); dir1=1 (cw), else ccw.
       setup_dir_rst( _BV(RST_FEED), _BV(DIR_FEED),
                      &myfeed, &rst1, &dir1,
                      &PORTC,  &PORTC );

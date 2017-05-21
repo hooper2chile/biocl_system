@@ -5,8 +5,8 @@ import zmq, time, serial, sys
 #5557: for publisher data
 
 tau_zmq_connect     = 0.3   # 300 [ms]
-tau_zmq_while_write = 0.3  # 200 [ms]
-tau_zmq_while_read  = 0.3  # 200 [ms]
+tau_zmq_while_write = 0.3   # 300 [ms]
+tau_zmq_while_read  = 0.3   # 300 [ms]
 tau_serial          = 0.01  #  10 [ms]
 
 ##### Queue data: q1 is for put data to   serial port #####

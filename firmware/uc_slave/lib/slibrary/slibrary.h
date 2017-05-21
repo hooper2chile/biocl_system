@@ -137,6 +137,7 @@ inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var,
     *PORT_2 &= ~DIR;
 }
 
+
 //ISR: Function of Interruption in timer one. _BV(x) = 1 << x
 void motor_control() {
   //PORT_CONTROL = 1 << START_CONTROL; //PIN UP

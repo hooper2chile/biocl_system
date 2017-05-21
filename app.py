@@ -10,8 +10,8 @@ import os, sys, communication, reviewDB
 # the best option based on installed packages.
 async_mode = None
 
-#app = Flask(__name__, static_url_path="")
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
+#app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None

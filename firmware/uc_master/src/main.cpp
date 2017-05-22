@@ -24,7 +24,7 @@ void loop() {
 
   if ( stringComplete  ) {
       if ( validate() ) {
-
+          PORTB = 1<<PB0;
           switch ( message[0] ) {
               case 'r':
                 hamilton_sensors();
@@ -44,11 +44,13 @@ void loop() {
               default:
                 break;
           }
-          clean_strings();
+          PORTB = 0<<PB0;
       }
       else {
         Serial.println("bad");
       }
+
+    clean_strings();
   }
 
   wdt_reset();

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, session, request, Response #, send_from_directory
+from flask import Flask, render_template, session, request, Response, send_from_directory
 from flask_socketio import SocketIO, emit, disconnect
 
 import os, sys, communication, reviewDB
@@ -47,7 +47,7 @@ def calibrar():
 def descargar():
     return "<br>".join( os.listdir("./database") )
 
-'''
+
 @app.route('/descargar/<path:path>')
 def descargar_csv(path):
     #convert path to path2:
@@ -56,6 +56,7 @@ def descargar_csv(path):
     os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./database2/%s' % (path,path2) )
     return send_from_directory('./database2', path2)
 
+'''
 @app.route('/descargar')
 def csv_get():
     testa = []
@@ -182,8 +183,10 @@ def calibrar_ph(dato):
             f.write(str(coef_ph_set) + '\n')
             f.close()
 
+            #acá va el codigo que escribe el comando de calibración al uc.
+
         except:
-            print "no se pudo guardar en coef_ph_set en coef_ph_set.txt"
+            print "no se pudo guardar en coef_ph_set.txt. Tampoco actualizar los coef_ph_set al uc."
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
     socketio.emit('ph_calibrar', {'set': ph_set}, namespace='/biocl', broadcast=True)
@@ -311,7 +314,7 @@ def calibrar_temp(dato):
 
 #CONFIGURACION DE THREADS
 def background_thread1():
-    measures = [0,0,0,0,0,0]
+    measures = [0,0,0,0,0,0,0]
     save_set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 
     while True:
@@ -324,10 +327,11 @@ def background_thread1():
 
         measures[0] = temp_[1]  #ph
         measures[1] = temp_[2]  #oD
-        measures[2] = temp_[3]  #Itemp1
+        measures[2] = temp_[3]  #Temp1
         measures[3] = temp_[4]  #Iph
         measures[4] = temp_[5]  #Iod
-        measures[5] = temp_[6]  #Itemp1-Itemp2
+        measures[5] = temp_[6]  #Itemp1
+        measures[6] = temp_[7]  #Itemp2
 
         for i in range(0,len(set_data)):
             if save_set_data[i] != set_data[i]:

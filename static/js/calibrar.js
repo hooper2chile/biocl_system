@@ -10,15 +10,15 @@ var socket = io.connect(location.protocol + '//' +
              document.domain + ':' +
              location.port + namespace);
 
-          //mediciones de ph, OD, Temp. Socket regenera el grafico con cada llamada!!!
+          //mediciones de ph, OD, Temp.
           socket.on('Medidas', function(msg) {
-              $('#med1_c').text('Iph: '   + msg.data[0] + ' [mA]' ).html();
-              $('#med2_c').text('Iod: '   + msg.data[1] + ' [mA]' ).html();
-              $('#med3_c').text('Itemp: ' + msg.data[2] + ' [mA]' ).html();
+              $('#med1_c').text('Iph: '   + msg.data[3] + ' [mA]' ).html();
+              $('#med2_c').text('Iod: '   + msg.data[4] + ' [mA]' ).html();
+              $('#med3_c').text('Itemp: ' + msg.data[5] + ' [mA]' ).html();
 
-              Iph   = msg.data[0];
-              Iod   = msg.data[1];
-              Itemp = msg.data[2];
+              Iph   = msg.data[3];
+              Iod   = msg.data[4];
+              Itemp = msg.data[5];
           });//fin de la función socket.on
 
 

@@ -37,6 +37,7 @@ float Byte2 = 0;  char cByte2[15] = "";
 float Byte3 = 0;  char cByte3[15] = "";
 float Byte4 = 0;  char cByte4[15] = "";
 float Byte5 = 0;  char cByte5[15] = "";
+float Byte6 = 0;  char cByte6[15] = "";
 
 // Sensors
 const int SENSOR_PH    = A0;  // Input pin for measuring Vout
@@ -48,31 +49,30 @@ const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
 const int RS = 10;          // Shunt resistor value (in ohms)
 const int N  = 250;
 
+//pH=:(m1,n1)
+float m1 = +0.75;
+float n1 = -3.5;
+
+//Temp1=:(m2,n2)
+float m2 = +5.31;
+float n2 = -42.95;
+
+//oD=:(m3,n3)
+float m3 = 1;
+float n3 = 0;
+
 float Iph;
 float Iod;
 float Itemp1;
 float Itemp2;
 
-float pH;         //   ph = 0.75*IpH   - 3.5
-float oD;
-float Temp1;      // Temp = 5.31*Itemp - 42.95;
+float pH    = m1*Iph    + n1;      //   ph = 0.75*IpH   - 3.5
+float Temp1 = m2*Itemp1 + n2;      // Temp = 5.31*Itemp - 42.95;
+float oD    = m3*Iod    + n3;
 float Temp2;
-
-//pH=:(m1,n1)
-float m1 = +0.75;
-float n1 = -3.5;
-
-//oD=:(m2,n2)
-float m2 = +5.31;
-float n2 = -42.95;
-
-//Temp1=:(m3,n3)
-float m3 = 0;
-float n3 = 0;
 
 #define mA 1000.0
 #define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
-
 
 
 //for hardware serial
@@ -88,38 +88,44 @@ void serialEvent() {
 
 
 void hamilton_sensors() {
-
+  //
   Iph    = 0;
   Iod    = 0;
   Itemp1 = 0;
   Itemp2 = 0;
 
   for (int i = 1; i <= N; i++) {
-   Iph    += analogRead(SENSOR_PH);
-   Iod    += analogRead(SENSOR_OD);
-   Itemp1 += analogRead(SENSOR_TEMP1);
-   Itemp2 += analogRead(SENSOR_TEMP2);
-   delayMicroseconds(200);
+     Iph    += analogRead(SENSOR_PH);
+     Iod    += analogRead(SENSOR_OD);
+     Itemp1 += analogRead(SENSOR_TEMP1);
+     Itemp2 += analogRead(SENSOR_TEMP2);
+     delayMicroseconds(200);
   }
 
-  Iph    =  (K * Iph  );
-  Itemp1 =  (K * Itemp1);
+  Iph    = (K * Iph  );
+  Itemp1 = (K * Itemp1);
 
-  Iod    =  (K * Iod);
-  Itemp2 =  (K * Itemp2);
+  Iod    = (K * Iod);
+  Itemp2 = (K * Itemp2);
+
+  //Update measures
+  pH    = m1 * Iph    + n1;
+  Temp1 = m2 * Itemp1 + n2;
+  oD    = m3 * Iod    + n3;
 
   return;
 }
 
 
 void daqmx() {
-
+  //data adquisition measures
   Byte0 = pH;
   Byte1 = oD;
-  Byte2 = Itemp1;
+  Byte2 = Temp1;
   Byte3 = Iph;
   Byte4 = Iod;
-  Byte5 = Itemp1-Itemp2;
+  Byte5 = Itemp1;
+  Byte6 = Itemp2;
 
   dtostrf(Byte0, 7, 2, cByte0);
   dtostrf(Byte1, 7, 2, cByte1);
@@ -127,6 +133,7 @@ void daqmx() {
   dtostrf(Byte3, 7, 2, cByte3);
   dtostrf(Byte4, 7, 2, cByte4);
   dtostrf(Byte5, 7, 2, cByte5);
+  dtostrf(Byte6, 7, 2, cByte6);
 
   //tx of measures
   Serial.print(cByte0);  Serial.print("\t");
@@ -135,6 +142,7 @@ void daqmx() {
   Serial.print(cByte3);  Serial.print("\t");
   Serial.print(cByte4);  Serial.print("\t");
   Serial.print(cByte5);  Serial.print("\t");
+  Serial.print(cByte6);  Serial.print("\t");
   Serial.print("\n");
 
   return;
@@ -150,10 +158,6 @@ void calibrate(){
   n1 = message.substring(17,22).toFloat();
   n2 = message.substring(22,27).toFloat();
   n3 = message.substring(27,32).toFloat();
-
-  pH    = m1 * Iph    + n1;
-  oD    = m2 * Iod    + n2;
-  Temp1 = m3 * Itemp1 + n3;
 
   return;
 }
@@ -191,9 +195,8 @@ void clean_strings() {
 
 
 int validate() {
-PORTB = 1<<PB0;
 //message format write values: wph14.0feed100unload100mix1500temp100rst111111dir111111
-    if (  message[0] == 'w'       /*            &&
+    if (  message[0] == 'w'                     &&
           message.substring(1, 3)   == "ph"     &&
           message.substring(7, 11)  == "feed"   &&
           message.substring(14, 20) == "unload" &&
@@ -236,7 +239,7 @@ PORTB = 1<<PB0;
           ( message[51] == iINT(1) || message[51] == iINT(0) ) &&
           ( message[52] == iINT(1) || message[52] == iINT(0) ) &&
           ( message[53] == iINT(1) || message[53] == iINT(0) ) &&
-          ( message[54] == iINT(1) || message[54] == iINT(0) )*/
+          ( message[54] == iINT(1) || message[54] == iINT(0) )
         )
         { return 1; }
 
@@ -248,7 +251,6 @@ PORTB = 1<<PB0;
 
       else
           return 0;
-PORTB = 0<<PB0;
 }
 
 

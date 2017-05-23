@@ -147,6 +147,7 @@ def setpoints(dato):
 
 
 #Sockets de calibración de instrumentación
+
 #CALIBRACION DE PH
 @socketio.on('ph_calibrar', namespace='/biocl')
 def calibrar_ph(dato):
@@ -169,8 +170,8 @@ def calibrar_ph(dato):
         ph_set = [0,0,0,0]
 
     if (ph_set[3] - ph_set[1])!=0 and ph_set[0]!=0 and ph_set[1]!=0:
-        m_ph = round(( ph_set[2] - ph_set[0] )/( ph_set[3] - ph_set[1] ), 2)
-        n_ph = round(  ph_set[0] - ph_set[1]*(m_ph), 2)
+        m_ph = float(format(( ph_set[2] - ph_set[0] )/( ph_set[3] - ph_set[1] ), '.2f'))
+        n_ph = float(format(  ph_set[0] - ph_set[1]*(m_ph), '.2f'))
 
     else:
         m_ph = 0
@@ -182,8 +183,8 @@ def calibrar_ph(dato):
             f = open("coef_ph_set.txt","w")
             f.write(str(coef_ph_set) + '\n')
             f.close()
-
             #acá va el codigo que escribe el comando de calibración al uc.
+            communication.calibrate(0,coef_ph_set)
 
         except:
             print "no se pudo guardar en coef_ph_set.txt. Tampoco actualizar los coef_ph_set al uc."
@@ -218,13 +219,14 @@ def calibrar_od(dato):
         elif setting[2] == 'med2':
             od_set[2] = float(dato['od'])
             od_set[3] = float(dato['iod'])
+
     except:
         od_set = [0,0,0,0]
 
 
-    if od_set[3] - od_set[1]!=0 and od_set[0]!=0 and od_set[1]!=0:
-        m_od = round(( od_set[2] - od_set[0] )/( od_set[3] - od_set[1] ), 2)
-        n_od = round(  od_set[0] - od_set[1]*(m_od), 2)
+    if (od_set[3] - od_set[1])!=0 and od_set[0]!=0 and od_set[1]!=0:
+        m_od = float(format(( od_set[2] - od_set[0] )/( od_set[3] - od_set[1] ), '.2f'))
+        n_od = float(format(  od_set[0] - od_set[1]*(m_od), '.2f'))
 
     else:
         m_od = 0
@@ -236,6 +238,9 @@ def calibrar_od(dato):
             f = open("coef_od_set.txt","w")
             f.write(str(coef_od_set) + '\n')
             f.close()
+
+            communication.calibrate(1,coef_od_set)
+
 
         except:
             print "no se pudo guardar en coef_ph_set en coef_od_set.txt"
@@ -277,8 +282,8 @@ def calibrar_temp(dato):
         temp_set = [0,0,0,0]
 
     if temp_set[3] - temp_set[1]!=0 and temp_set[0]!=0 and temp_set[1]!=0:
-        m_temp = round(( temp_set[2] - temp_set[0] )/( temp_set[3] - temp_set[1] ), 2)
-        n_temp = round(  temp_set[0] - temp_set[1]*(m_temp), 2)
+        m_temp = float(format(( temp_set[2] - temp_set[0] )/( temp_set[3] - temp_set[1] ), '.2f'))
+        n_temp = float(format(  temp_set[0] - temp_set[1]*(m_temp), '.2f'))
 
     else:
         m_temp = 0
@@ -290,6 +295,9 @@ def calibrar_temp(dato):
             f = open("coef_temp_set.txt","w")
             f.write(str(coef_temp_set) + '\n')
             f.close()
+
+            communication.calibrate(2,coef_temp_set)
+
 
         except:
             print "no se pudo guardar en coef_ph_set en coef_od_set.txt"
@@ -335,7 +343,7 @@ def background_thread1():
 
         for i in range(0,len(set_data)):
             if save_set_data[i] != set_data[i]:
-                communication.send_setpoint(set_data)
+                communication.cook_setpoint(set_data)
                 save_set_data = set_data
 
                 print "\n Se ejecuto Thread 1 emitiendo %s\n" % set_data

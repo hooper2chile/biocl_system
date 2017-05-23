@@ -43,15 +43,82 @@ def zmq_client():
     return socket_sub.recv()
 
 
-def send_setpoint(set_data):
+
+def calibrate(var, coef):
+    #var = 0,1,2 <=> ph, od, temp respectivamente.
+    #coef[0| =: pendiente
+    #coef[1] =: intercepto
+    #X = 0,1,2 (ph, od, temp)
+    #cXs111.111s222.222c
+
+    #sign for coef[0]
+    if coef[0] < 0:
+        coef[0] = -coef[0]
+        sign1   = '-'
+    else:
+        sign1   = '+'
+
+    #sign for coef[1]
+    if coef[1] < 0:
+        coef[1] = -coef[1]
+        sign2   = '-'
+    else:
+        sign2   = '+'
+
+    #Format for coef[0]
+    if coef[0] < 10:
+        coef1text = '000'  + str(coef[0])
+    elif coef[0] < 100:
+        coef1text = '00'   + str(coef[0])
+    elif coef[0] < 1000:
+        coef1text = '0'    + str(coef[0])
+    elif coef[0] < 10000:
+        coef1text = str(coef[0])
+    else:
+        coef1text = '666' #con esto puedo ver la corriente igual a a variable y darme cuenta de un error
+
+
+    #Format for coef[1]
+    if coef[1] < 10:
+        coef2text = '000' + str(ceof[1])
+    elif coef[1] < 100:
+        coef2text = '00'  + str(coef[1])
+    elif coef[1] < 1000:
+        coef2text = '0'   + str(coef[1])
+    elif coef[1] < 10000:
+        coef2text = str(coef[1])
+    else:
+        coef2text = '666' #con esto puedo ver la corriente igual a a variable y darme cuenta de un error
+
+
+    coef_cook = 'c' + str(var) + sign1 + coef1text + sign2 + coef2text + 'e'
+
+    #guardo coef_cook en un archivo para depurar
+    try:
+        f = open("coef_m_n.txt","w")
+        f.write(coef_cook + '\n')
+        f.close()
+
+        #published_setpoint(coef_cook)
+
+    except:
+        print "no se pudo guardar set de calibrate()"
+
+
+
+
+
+
+
+def cook_setpoint(set_data):
     #format string
 
+    #convert true or false in checkbox to 0 or 1
     for i in range(5,13):
         if set_data[i] is True:
             set_data[i] = 1
         else:
             set_data[i] = 0
-
 
     string_rst = str(set_data[5]) + str(set_data[6]) + str(set_data[7]) + str(set_data[8]) + str(set_data[9]) + '1'
     string_dir = str(set_data[10])+ str(set_data[11])+ str(set_data[12]) + '111'
@@ -124,7 +191,6 @@ def send_setpoint(set_data):
 
 
 
-
     #format seetting:
     if set_data[0] < 10:
         string_feed = '00' + str(set_data[0])
@@ -180,11 +246,11 @@ def send_setpoint(set_data):
 
 
     command = 'wph' + string_ph + 'feed' + string_feed + 'unload' + string_unload + 'mix' + string_mix + \
-             'temp' + string_temp + 'rst' + string_rst + 'dir' + string_dir + '\n'
+              'temp' + string_temp + 'rst' + string_rst + 'dir' + string_dir + '\n'
 
     print('\n' + command + '\n')
 
-    #write for serial port
+    #published for put in queue and write in serial port
     published_setpoint(command)
 
     try:

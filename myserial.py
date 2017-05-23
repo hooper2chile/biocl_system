@@ -62,7 +62,7 @@ def speak(q1,q2):
 def rs232(q1,q2):
 
     if sys.platform=='darwin':
-        ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
+        ser = serial.Serial(port='/dev/cu.wchusbserial1410', baudrate=9600)
     else:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
 

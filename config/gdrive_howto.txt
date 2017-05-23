@@ -7,13 +7,18 @@ OJO: hay una version para linux, osx, rasbian, etc..
 La forma rápida de hacerlo es:
 ===============================
 
+Ejecutar:  $ ./gdrive list
+
+Entregara un texto largo que es un link. Copiar y pegar en un navegador (con internet), registrarse con el email que usaran para el drive(tiene que ser una cuenta gmail), luego este entregara un código, copiar y pegarlo en la consola (enter) y quedara activado el ingreso al drive de esa cuenta. 
+
+
 Luego, crear el directorio de trabajo (en la nube) donde se subirán los archivos:
 
 ./gdrive-osx-x64 mkdir biocl_db_csv
 
 Esto devolvera un ID correspondiente a la carpeta que hemos creado, “GUARDARLO”.
 
-Con el ID recién GUARDADO ejecutar en el directorio donde estan los archivos a respaldar y sincronizar:
+Con el ID recién GUARDADO ejecutar en el directorio donde están los archivos a respaldar y sincronizar:
 
 ./gdrive-osx-x64 sync upload . 0Bxw8dfMyxUX2MF80cFlwSFF3S1E
 

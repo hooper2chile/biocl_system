@@ -20,9 +20,12 @@ Esto devolvera un ID correspondiente a la carpeta que hemos creado, “GUARDARLO
 
 Con el ID recién GUARDADO ejecutar en el directorio donde están los archivos a respaldar y sincronizar:
 
-./gdrive-osx-x64 sync upload . 0Bxw8dfMyxUX2MF80cFlwSFF3S1E
+./gdrive-osx-x64 sync upload . 0B3jT9_WfcyT9SV8xeG1SMmdCVzA
 
 ESO es todo. Se debe crear la app en python que ejecute esto periódicamente y ya esta!
+
+
+
 
 
 

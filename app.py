@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, session, request, Response, send_from_directory
+from flask import Flask, render_template, session, request, Response, send_from_directory, make_response
 from flask_socketio import SocketIO, emit, disconnect
 
 import os, sys, communication, reviewDB
@@ -47,14 +47,23 @@ def calibrar():
 def descargar():
     return "<br>".join( os.listdir("./database") )
 
+'''
+@app.route('/descargar/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    path2 = os.path.splitext(filename)[0]+'.cvs'
+    os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./csv/%s' % (filename,path2) )
+
+    return send_from_directory(directory='csv', filename=path2)
+'''
 
 @app.route('/descargar/<path:path>')
 def descargar_csv(path):
     #convert path to path2:
     path2 = os.path.splitext(path)[0]+'.cvs'
     print path2
-    os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./database2/%s' % (path,path2) )
-    return send_from_directory('./database2', path2)
+    os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./csv/%s' % (path,path2) )
+    return send_from_directory(directory='./csv', filename=path2)
+
 
 '''
 @app.route('/descargar')
@@ -183,7 +192,7 @@ def calibrar_ph(dato):
             f = open("coef_ph_set.txt","w")
             f.write(str(coef_ph_set) + '\n')
             f.close()
-            #acá va el codigo que escribe el comando de calibración al uc.
+            #acá va el codigo que formatea el comando de calibración.
             communication.calibrate(0,coef_ph_set)
 
         except:
@@ -195,7 +204,7 @@ def calibrar_ph(dato):
     #guardo set_data en un archivo para depurar
     try:
         ph_set_txt = str(ph_set)
-        f = open("ph_set.txt","a+")
+        f = open("ph_set.txt","w")
         f.write(ph_set_txt + '\n')
         f.close()
 
@@ -252,7 +261,7 @@ def calibrar_od(dato):
     #guardo set_data en un archivo para depurar
     try:
         od_set_txt = str(od_set)
-        f = open("od_set.txt","a+")
+        f = open("od_set.txt","w")
         f.write(od_set_txt + '\n')
         f.close()
 
@@ -309,7 +318,7 @@ def calibrar_temp(dato):
     #guardo set_data en un archivo para depurar
     try:
         temp_set_txt = str(temp_set)
-        f = open("temp_set.txt","a+")
+        f = open("temp_set.txt","w")
         f.write(temp_set_txt + '\n')
         f.close()
 
@@ -333,20 +342,25 @@ def background_thread1():
         #ZMQ DAQmx download data from micro controller
         temp_ = communication.zmq_client().split()
 
-        measures[0] = temp_[1]  #ph
-        measures[1] = temp_[2]  #oD
-        measures[2] = temp_[3]  #Temp1
-        measures[3] = temp_[4]  #Iph
-        measures[4] = temp_[5]  #Iod
-        measures[5] = temp_[6]  #Itemp1
-        measures[6] = temp_[7]  #Itemp2
+        try:
+            measures[0] = temp_[1]  #ph
+            measures[1] = temp_[2]  #oD
+            measures[2] = temp_[3]  #Temp1
+            measures[3] = temp_[4]  #Iph
+            measures[4] = temp_[5]  #Iod
+            measures[5] = temp_[6]  #Itemp1
+            measures[6] = temp_[7]  #Itemp2
 
-        for i in range(0,len(set_data)):
-            if save_set_data[i] != set_data[i]:
-                communication.cook_setpoint(set_data)
-                save_set_data = set_data
 
-                print "\n Se ejecuto Thread 1 emitiendo %s\n" % set_data
+            for i in range(0,len(set_data)):
+                if save_set_data[i] != set_data[i]:
+                    communication.cook_setpoint(set_data)
+                    save_set_data = set_data
+
+            print "\n Se ejecuto Thread 1 emitiendo %s\n" % set_data
+
+        except:
+            print "\n no se actualizaron las mediciones"
 
         socketio.sleep(0.1)
 

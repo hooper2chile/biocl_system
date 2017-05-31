@@ -18,10 +18,13 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
     #INSERCION DE LOS DATOS MEDIDOS
     #ph=: real_data[1];  OD=: real_data[2], Temp=: real_data[3]
-    c.execute("INSERT INTO   PH VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[1]))
-    c.execute("INSERT INTO   OD VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[2]))
-    c.execute("INSERT INTO TEMP VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[3]))
+    try:
+        c.execute("INSERT INTO   PH VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[1]))
+        c.execute("INSERT INTO   OD VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[2]))
+        c.execute("INSERT INTO TEMP VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[3]))
 
+    except:
+        print "no se pudo insertar dato en db"
     #se guardan los datos agregados en la db
     connector.commit()
 

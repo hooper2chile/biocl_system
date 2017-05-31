@@ -15,10 +15,10 @@
 
 #define MIN_to_us 60e6 //60e6   [us]
 #define STEPS     200 //200  [STEPS]
-#define TIME_T    25  //TIME_T [us]
+#define TIME_T    15  //TIME_T [us]
 
-#define TIME_MIN  3000  //se despeja de SPEED_MAX
-#define SPEED_MAX 100   //MIN_to_us/(STEPS*TIME_MIN)
+#define TIME_MIN  2000  //se despeja de SPEED_MAX
+#define SPEED_MAX 150   //MIN_to_us/(STEPS*TIME_MIN)
 #define SPEED_MIN 1
 
 #define CONVERTION(x) ((unsigned int) (MIN_to_us/STEPS/TIME_T) / x) //x = speed [rpm] => Number of counts
@@ -140,13 +140,13 @@ inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var,
 
 //ISR: Function of Interruption in timer one. _BV(x) = 1 << x
 void motor_control() {
-  //PORT_CONTROL = 1 << START_CONTROL; //PIN UP
+  PORT_CONTROL = 1 << START_CONTROL; //PIN UP
   // set_motor(&count_m1, &count_m1_set, &MOT1, _BV(START1) );
   // set_motor(&count_m2, &count_m2_set, &MOT2, _BV(START2) );
   set_motor(&count_m3, &count_m3_set, &MOT3, _BV(START3) );
   set_motor(&count_m4, &count_m4_set, &MOT4, _BV(START4) );
   set_motor(&count_m5, &count_m5_set, &MOT5, _BV(START5) );
-  //PORT_CONTROL = 0 << START_CONTROL;   //Pin DOWN
+  PORT_CONTROL = 0 << START_CONTROL;   //Pin DOWN
 }
 
 
@@ -209,11 +209,11 @@ int validate_write() {
 
     //feed number
     ( message.substring(11, 14).toInt() >= 0   ) &&
-    ( message.substring(11, 14).toInt() <= 100 ) &&
+    ( message.substring(11, 14).toInt() <= SPEED_MAX ) &&
 
     //unload number
     ( message.substring(20, 23).toInt() >= 0   ) &&
-    ( message.substring(20, 23).toInt() <= 100 ) &&
+    ( message.substring(20, 23).toInt() <= SPEED_MAX ) &&
 
     //mix number
     ( message.substring(26, 30).toInt() >= 0   ) &&
@@ -221,7 +221,7 @@ int validate_write() {
 
     //temp number
     ( message.substring(34, 37).toInt() >= 0   ) &&
-    ( message.substring(34, 37).toInt() <= 100 ) &&
+    ( message.substring(34, 37).toInt() <= SPEED_MAX ) &&
 
     //rst bits
     ( message[40] == iINT(1) || message[40] == iINT(0) ) &&

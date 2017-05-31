@@ -5,16 +5,17 @@ SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port
 
 #define  INT(x)          (x-48)  //ascii convertion
 #define iINT(x)          (x+48)  //inverse ascii convertion
+#define SPEED_MAX 150
 
 String  message     = "";
 String  new_write   = "";
 boolean stringComplete = false;  // whether the string is complete
 
-String  ph_var      = ""; String  ph_set      = "";
-String  feed_var    = ""; String  feed_set    = "";
-String  unload_var  = ""; String  unload_set  = "";
-String  mix_var     = ""; String  mix_set     = "";
-String  temp_var    = ""; String  temp_set    = "";
+String  ph_var      = "";   String  ph_set      = "";
+String  feed_var    = "";   String  feed_set    = "";
+String  unload_var  = "";   String  unload_set  = "";
+String  mix_var     = "";   String  mix_set     = "";
+String  temp_var    = "";   String  temp_set    = "";
 
 //RESET SETUP
 char rst1 = 1;  char rst2 = 1;  char rst3 = 1;
@@ -47,29 +48,35 @@ const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
 const int RS = 10;          // Shunt resistor value (in ohms)
-const int N  = 250;
+const int N  = 500;
 
-//pH=:(m1,n1)
-float m1 = +0.75;
-float n1 = -3.5;
+//calibrate function()
+char  var='0';
+float m=0;
+float n=0;
+
+//pH=:(m0,n0)
+float m0 = 0;//+0.75;
+float n0 = 0;//-3.5;
+
+//oD=:(m1,n1)
+float m1 = 0;
+float n1 = 0;
 
 //Temp1=:(m2,n2)
-float m2 = +5.31;
-float n2 = -42.95;
+float m2 = 0;//+5.31;
+float n2 = 0;//-42.95;
 
-//oD=:(m3,n3)
-float m3 = 1;
-float n3 = 0;
 
-float Iph;
-float Iod;
-float Itemp1;
-float Itemp2;
-
-float pH    = m1*Iph    + n1;      //   ph = 0.75*IpH   - 3.5
-float Temp1 = m2*Itemp1 + n2;      // Temp = 5.31*Itemp - 42.95;
-float oD    = m3*Iod    + n3;
-float Temp2;
+float Iph = 0;
+float Iod = 0;
+float Itemp1 = 0;
+float Itemp2 = 0;
+                                   //   DEFAULT:
+float pH    = m0*Iph    + n0;      //   ph = 0.75*IpH   - 3.5
+float oD    = m1*Iod    + n1;      // Temp = 5.31*Itemp - 42.95;
+float Temp1 = m2*Itemp1 + n2;
+//float Temp2;
 
 #define mA 1000.0
 #define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
@@ -86,6 +93,35 @@ void serialEvent() {
   }
 }
 
+void calibrate(){
+  //calibrate function for "message"
+  var = message[1];
+  m   = message.substring(2,8 ).toFloat();
+  n   = message.substring(8,14).toFloat();
+
+  switch (var) {
+    case '0':
+      m0 = m;
+      n0 = n;
+      break;
+
+    case '1':
+      m1 = m;
+      n1 = n;
+      break;
+
+    case '2':
+      m2 = m;
+      n2 = n;
+      break;
+
+    default:
+      break;
+  }
+  Serial.println("good calibrate");
+
+  return;
+}
 
 void hamilton_sensors() {
   //
@@ -109,9 +145,10 @@ void hamilton_sensors() {
   Itemp2 = (K * Itemp2);
 
   //Update measures
-  pH    = m1 * Iph    + n1;
+  pH    = m0 * Iph    + n0;
+  oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
-  oD    = m3 * Iod    + n3;
+
 
   return;
 }
@@ -149,26 +186,14 @@ void daqmx() {
 }
 
 
-void calibrate(){
-  //calibrate function for "message"
-  m1 = message.substring(1,6).toFloat();
-  m2 = message.substring(6,11).toFloat();
-  m3 = message.substring(11,16).toFloat();
-
-  n1 = message.substring(17,22).toFloat();
-  n2 = message.substring(22,27).toFloat();
-  n3 = message.substring(27,32).toFloat();
-
-  return;
-}
-
-
 void setpoint() {
   //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
-  Serial.println("good");
+  Serial.println("good setpoint");
 
   return;
 }
+
+
 void broadcast_setpoint(uint8_t select) {
   //Re-transmition of NEW command to slave micro controller
   switch (select) {
@@ -188,6 +213,8 @@ void broadcast_setpoint(uint8_t select) {
 
   return;
 }
+
+
 void clean_strings() {
   //clean strings
   stringComplete = false;  message = "";
@@ -196,6 +223,7 @@ void clean_strings() {
 
 int validate() {
 //message format write values: wph14.0feed100unload100mix1500temp100rst111111dir111111
+    // Validate SETPOINT
     if (  message[0] == 'w'                     &&
           message.substring(1, 3)   == "ph"     &&
           message.substring(7, 11)  == "feed"   &&
@@ -211,11 +239,11 @@ int validate() {
 
           //feed number
           ( message.substring(11, 14).toInt() >= 0   ) &&
-          ( message.substring(11, 14).toInt() <= 100 ) &&
+          ( message.substring(11, 14).toInt() <= SPEED_MAX ) &&
 
           //unload number
           ( message.substring(20, 23).toInt() >= 0   ) &&
-          ( message.substring(20, 23).toInt() <= 100 ) &&
+          ( message.substring(20, 23).toInt() <= SPEED_MAX ) &&
 
           //mix number
           ( message.substring(26, 30).toInt() >= 0   ) &&
@@ -223,7 +251,7 @@ int validate() {
 
           //temp number
           ( message.substring(34, 37).toInt() >= 0   ) &&
-          ( message.substring(34, 37).toInt() <= 100 ) &&
+          ( message.substring(34, 37).toInt() <= SPEED_MAX ) &&
 
           //rst bits
           ( message[40] == iINT(1) || message[40] == iINT(0) ) &&
@@ -243,12 +271,21 @@ int validate() {
         )
         { return 1; }
 
-      else if ( message[0] == 'c' && message[16] == 'a' && message[32] == 'l' )
+      // Validate CALIBRATE
+      else if ( message[0]  == 'c' &&
+               (message[2]  == '+' || message[2] == '-') &&
+               (message[8]  == '+' || message[8] == '-') &&
+                message[14] == 'e' &&
+                message.substring(3,8 ).toFloat() < 100 &&
+                message.substring(9,14).toFloat() < 100
+              )
           return 1;
 
+      // Validate READING
       else if ( message[0] == 'r' )
           return 1;
 
+      // NOT VALIDATE
       else
           return 0;
 }

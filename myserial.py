@@ -4,10 +4,10 @@ import zmq, time, serial, sys
 #5556: for listen data
 #5557: for publisher data
 
-tau_zmq_connect     = 0.3   # 300 [ms]
-tau_zmq_while_write = 0.3   # 300 [ms]
-tau_zmq_while_read  = 0.3   # 300 [ms]
-tau_serial          = 0.01  #  10 [ms]
+tau_zmq_connect     = 0.5   # 0.3=300 [ms]
+tau_zmq_while_write = 0.5   # 0.3=300 [ms]
+tau_zmq_while_read  = 0.5   # 0.3=300 [ms]
+tau_serial          = 0.02  #  0.01=10 [ms]
 
 ##### Queue data: q1 is for put data to   serial port #####
 ##### Queue data: q2 is for get data from serial port #####
@@ -62,61 +62,62 @@ def speak(q1,q2):
 def rs232(q1,q2):
 
     if sys.platform=='darwin':
-        ser = serial.Serial(port='/dev/cu.wchusbserial1410', baudrate=9600)
+        ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
     else:
         ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
 
+    #necesario para setear correctamente el puerto serial
     ser.setDTR(True)
     time.sleep(1)
     ser.setDTR(False)
+    time.sleep(1)
 
-    time.sleep(1) #necesario para setear correctamente el puerto serial
-    print "SERIAL OPEN: ", ser.is_open
+    if ser.is_open:
 
-    #commanda start:  wph14.0feed100unload100mix100temp100rst111111dir111111
-    ser.write('wph00.0feed000unload000mix0000temp000rst111111dir111111'+'\n')
-    result = ser.readline().split()
-    print result
-
-
-    while True:
-        try:
-            if not q1.empty():
-                action = q1.get()
-
-                #Action for read measure from serial port
-                if action == "read":
-                    try:
-                        if ser.is_open:
-                            ser.write('r'+'\n')
-                            SERIAL_DATA = ser.readline()
-                            q2.put(SERIAL_DATA)
-
-                        else:
-                            ser.open()
-                    except:
-                        print "no se pudo leer SERIAL_DATA del uc"
-
-                #Action for write command to serial port
-                else:
-                    try:
-                        ser.write(action+'\n')
-                        result = ser.readline().split()
-                        print result
-
-                    except:
-                        print "no se pudo escribir al uc"
+        #commanda start:  wph14.0feed100unload100mix100temp100rst111111dir111111
+        ser.write('wph00.0feed000unload000mix0000temp000rst111111dir111111'+'\n')
+        result = ser.readline().split()
+        print result
 
 
-            elif q1.empty():
-                time.sleep(tau_serial)
+        while True:
+            try:
+                if not q1.empty():
+                    action = q1.get()
 
-        except:
-            print "se entro al while pero no se pudo revisar la cola"
+                    #Action for read measure from serial port
+                    if action == "read":
+                        try:
+                            if ser.is_open:
+                                ser.write('r'+'\n')
+                                SERIAL_DATA = ser.readline()
+                                q2.put(SERIAL_DATA)
 
-        time.sleep(tau_serial)
+                            else:
+                                ser.open()
+                        except:
+                            print "no se pudo leer SERIAL_DATA del uc"
 
-    return True
+                    #Action for write command to serial port
+                    else:
+                        try:
+                            ser.write(action+'\n')
+                            result = ser.readline().split()
+                            print result
+
+                        except:
+                            print "no se pudo escribir al uc"
+
+
+                elif q1.empty():
+                    time.sleep(tau_serial)
+
+            except:
+                print "se entro al while pero no se pudo revisar la cola"
+
+            time.sleep(tau_serial)
+
+        #return True
 
 
 

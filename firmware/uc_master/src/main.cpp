@@ -47,7 +47,7 @@ void loop() {
           PORTB = 0<<PB0;
       }
       else {
-        Serial.println("bad");
+        Serial.println("bad validate");
       }
 
     clean_strings();

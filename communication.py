@@ -40,73 +40,77 @@ def zmq_client():
     socket_sub.setsockopt(zmq.SUBSCRIBE, topicfilter)
     #espero y retorno valor
     time.sleep(tau_zmq_connect)
+
     return socket_sub.recv()
 
 
-
 def calibrate(var, coef):
-    #var = 0,1,2 <=> ph, od, temp respectivamente.
-    #coef[0| =: pendiente
-    #coef[1] =: intercepto
-    #X = 0,1,2 (ph, od, temp)
-    #cXs111.111s222.222c
+    #coef[0| =: pendiente;  coef[1] =: intercepto
+    #TRAMA: cXs88.88s99.99e ; m=88.888; n=99.99;
+    #X = 0,1,2 (ph, od, temp); s = + ó -
 
-    #sign for coef[0]
+    coef[0] = round(coef[0],2)
+    coef[1] = round(coef[1],2)
+
+    #sign for coef[0], coef[1]
     if coef[0] < 0:
         coef[0] = -coef[0]
-        sign1   = '-'
+        sign0   = '-'
     else:
-        sign1   = '+'
+        sign0   = '+'
 
     #sign for coef[1]
     if coef[1] < 0:
         coef[1] = -coef[1]
-        sign2   = '-'
+        sign1   = '-'
     else:
-        sign2   = '+'
+        sign1   = '+'
 
     #Format for coef[0]
-    if coef[0] < 10:
-        coef1text = '000'  + str(coef[0])
-    elif coef[0] < 100:
-        coef1text = '00'   + str(coef[0])
-    elif coef[0] < 1000:
-        coef1text = '0'    + str(coef[0])
-    elif coef[0] < 10000:
-        coef1text = str(coef[0])
+    #Poner cero a la izquierda:
+    if coef[0] < 10: #ej. coef[0] = 0.7; coef[0] = 1.1
+        coef0text = '0' + str(coef[0]) # => coef[0] = 00.7; coef[0] = 01.1
+    #limitar valor
+    elif coef[0] >= 100: #aplica para el caso negativo y positivo por que arriba separe el signo.
+        coef0text = '99.99'
+    #si no es por que tiene formato como: "44.44"
     else:
-        coef1text = '666' #con esto puedo ver la corriente igual a a variable y darme cuenta de un error
+        coef0text = str(coef[0])
 
+    #Poner cero a la derecha:
+    if  coef[0]-int(coef[0]) == 0 and coef[0] < 100:
+        coef0text = coef0text + '0'
+    elif coef0text[4:] is '':
+        coef0text = coef0text + '0'
 
     #Format for coef[1]
-    if coef[1] < 10:
-        coef2text = '000' + str(ceof[1])
-    elif coef[1] < 100:
-        coef2text = '00'  + str(coef[1])
-    elif coef[1] < 1000:
-        coef2text = '0'   + str(coef[1])
-    elif coef[1] < 10000:
-        coef2text = str(coef[1])
+    #Poner cero a la izquierda:
+    if coef[1] < 10: #ej. coef[0] = 0.7; coef[0] = 1.1
+        coef1text = '0' + str(coef[1]) # => coef[0] = 00.7; coef[0] = 01.1
+    #limitar valor
+    elif coef[1] >= 100:
+        coef1text = '99.99'
+    #sino es por que tiene formato 44.44:
     else:
-        coef2text = '666' #con esto puedo ver la corriente igual a a variable y darme cuenta de un error
+        coef1text = str(coef[1])
 
+    #Poner cero a la derecha:
+    if coef[1]-int(coef[1])==0 and coef[1] < 100:
+        coef1text = coef1text + '0'
+    elif coef1text[4:] is '':
+        coef1text = coef1text + '0'
 
-    coef_cook = 'c' + str(var) + sign1 + coef1text + sign2 + coef2text + 'e'
+    coef_cook = 'c' + str(var) + sign0 + coef0text + sign1 + coef1text + 'e'
 
     #guardo coef_cook en un archivo para depurar
     try:
         f = open("coef_m_n.txt","w")
         f.write(coef_cook + '\n')
         f.close()
-
-        #published_setpoint(coef_cook)
+        published_setpoint(coef_cook)
 
     except:
         print "no se pudo guardar set de calibrate()"
-
-
-
-
 
 
 

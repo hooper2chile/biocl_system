@@ -34,4 +34,4 @@ while True:
         time.sleep(TIME_SYNC)
 
     except:
-        print 'Fallo al subir al cloud:' + hora
+        print 'Fallo al subir a cloud:' + hora

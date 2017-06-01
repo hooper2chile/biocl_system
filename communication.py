@@ -263,7 +263,7 @@ def cook_setpoint(set_data):
         f.close()
 
     except OSError:
-        print("no se pudo guardar el command en el archivo de texto")
+        print "no se pudo guardar el command en el archivo de texto"
 
     return True
 
@@ -271,7 +271,7 @@ def cook_setpoint(set_data):
 
 def main():
     while True:
-        print("communication.py")
+        print "communication.py"
 
 
 if __name__ == '__main__':

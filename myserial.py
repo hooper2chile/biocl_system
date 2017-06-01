@@ -60,20 +60,29 @@ def speak(q1,q2):
 
 
 def rs232(q1,q2):
+    flag = False
+    while not flag:
+        try:
+            if sys.platform=='darwin':
+                ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
+            else:
+                ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
 
-    if sys.platform=='darwin':
-        ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
-    else:
-        ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
+            #necesario para setear correctamente el puerto serial
+            ser.setDTR(True)
+            time.sleep(1)
+            ser.setDTR(False)
+            time.sleep(1)
 
-    #necesario para setear correctamente el puerto serial
-    ser.setDTR(True)
-    time.sleep(1)
-    ser.setDTR(False)
-    time.sleep(1)
+            flag = ser.is_open
+
+        except serial.SerialException:
+            print "conexion serial no realizada"
+            flag = false
+            time.sleep(2)
+
 
     if ser.is_open:
-
         #commanda start:  wph14.0feed100unload100mix100temp100rst111111dir111111
         ser.write('wph00.0feed000unload000mix0000temp000rst111111dir111111'+'\n')
         result = ser.readline().split()

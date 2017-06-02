@@ -13,8 +13,9 @@ void setup() {
 
   message.reserve(65);
 
-  DDRB = DDRB | (1<<PB0);
-  PORTB = 0<<PB0;
+  DDRB = DDRB | (1<<PB0) | (1<<PB5);
+  PORTB = (0<<PB0) | (1<<PB5);
+
 
   wdt_enable(WDTO_2S);
 }

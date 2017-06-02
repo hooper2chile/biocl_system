@@ -79,7 +79,6 @@ void loop() {
                      &PORTC,  &PORTB );
 
 
-
       clean_strings();
       wdt_reset();
     }

@@ -51,7 +51,8 @@ void loop() {
       }
 
     clean_strings();
+    wdt_reset();
   }
 
-  wdt_reset();
+
 }

@@ -75,10 +75,11 @@ def rs232(q1,q2):
             time.sleep(1)
 
             flag = ser.is_open
+            print "CONEXION SERIAL EXITOSA"
 
         except serial.SerialException:
             print "conexion serial no realizada"
-            flag = false
+            flag = False
             time.sleep(2)
 
 

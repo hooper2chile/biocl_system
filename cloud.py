@@ -6,6 +6,9 @@
 
 import os, sys, time, datetime
 
+import logging
+logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
 
 
 TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
@@ -27,11 +30,11 @@ while True:
     hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")
     try:
         os.system(DIR1 + gdrive + ' sync upload ' + DIR2 + '.' + ' ' + ID)
-        print 'sincronizado: ' + hora
+        logging.info('sincronizado: ' + hora)
         f = open(DIR2+'gdrive_sync.txt','a+')
         f.write('sincronizado: ' + hora + ' \n')
         f.close()
         time.sleep(TIME_SYNC)
 
     except:
-        print 'Fallo al subir a cloud:' + hora
+        logging.info('Fallo al subir a cloud:' + hora)

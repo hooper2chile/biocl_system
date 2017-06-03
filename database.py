@@ -5,6 +5,10 @@
 '''
 import sys, time, datetime, sqlite3, sqlitebck, communication
 
+import logging
+logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+
 TIME_MIN_BD = 1 # 1 [s]
 
 def update_db(real_data, connector, c, first_time, BACKUP):
@@ -24,7 +28,8 @@ def update_db(real_data, connector, c, first_time, BACKUP):
         c.execute("INSERT INTO TEMP VALUES (NULL,?,?)", (datetime.datetime.now(), real_data[3]))
 
     except:
-        print "no se pudo insertar dato en db"
+        #print "no se pudo insertar dato en db"
+        logging.info("no se pudo insertar dato en db")
     #se guardan los datos agregados en la db
     connector.commit()
 
@@ -39,7 +44,8 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
         bck = sqlite3.connect(filedb)
         sqlitebck.copy(connector, bck)
-        print "\n Backup REALIZADO \n"
+        #print "\n Backup REALIZADO \n"
+        logging.info("\n Backup REALIZADO \n")
 
         try:
             #Se guarda el nombre de la db para ser utilizado en app.py
@@ -48,7 +54,8 @@ def update_db(real_data, connector, c, first_time, BACKUP):
             f.close()
 
         except:
-            print "no se pudo guardar el nombre de la DB para ser revisada en app.py"
+            #print "no se pudo guardar el nombre de la DB para ser revisada en app.py"
+            logging.info("no se pudo guardar el nombre de la DB para ser revisada en app.py")
 
         return True
 

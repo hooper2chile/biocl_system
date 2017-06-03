@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys, zmq, time
+
+import logging
+logging.basicConfig(filename='./log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
 #5556: for download data
 #5557: for upload data
 
@@ -110,7 +114,7 @@ def calibrate(var, coef):
         published_setpoint(coef_cook)
 
     except:
-        print "no se pudo guardar set de calibrate()"
+        logging.info("no se pudo guardar set de calibrate()")
 
 
 
@@ -153,7 +157,7 @@ def cook_setpoint(set_data):
 
     except ValueError:
         set_data = temp_save_set_data #esto permite reenviar el ultimo si hay una exception
-        print "exception de set_data"
+        logging.info("exception de set_data")
         #set_data = [10,10,10,10,10,1,1,1,1,1,1,1,1]
 
 
@@ -252,7 +256,7 @@ def cook_setpoint(set_data):
     command = 'wph' + string_ph + 'feed' + string_feed + 'unload' + string_unload + 'mix' + string_mix + \
               'temp' + string_temp + 'rst' + string_rst + 'dir' + string_dir + '\n'
 
-    print('\n' + command + '\n')
+    logging.info('\n' + command + '\n')
 
     #published for put in queue and write in serial port
     published_setpoint(command)
@@ -263,7 +267,7 @@ def cook_setpoint(set_data):
         f.close()
 
     except OSError:
-        print "no se pudo guardar el command en el archivo de texto"
+        logging.info("no se pudo guardar el command en el archivo de texto")
 
     return True
 
@@ -271,7 +275,7 @@ def cook_setpoint(set_data):
 
 def main():
     while True:
-        print "communication.py"
+        logging.info("communication.py")
 
 
 if __name__ == '__main__':

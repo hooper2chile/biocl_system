@@ -17,7 +17,7 @@ void setup() {
   PORTB = (0<<PB0) | (1<<PB5);
 
 
-  wdt_enable(WDTO_2S);
+  wdt_enable(WDTO_8S);
 }
 
 

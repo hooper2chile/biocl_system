@@ -362,7 +362,7 @@ def background_thread1():
         except:
             print "\n no se actualizaron las mediciones"
 
-        socketio.sleep(0.1)
+        socketio.sleep(0.25)
 
 
 if __name__ == '__main__':

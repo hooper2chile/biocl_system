@@ -9,7 +9,7 @@ if(sys.platform=='darwin'):
     logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 else:
-    logging.basicConfig(filename='/home/pi/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+    logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 TIME_MIN_BD = 1 # 1 [s]

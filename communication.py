@@ -6,7 +6,7 @@ if(sys.platform=='darwin'):
     logging.basicConfig(filename='./log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 else:
-    logging.basicConfig(filename='/home/pi/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+    logging.basicConfig(filename='/home/pi/biocl_system/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 #5556: for download data
 #5557: for upload data

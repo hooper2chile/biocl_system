@@ -10,7 +10,7 @@ if(sys.platform=='darwin'):
     logging.basicConfig(filename='./log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 else:
-    logging.basicConfig(filename='/home/pi/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+    logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 

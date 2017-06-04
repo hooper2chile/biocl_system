@@ -1,9 +1,12 @@
 from multiprocessing import Process, Queue, Event
-import zmq, time, serial, sys
+import zmq, time, serial, sys, logging
 
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/myserial.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
-import logging
-logging.basicConfig(filename='./log/myserial.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+else:
+    logging.basicConfig(filename='/home/pi/biocl_system/log/myserial.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
 
 #5556: for listen data
 #5557: for publisher data

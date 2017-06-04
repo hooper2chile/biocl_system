@@ -3,10 +3,17 @@
 from flask import Flask, render_template, session, request, Response, send_from_directory, make_response
 from flask_socketio import SocketIO, emit, disconnect
 
-import os, sys, communication, reviewDB
+import os, sys, logging, communication, reviewDB
 
-import logging
-logging.basicConfig(filename='./log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+else:
+    logging.basicConfig(filename='/home/pi/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+
+
 
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the

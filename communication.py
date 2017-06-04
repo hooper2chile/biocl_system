@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import sys, zmq, time
+# --*- coding: utf-8 -*--
+import sys, zmq, time, logging
 
-import logging
-logging.basicConfig(filename='./log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+else:
+    logging.basicConfig(filename='/home/pi/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 #5556: for download data
 #5557: for upload data
@@ -15,7 +18,7 @@ temp_save_set_data = None
 tau_zmq_connect = 0.3 #0.3 [s]: no ha funcionado con menos
 SPEED_MAX_MIX = 1500
 SPEED_MAX = 100
-TEMP_MAX = 100
+TEMP_MAX  = 100
 PH_MIN = 0
 PH_MAX = 14
 

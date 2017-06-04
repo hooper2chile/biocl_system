@@ -3,10 +3,13 @@
 '''
     Adquisición de datos por sockets (ZMQ) para la base de datos.
 '''
-import sys, time, datetime, sqlite3, sqlitebck, communication
+import sys, time, datetime, sqlite3, sqlitebck, logging, communication
 
-import logging
-logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+else:
+    logging.basicConfig(filename='/home/pi/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 TIME_MIN_BD = 1 # 1 [s]

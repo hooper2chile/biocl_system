@@ -4,10 +4,13 @@
     Application for synchronization.
 '''
 
-import os, sys, time, datetime
+import os, sys, time, datetime, logging
 
-import logging
-logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
+else:
+    logging.basicConfig(filename='/home/pi/log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 

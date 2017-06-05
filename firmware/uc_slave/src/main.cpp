@@ -21,8 +21,9 @@ void setup() {
   Serial.begin(9600);
 
   DDRB = DDRB | (1<<PB0) | (1<<PB1) | (1<<PB2) | (1<<PB3) | (1<<PB4) | (1<<PB5);
-  DDRC = DDRC | (1<<PC0) | (1<<PC1) | (1<<PC2) | (1<<PC3) | (1<<PC4) | (1<<PC5);
-  DDRD = DDRD | (1<<PD4) | (1<<PD5) | (1<<PD6);
+  DDRC = DDRC | (1<<PC1) | (1<<PC2) | (1<<PC3) | (1<<PC4) | (1<<PC5);
+  DDRD = DDRD | (1<<PD4) | (1<<PD5);
+
 
   Timer1.initialize(TIME_T);
   Timer1.attachInterrupt(motor_control);
@@ -38,7 +39,10 @@ void loop() {
   {
     if (validate_write()) {
       Serial.println(message);
+
+      //se "desmenuza" el command de setpoints
       crumble();
+
 
       //Time setup for counters:
       //time_setup(ph1 , &count_m1_set, &count_m1);  //ph acido  pendiente, setear en otra función que reciba este mensaje desde un lazo de control
@@ -60,9 +64,32 @@ void loop() {
       }
 
 
-      //RST and DIR SETTING:
-      //Ph: rst3, dir2
 
+
+      //PH TEST: TIME SETUP
+      //trasnform phset to rpm
+      myph1 = 10 * ( (int) myphset );
+      myph2 = myph1;
+
+      if ( myph1 != myph1_save ) {
+        time_setup(myph1, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
+        myph1_save = myph1;
+      }
+
+      if ( myph2 != myph2_save ) {
+        time_setup(myph2, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
+        myph2_save = myph2;
+      }
+
+      //pH: rst3, dir2:
+      setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
+                    &myph1, &rst3, &dir2,
+                    &PORTD, &PORTC );
+
+
+
+
+      //RST and DIR SETTING:
       //feed: rst1=0 (enable); dir1=1 (cw), else ccw.
       setup_dir_rst( _BV(RST_FEED), _BV(DIR_FEED),
                      &myfeed, &rst1, &dir1,
@@ -77,6 +104,8 @@ void loop() {
       setup_dir_rst( _BV(RST_TEMP), _BV(DIR_TEMP),
                      &mytemp, &rst5, &dir3,
                      &PORTC,  &PORTB );
+
+
 
 
       clean_strings();

@@ -15,7 +15,7 @@
 
 #define MIN_to_us 60e6 //60e6   [us]
 #define STEPS     200 //200  [STEPS]
-#define TIME_T    15  //TIME_T [us]
+#define TIME_T    20  //TIME_T [us]
 
 #define TIME_MIN  2000  //se despeja de SPEED_MAX
 #define SPEED_MAX 150   //MIN_to_us/(STEPS*TIME_MIN)
@@ -34,17 +34,17 @@
 #define MOT4 PORTB
 #define MOT5 PORTB
 
-#define START1 PB0  //ph
-#define START2 PB1  //ph
+#define START1 PB0  //ph1
+#define START2 PB1  //ph2
 #define START3 PB2  //feed
 #define START4 PB3  //unload
-#define START5 PB4  //temp: PB4
+#define START5 PB4  //temp
 
 #define PORT_CONTROL  PORTD
-#define START_CONTROL PD4
+#define START_CONTROL PD5
 
 //PH: las dos bombas de ph usan el mismo rst y dir
-#define RST_PH     PC0
+#define RST_PH     PD4  //pc0 no funciona, PLOP! probe dos micros
 #define DIR_PH     PC1
 
 #define RST_FEED   PC2
@@ -76,6 +76,10 @@ uint8_t dir1 = 1;  uint8_t dir2 = 1;  uint8_t dir3 = 1;
 uint8_t dir4 = 1;  uint8_t dir5 = 1;  uint8_t dir6 = 1;
 
 float   myphset  = 0;
+
+uint8_t myph1    = 0;
+uint8_t myph2    = 0;
+
 uint8_t myfeed   = 0;
 uint8_t myunload = 0;
 uint8_t mymix    = 0;
@@ -84,6 +88,9 @@ uint8_t mytemp   = 0;
 uint8_t myfeed_save   = 0;
 uint8_t mytemp_save   = 0;
 uint8_t myunload_save = 0;
+
+uint8_t myph1_save    = 0;
+uint8_t myph2_save    = 0;
 
 String  message = "";
 boolean stringComplete = false;
@@ -116,13 +123,13 @@ inline void set_motor ( uint16_t *count,
 
 //_BV(x) = 1 << x
 //rstx=0 (enable); dirx=1 (cw), else ccw.
-inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var,
-                            uint8_t *rstx, uint8_t *dirx,
+inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var_x,
+                            uint8_t *rst_x, uint8_t *dir_x,
                             volatile uint8_t *PORT_1,
                             volatile uint8_t *PORT_2 )
 { //PORT_1:
-  if( !(*rstx) ) {
-    if ( !(*var) )
+  if( !(*rst_x) ) {
+    if ( !(*var_x) )
       *PORT_1 &= ~RST;
     else
       *PORT_1 |=  RST;
@@ -131,7 +138,7 @@ inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var,
     *PORT_1 &= ~RST;
 
   //PORT_2:
-  if ( *dirx )
+  if ( *dir_x )
     *PORT_2 |=  DIR;
   else
     *PORT_2 &= ~DIR;
@@ -140,13 +147,14 @@ inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var,
 
 //ISR: Function of Interruption in timer one. _BV(x) = 1 << x
 void motor_control() {
-  PORT_CONTROL = 1 << START_CONTROL; //PIN UP
-  // set_motor(&count_m1, &count_m1_set, &MOT1, _BV(START1) );
-  // set_motor(&count_m2, &count_m2_set, &MOT2, _BV(START2) );
+  PORT_CONTROL |= (1 << START_CONTROL); //PIN UP
+  set_motor(&count_m1, &count_m1_set, &MOT1, _BV(START1) );
+  set_motor(&count_m2, &count_m2_set, &MOT2, _BV(START2) );
+
   set_motor(&count_m3, &count_m3_set, &MOT3, _BV(START3) );
   set_motor(&count_m4, &count_m4_set, &MOT4, _BV(START4) );
   set_motor(&count_m5, &count_m5_set, &MOT5, _BV(START5) );
-  PORT_CONTROL = 0 << START_CONTROL;   //Pin DOWN
+  PORT_CONTROL &= ~(1 << START_CONTROL);   //Pin DOWN
 }
 
 

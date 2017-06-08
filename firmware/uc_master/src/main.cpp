@@ -5,6 +5,8 @@
 #include <avr/wdt.h>
 #include "mlibrary.h"
 
+
+
 void setup() {
   wdt_disable();
 
@@ -16,7 +18,6 @@ void setup() {
   DDRB = DDRB | (1<<PB0) | (1<<PB5);
   PORTB = (0<<PB0) | (1<<PB5);
 
-
   wdt_enable(WDTO_8S);
 }
 
@@ -26,6 +27,7 @@ void loop() {
   if ( stringComplete  ) {
       if ( validate() ) {
           PORTB = 1<<PB0;
+
           switch ( message[0] ) {
               case 'r':
                 hamilton_sensors();

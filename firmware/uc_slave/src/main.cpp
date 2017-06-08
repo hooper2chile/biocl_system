@@ -25,6 +25,7 @@ void setup() {
   DDRD = DDRD | (1<<PD4) | (1<<PD5);
 
 
+
   Timer1.initialize(TIME_T);
   Timer1.attachInterrupt(motor_control);
 
@@ -40,13 +41,12 @@ void loop() {
     if (validate_write()) {
       Serial.println(message);
 
+
       //se "desmenuza" el command de setpoints
       crumble();
 
 
       //Time setup for counters:
-      //time_setup(ph1 , &count_m1_set, &count_m1);  //ph acido  pendiente, setear en otra función que reciba este mensaje desde un lazo de control
-      //time_setup(ph2 , &count_m2_set, &count_m2);  //ph basico pendiente, setear en otra función que reciba este mensaje desde un lazo de control
 
       if ( myfeed != myfeed_save ) {
         time_setup(myfeed, &count_m3_set, &count_m3);
@@ -81,12 +81,6 @@ void loop() {
         myph2_save = myph2;
       }
 
-      //pH: rst3, dir2:
-      setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
-                    &myph1, &rst3, &dir2,
-                    &PORTD, &PORTC );
-
-
 
 
       //RST and DIR SETTING:
@@ -100,10 +94,15 @@ void loop() {
                      &myunload, &rst4, NULL,
                      &PORTC,    &PORTC );
 
-       //temp: rst5, dir3: PORT_1 distinto a PORT_2.
+      //temp: rst5, dir3: PORT_1 distinto a PORT_2.
       setup_dir_rst( _BV(RST_TEMP), _BV(DIR_TEMP),
                      &mytemp, &rst5, &dir3,
                      &PORTC,  &PORTB );
+
+      //pH: rst3, dir2:
+      setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
+                     &myph1, &rst3, &dir2,
+                     &PORTD, &PORTC );
 
 
 

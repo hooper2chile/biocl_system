@@ -64,7 +64,7 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
 def main():
     first_time = time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y")
-    TIME_BCK = 60
+    TIME_BCK = 120
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     c = connector.cursor()
 

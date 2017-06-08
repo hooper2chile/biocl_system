@@ -1,4 +1,6 @@
 #include "Arduino.h"
+#include "PID_v1.h"
+
 
 #include "SoftwareSerial.h"
 SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port.
@@ -48,7 +50,7 @@ const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
 const int RS = 10;          // Shunt resistor value (in ohms)
-const int N  = 500;
+const int N  = 200; //500
 
 //calibrate function()
 char  var='0';
@@ -93,6 +95,7 @@ void serialEvent() {
   }
 }
 
+//c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
 void calibrate(){
   //calibrate function for "message"
   var = message[1];

@@ -13,6 +13,7 @@
 
 #include "Arduino.h"
 
+
 #define MIN_to_us 60e6 //60e6   [us]
 #define STEPS     200 //200  [STEPS]
 #define TIME_T    20  //TIME_T [us]
@@ -123,7 +124,7 @@ inline void set_motor ( uint16_t *count,
 
 //_BV(x) = 1 << x
 //rstx=0 (enable); dirx=1 (cw), else ccw.
-inline void setup_dir_rst ( uint8_t RST,   uint8_t DIR,  uint8_t *var_x,
+inline void setup_dir_rst ( uint8_t RST,    uint8_t DIR,  uint8_t *var_x,
                             uint8_t *rst_x, uint8_t *dir_x,
                             volatile uint8_t *PORT_1,
                             volatile uint8_t *PORT_2 )

@@ -30,16 +30,15 @@ void setup() {
   Timer1.attachInterrupt(motor_control);
 
   message.reserve(65);
-  wdt_enable(WDTO_2S);
+  wdt_enable(WDTO_8S);
 }
 
 
 
 void loop() {
-  if ( stringComplete )
-  {
-    if (validate_write()) {
-      Serial.println(message);
+  if ( stringComplete ) {
+    if ( validate_write() ) {
+      Serial.println("Good message");
 
 
       //se "desmenuza" el command de setpoints
@@ -47,7 +46,6 @@ void loop() {
 
 
       //Time setup for counters:
-
       if ( myfeed != myfeed_save ) {
         time_setup(myfeed, &count_m3_set, &count_m3);
         myfeed_save = myfeed;
@@ -63,14 +61,7 @@ void loop() {
         mytemp_save = mytemp;
       }
 
-
-
-
       //PH TEST: TIME SETUP
-      //trasnform phset to rpm
-      myph1 = 10 * ( (int) myphset );
-      myph2 = myph1;
-
       if ( myph1 != myph1_save ) {
         time_setup(myph1, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph1_save = myph1;
@@ -101,7 +92,7 @@ void loop() {
 
       //pH: rst3, dir2:
       setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
-                     &myph1, &rst3, &dir2,
+                     &myphset, &rst3, &dir2,
                      &PORTD, &PORTC );
 
 
@@ -110,6 +101,11 @@ void loop() {
       clean_strings();
       wdt_reset();
     }
+    else{
+      Serial.println("BAD message");
+      clean_strings();
+    }
+
   }
 
 

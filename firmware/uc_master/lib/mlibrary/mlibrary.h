@@ -1,13 +1,25 @@
 #include "Arduino.h"
-#include "PID_v1.h"
-
 
 #include "SoftwareSerial.h"
 SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port.
 
-#define  INT(x)          (x-48)  //ascii convertion
-#define iINT(x)          (x+48)  //inverse ascii convertion
+
+#include "PID_v1.h"
+double Setpoint_temp, Input_temp, Output_temp;
+double Setpoint_ph, Input_ph, Output_ph;
+
+double Kp_ph=277, Ki_ph=1.54, Kd_ph=0;
+double Kp_temp=1, Ki_temp=3, Kd_temp=0;
+
+PID TEMP_PID(&Input_temp, &Output_temp, &Setpoint_temp, Kp_temp, Ki_temp, Kd_temp, DIRECT);
+PID   PH_PID(&Input_ph, &Output_ph, &Setpoint_ph, Kp_ph, Ki_ph, Kd_ph, DIRECT);
+
+
+#define  INT(x)   (x-48)  //ascii convertion
+#define iINT(x)   (x+48)  //inverse ascii convertion
 #define SPEED_MAX 150
+#define TEMP_MAX  130
+#define Ts        150 //200ms
 
 String  message     = "";
 String  new_write   = "";
@@ -18,6 +30,14 @@ String  feed_var    = "";   String  feed_set    = "";
 String  unload_var  = "";   String  unload_set  = "";
 String  mix_var     = "";   String  mix_set     = "";
 String  temp_var    = "";   String  temp_set    = "";
+
+
+//Re-formatting
+String  ph_select = "";
+String  t_temp = "";
+String  t_ph   = "";
+String  svar   = "";
+
 
 //RESET SETUP
 char rst1 = 1;  char rst2 = 1;  char rst3 = 1;
@@ -58,16 +78,16 @@ float m=0;
 float n=0;
 
 //pH=:(m0,n0)
-float m0 = 0;//+0.75;
-float n0 = 0;//-3.5;
+float m0 = +0.75;
+float n0 = -3.5;
 
 //oD=:(m1,n1)
-float m1 = 0;
+float m1 = 1;
 float n1 = 0;
 
 //Temp1=:(m2,n2)
-float m2 = 0;//+5.31;
-float n2 = 0;//-42.95;
+float m2 = +5.31;
+float n2 = -42.95;
 
 
 float Iph = 0;
@@ -95,203 +115,6 @@ void serialEvent() {
   }
 }
 
-//c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
-void calibrate(){
-  //calibrate function for "message"
-  var = message[1];
-  m   = message.substring(2,8 ).toFloat();
-  n   = message.substring(8,14).toFloat();
-
-  switch (var) {
-    case '0':
-      m0 = m;
-      n0 = n;
-      break;
-
-    case '1':
-      m1 = m;
-      n1 = n;
-      break;
-
-    case '2':
-      m2 = m;
-      n2 = n;
-      break;
-
-    default:
-      break;
-  }
-  Serial.println("good calibrate");
-
-  return;
-}
-
-void hamilton_sensors() {
-  //
-  Iph    = 0;
-  Iod    = 0;
-  Itemp1 = 0;
-  Itemp2 = 0;
-
-  for (int i = 1; i <= N; i++) {
-     Iph    += analogRead(SENSOR_PH);
-     Iod    += analogRead(SENSOR_OD);
-     Itemp1 += analogRead(SENSOR_TEMP1);
-     Itemp2 += analogRead(SENSOR_TEMP2);
-     delayMicroseconds(200);
-  }
-
-  Iph    = (K * Iph  );
-  Itemp1 = (K * Itemp1);
-
-  Iod    = (K * Iod);
-  Itemp2 = (K * Itemp2);
-
-  //Update measures
-  pH    = m0 * Iph    + n0;
-  oD    = m1 * Iod    + n1;
-  Temp1 = m2 * Itemp1 + n2;
-
-
-  return;
-}
-
-
-void daqmx() {
-  //data adquisition measures
-  Byte0 = pH;
-  Byte1 = oD;
-  Byte2 = Temp1;
-  Byte3 = Iph;
-  Byte4 = Iod;
-  Byte5 = Itemp1;
-  Byte6 = Itemp2;
-
-  dtostrf(Byte0, 7, 2, cByte0);
-  dtostrf(Byte1, 7, 2, cByte1);
-  dtostrf(Byte2, 7, 2, cByte2);
-  dtostrf(Byte3, 7, 2, cByte3);
-  dtostrf(Byte4, 7, 2, cByte4);
-  dtostrf(Byte5, 7, 2, cByte5);
-  dtostrf(Byte6, 7, 2, cByte6);
-
-  //tx of measures
-  Serial.print(cByte0);  Serial.print("\t");
-  Serial.print(cByte1);  Serial.print("\t");
-  Serial.print(cByte2);  Serial.print("\t");
-  Serial.print(cByte3);  Serial.print("\t");
-  Serial.print(cByte4);  Serial.print("\t");
-  Serial.print(cByte5);  Serial.print("\t");
-  Serial.print(cByte6);  Serial.print("\t");
-  Serial.print("\n");
-
-  return;
-}
-
-
-void setpoint() {
-  //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
-  Serial.println("good setpoint");
-
-  return;
-}
-
-
-void broadcast_setpoint(uint8_t select) {
-  //Re-transmition of NEW command to slave micro controller
-  switch (select) {
-    case 0: //only re-tx.
-      mySerial.print(new_write);
-      break;
-
-    case 1: //update command and re-tx.
-      new_write = "";
-      new_write = message;
-      mySerial.print(new_write);
-      break;
-
-    default:
-      break;
-  }
-
-  return;
-}
-
-
-void clean_strings() {
-  //clean strings
-  stringComplete = false;  message = "";
-}
-
-
-int validate() {
-//message format write values: wph14.0feed100unload100mix1500temp100rst111111dir111111
-    // Validate SETPOINT
-    if (  message[0] == 'w'                     &&
-          message.substring(1, 3)   == "ph"     &&
-          message.substring(7, 11)  == "feed"   &&
-          message.substring(14, 20) == "unload" &&
-          message.substring(23, 26) == "mix"    &&
-          message.substring(30, 34) == "temp"   &&
-          message.substring(37, 40) == "rst"    &&
-          message.substring(46, 49) == "dir"    &&
-
-          //ph number
-          ( message.substring(3, 7).toFloat() >= 0    ) &&
-          ( message.substring(3, 7).toFloat() <= 14.0 ) &&
-
-          //feed number
-          ( message.substring(11, 14).toInt() >= 0   ) &&
-          ( message.substring(11, 14).toInt() <= SPEED_MAX ) &&
-
-          //unload number
-          ( message.substring(20, 23).toInt() >= 0   ) &&
-          ( message.substring(20, 23).toInt() <= SPEED_MAX ) &&
-
-          //mix number
-          ( message.substring(26, 30).toInt() >= 0   ) &&
-          ( message.substring(26, 30).toInt() <= 1500) &&
-
-          //temp number
-          ( message.substring(34, 37).toInt() >= 0   ) &&
-          ( message.substring(34, 37).toInt() <= SPEED_MAX ) &&
-
-          //rst bits
-          ( message[40] == iINT(1) || message[40] == iINT(0) ) &&
-          ( message[41] == iINT(1) || message[41] == iINT(0) ) &&
-          ( message[42] == iINT(1) || message[42] == iINT(0) ) &&
-          ( message[43] == iINT(1) || message[43] == iINT(0) ) &&
-          ( message[44] == iINT(1) || message[44] == iINT(0) ) &&
-          ( message[45] == iINT(1) || message[45] == iINT(0) ) &&
-
-          //dir bits
-          ( message[49] == iINT(1) || message[49] == iINT(0) ) &&
-          ( message[50] == iINT(1) || message[50] == iINT(0) ) &&
-          ( message[51] == iINT(1) || message[51] == iINT(0) ) &&
-          ( message[52] == iINT(1) || message[52] == iINT(0) ) &&
-          ( message[53] == iINT(1) || message[53] == iINT(0) ) &&
-          ( message[54] == iINT(1) || message[54] == iINT(0) )
-        )
-        { return 1; }
-
-      // Validate CALIBRATE
-      else if ( message[0]  == 'c' &&
-               (message[2]  == '+' || message[2] == '-') &&
-               (message[8]  == '+' || message[8] == '-') &&
-                message[14] == 'e' &&
-                message.substring(3,8 ).toFloat() < 100 &&
-                message.substring(9,14).toFloat() < 100
-              )
-          return 1;
-
-      // Validate READING
-      else if ( message[0] == 'r' )
-          return 1;
-
-      // NOT VALIDATE
-      else
-          return 0;
-}
 
 
 //desmenuza el string de comandos
@@ -328,4 +151,279 @@ void crumble() {
   dir4 = INT(message[52]);  dir5 = INT(message[53]);  dir6 = INT(message[54]);
 
   return;
+}
+
+
+
+
+void format_message(int var) {
+
+  //reset to scar string
+  svar = "";
+
+  if (var < 10)
+    svar = "00"+ String(var);
+  else if (var < 100)
+    svar = "0" + String(var);
+  else
+    svar = String(var);
+
+  return;
+}
+
+
+
+//c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
+void calibrate(){
+  //calibrate function for "message"
+  var = message[1];
+  m   = message.substring(2,8 ).toFloat();
+  n   = message.substring(8,14).toFloat();
+
+  switch (var) {
+    case '0':
+      m0 = m;
+      n0 = n;
+      break;
+
+    case '1':
+      m1 = m;
+      n1 = n;
+      break;
+
+    case '2':
+      m2 = m;
+      n2 = n;
+      break;
+
+    default:
+      break;
+  }
+  Serial.println("good calibrate");
+
+  return;
+}
+
+
+
+
+
+void hamilton_sensors() {
+
+  Iph    = 0;
+  Iod    = 0;
+  Itemp1 = 0;
+  Itemp2 = 0;
+
+  for (int i = 1; i <= N; i++) {
+     Iph    += analogRead(SENSOR_PH);
+     Iod    += analogRead(SENSOR_OD);
+     Itemp1 += analogRead(SENSOR_TEMP1);
+     Itemp2 += analogRead(SENSOR_TEMP2);
+     delayMicroseconds(200);
+  }
+
+  Iph    = (K * Iph  );
+  Itemp1 = (K * Itemp1);
+
+  Iod    = (K * Iod);
+  Itemp2 = (K * Itemp2);
+
+  //Update measures
+  pH    = m0 * Iph    + n0;
+  oD    = m1 * Iod    + n1;
+  Temp1 = m2 * Itemp1 + n2;
+
+
+  return;
+}
+
+
+
+
+
+void daqmx() {
+  //data adquisition measures
+  Byte0 = pH;
+  Byte1 = oD;
+  Byte2 = Temp1;
+  Byte3 = Iph;
+  Byte4 = Iod;
+  Byte5 = Itemp1;
+  Byte6 = Itemp2;
+
+  dtostrf(Byte0, 7, 2, cByte0);
+  dtostrf(Byte1, 7, 2, cByte1);
+  dtostrf(Byte2, 7, 2, cByte2);
+  dtostrf(Byte3, 7, 2, cByte3);
+  dtostrf(Byte4, 7, 2, cByte4);
+  dtostrf(Byte5, 7, 2, cByte5);
+  dtostrf(Byte6, 7, 2, cByte6);
+
+  //tx of measures
+  Serial.print(cByte0);  Serial.print("\t");
+  Serial.print(cByte1);  Serial.print("\t");
+  Serial.print(cByte2);  Serial.print("\t");
+  Serial.print(cByte3);  Serial.print("\t");
+  Serial.print(cByte4);  Serial.print("\t");
+  Serial.print(cByte5);  Serial.print("\t");
+  Serial.print(cByte6);  Serial.print("\t");
+  Serial.print("\n");
+
+  return;
+}
+
+
+
+
+
+void pid_temp() {
+  Input_temp = Temp1;
+  TEMP_PID.Compute();
+  //Algoritmo de seleccion de acido o base
+
+  return;
+}
+
+
+
+void pid_ph() {
+  Input_ph = pH;
+  PH_PID.Compute();  //con esto se actualiza Output_ph
+
+  //Algoritmo de seleccion de acido o base
+  if ( Output_ph < 0 ) {
+    ph_select = "a"; //=> Acido
+    Output_ph = - Output_ph;
+  }
+  else
+    ph_select = "b"; //=> Básico
+
+  return;
+}
+
+
+
+void setpoint() {
+  //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
+  crumble();
+  //acá se leen los nuevos setpoint para los pid
+  Setpoint_temp = mytemp;
+  Setpoint_ph   = myphset;
+
+  Serial.println("good setpoint");
+
+  return;
+}
+
+
+
+
+void broadcast_setpoint(uint8_t select) {
+  //Re-transmition of NEW command to slave micro controller
+  switch (select) {
+    case 0: //only re-tx.
+      mySerial.print(new_write);
+      break;
+
+    case 1: //update command and re-tx.
+      format_message(Output_temp);
+      t_temp = svar;
+
+      format_message(Output_ph);
+      t_ph = svar;
+
+      new_write = "";
+      new_write = message.substring(0,3) + ph_select + t_ph + message.substring(7,34) + t_temp + message.substring(37,55) + "\n";
+      mySerial.print(new_write);
+      break;
+
+    default:
+      break;
+  }
+
+  return;
+}
+
+//wph08.3feed100unload100mix1500temp022rst111111dir111111
+//wphb015feed100unload100mix1500temp150rst000000dir111111
+
+
+void clean_strings() {
+  //clean strings
+  stringComplete = false; message = "";
+  t_temp = "";
+  t_ph = "";
+}
+
+
+
+
+int validate() {
+//message format write values: wph14.0feed100unload100mix1500temp100rst111111dir111111
+    // Validate SETPOINT
+    if (  message[0] == 'w'                     &&
+          message.substring(1, 3)   == "ph"     &&
+          message.substring(7, 11)  == "feed"   &&
+          message.substring(14, 20) == "unload" &&
+          message.substring(23, 26) == "mix"    &&
+          message.substring(30, 34) == "temp"   &&
+          message.substring(37, 40) == "rst"    &&
+          message.substring(46, 49) == "dir"    &&
+
+          //ph number
+          ( message.substring(3, 7).toFloat() >= 0    ) &&
+          ( message.substring(3, 7).toFloat() <= 14.0 ) &&
+
+          //feed number
+          ( message.substring(11, 14).toInt() >= 0   ) &&
+          ( message.substring(11, 14).toInt() <= SPEED_MAX ) &&
+
+          //unload number
+          ( message.substring(20, 23).toInt() >= 0   ) &&
+          ( message.substring(20, 23).toInt() <= SPEED_MAX ) &&
+
+          //mix number
+          ( message.substring(26, 30).toInt() >= 0   ) &&
+          ( message.substring(26, 30).toInt() <= 1500) &&
+
+          //temp number
+          ( message.substring(34, 37).toInt() >= 0   ) &&
+          ( message.substring(34, 37).toInt() <= TEMP_MAX ) &&
+
+          //rst bits
+          ( message[40] == iINT(1) || message[40] == iINT(0) ) &&
+          ( message[41] == iINT(1) || message[41] == iINT(0) ) &&
+          ( message[42] == iINT(1) || message[42] == iINT(0) ) &&
+          ( message[43] == iINT(1) || message[43] == iINT(0) ) &&
+          ( message[44] == iINT(1) || message[44] == iINT(0) ) &&
+          ( message[45] == iINT(1) || message[45] == iINT(0) ) &&
+
+          //dir bits
+          ( message[49] == iINT(1) || message[49] == iINT(0) ) &&
+          ( message[50] == iINT(1) || message[50] == iINT(0) ) &&
+          ( message[51] == iINT(1) || message[51] == iINT(0) ) &&
+          ( message[52] == iINT(1) || message[52] == iINT(0) ) &&
+          ( message[53] == iINT(1) || message[53] == iINT(0) ) &&
+          ( message[54] == iINT(1) || message[54] == iINT(0) )
+        )
+        { return 1; }
+
+      // Validate CALIBRATE
+      else if ( message[0]  == 'c' &&
+               (message[2]  == '+' || message[2] == '-') &&
+               (message[8]  == '+' || message[8] == '-') &&
+                message[14] == 'e' &&
+                message.substring(3,8 ).toFloat() < 100 &&
+                message.substring(9,14).toFloat() < 100
+              )
+          return 1;
+
+      // Validate READING
+      else if ( message[0] == 'r' )
+          return 1;
+
+      // NOT VALIDATE
+      else
+          return 0;
 }

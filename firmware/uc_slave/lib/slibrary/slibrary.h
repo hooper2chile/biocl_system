@@ -21,6 +21,7 @@
 #define TIME_MIN  2000  //se despeja de SPEED_MAX
 #define SPEED_MAX 150   //MIN_to_us/(STEPS*TIME_MIN)
 #define SPEED_MIN 1
+#define TEMP_MAX  130
 
 #define CONVERTION(x) ((unsigned int) (MIN_to_us/STEPS/TIME_T) / x) //x = speed [rpm] => Number of counts
 #define LIMIT         (TIME_MIN / (2 * TIME_T) )
@@ -76,8 +77,7 @@ uint8_t rst4 = 0;  uint8_t rst5 = 0;  uint8_t rst6 = 0;
 uint8_t dir1 = 1;  uint8_t dir2 = 1;  uint8_t dir3 = 1;
 uint8_t dir4 = 1;  uint8_t dir5 = 1;  uint8_t dir6 = 1;
 
-float   myphset  = 0;
-
+uint8_t myphset  = 0;
 uint8_t myph1    = 0;
 uint8_t myph2    = 0;
 
@@ -96,7 +96,7 @@ uint8_t myph2_save    = 0;
 String  message = "";
 boolean stringComplete = false;
 
-String  ph_var     = "";   String  ph_set     = "";
+char    ph_var     = "";   String  ph_set     = "";
 String  feed_var   = "";   String  feed_set   = "";
 String  unload_var = "";   String  unload_set = "";
 String  mix_var    = "";   String  mix_set    = "";
@@ -213,8 +213,9 @@ int validate_write() {
     message.substring(46, 49) == "dir"    &&
 
     //ph number
-    ( message.substring(3, 7).toFloat() >= 0    ) &&
-    ( message.substring(3, 7).toFloat() <= 14.0 ) &&
+    ( message[3] == 'a' || message[3] == 'b'         ) &&
+    ( message.substring(4, 7).toFloat() <= SPEED_MAX ) &&
+
 
     //feed number
     ( message.substring(11, 14).toInt() >= 0   ) &&
@@ -248,17 +249,22 @@ int validate_write() {
     ( message[53] == iINT(1) || message[53] == iINT(0) ) &&
     ( message[54] == iINT(1) || message[54] == iINT(0) )
   )
+  {
+    //Serial.println("GOOD");
     return 1;
+  }
 
-  else
+  else {
+    //Serial.println("BAD");
     return 0;
+  }
 }
 
 
 void crumble() {  //se puede alivianar usando .toFloat() directamente despues de substring
   //Serial.println("good");
-  ph_var = message.substring(1, 3);
-  ph_set = message.substring(3, 7);
+  ph_var = message[3];
+  ph_set = message.substring(4, 7);
 
   feed_var = message.substring(7, 11);
   feed_set = message.substring(11, 14);
@@ -274,6 +280,15 @@ void crumble() {  //se puede alivianar usando .toFloat() directamente despues de
 
   //setting setpoints
   myphset  = ph_set.toFloat();
+  if (ph_var == 'a') {
+    myph1 = myphset;
+    myph2 = 0;
+  }
+  else if (ph_var == 'b') {
+    myph2 = myphset;
+    myph1 = 0;
+  }
+
   myfeed   = feed_set.toInt();
   myunload = unload_set.toInt();
   mymix    = mix_set.toInt();
@@ -289,3 +304,17 @@ void crumble() {  //se puede alivianar usando .toFloat() directamente despues de
 
   return;
 }
+
+//wphb150feed100unload100mix1500temp150rst000000dir111111
+
+//wpha015feed100unload100mix1500temp150rst000000dir111111
+//wphb015feed100unload100mix1500temp150rst000000dir111111
+
+//wpha055feed090unload100mix1500temp150rst000000dir111111
+//wpha005feed009unload003mix1500temp005rst000000dir111111
+//wphb005feed009unload003mix1500temp005rst000000dir111111
+
+//wpha150feed000unload000mix1500temp000rst000000dir111111
+
+//wpha050feed000unload000mix1500temp000rst000000dir111111
+//wphb050feed000unload000mix1500temp000rst000000dir111111

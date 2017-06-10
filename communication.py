@@ -16,9 +16,10 @@ else:
 
 temp_save_set_data = None
 tau_zmq_connect = 0.3 #0.3 [s]: no ha funcionado con menos
+
 SPEED_MAX_MIX = 1500
 SPEED_MAX = 100
-TEMP_MAX  = 100
+TEMP_MAX  = 130
 PH_MIN = 0
 PH_MAX = 14
 

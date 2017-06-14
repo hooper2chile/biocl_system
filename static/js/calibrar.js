@@ -121,8 +121,8 @@ var socket = io.connect(location.protocol + '//' +
             $('#rpm_max_acido').text('Set MAX rpm acido: ' + msg.set[0]).html();
             $('#rmp_max_base').text('Set MAX rmp base:   ' + msg.set[1]).html();
             //test
-            console.log( msg.set[0]) );
-            console.log( msg.set[1]) );
+            console.log( msg.set[0] );
+            console.log( msg.set[1] );
           });
 
 

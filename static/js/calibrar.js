@@ -119,7 +119,7 @@ var socket = io.connect(location.protocol + '//' +
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('u_calibrar', function(msg) {
             $('#rpm_max_a').text('Set MAX rpm acido: ' + msg.set[0]).html();
-            $('#rmp_max_b').text('Set MAX rmp base : ' + msg.set[1]).html();
+            $('#rpm_max_b').text('Set MAX rmp base : ' + msg.set[1]).html();
             //test
             console.log( msg.set[0] );
             console.log( msg.set[1] );

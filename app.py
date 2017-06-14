@@ -348,14 +348,14 @@ def calibrar_temp(dato):
 def calibrar_temp(dato):
     global u_set
     #se reciben los parametros para calibración
-    setting = [ dato['u_base_max'], dato['u_acido_max'] ]
+    setting = [ dato['u_acido_max'], dato['u_base_max']]
 
     try:
-        u_set[0] = int(dato['u_base_max'])
-        u_set[1] = int(dato['u_acido_max'])
+        u_set[0] = int(dato['u_acido_max'])
+        u_set[1] = int(dato['u_base_max'])
 
     except:
-        u_set = [-SPEED_MAX/10,+SPEED_MAX/10]  #15rpm
+        u_set = [-SPEED_MAX/10,+SPEED_MAX/10]
 
 
     try:

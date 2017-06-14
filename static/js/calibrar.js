@@ -110,9 +110,9 @@ var socket = io.connect(location.protocol + '//' +
                               u_base_max  : $('#u_b').val()
                            });
 
-                console.log("en socket.emit actuador:");
-                console.log( $('#u_a').val() );
-                console.log( $('#u_b').val() );
+                //console.log("en socket.emit actuador:");
+                //console.log( $('#u_a').val() );
+                //console.log( $('#u_b').val() );
               return false;
           });
 

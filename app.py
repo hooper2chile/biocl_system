@@ -14,7 +14,7 @@ else:
 
 
 
-
+SPEED_MAX = 150 #150 [rpm]
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -27,6 +27,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
 
+u_set  = [-SPEED_MAX,+SPEED_MAX]
 ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
 temp_set = [0,0,0,0]
@@ -339,6 +340,36 @@ def calibrar_temp(dato):
 
     except:
         logging.info("no se pudo guardar parameters en temp_set.txt")
+
+
+
+#Calibración Actuador
+@socketio.on('u_calibrar', namespace='/biocl')
+def calibrar_temp(dato):
+    global u_set
+    #se reciben los parametros para calibración
+    setting = [ dato['u_base_max'], dato['u_acido_max'] ]
+
+    try:
+        u_set[0] = int(dato['u_base_max'])
+        u_set[1] = int(dato['u_acido_max'])
+
+    except:
+        u_set = [-SPEED_MAX/10,+SPEED_MAX/10]  #15rpm
+
+
+    try:
+        f = open("u_set.txt","w")
+        f.write(str(u_set) + '\n')
+        f.close()
+        #communication.calibrate(3,u_set)  #FALTA IMPLEMENTARIO EN communication.py
+
+    except:
+        logging.info("no se pudo guardar en u_set en u_set.txt")
+
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('u_calibrar', {'set': u_set}, namespace='/biocl', broadcast=True)
 
 
 

@@ -304,17 +304,3 @@ void crumble() {  //se puede alivianar usando .toFloat() directamente despues de
 
   return;
 }
-
-//wphb150feed100unload100mix1500temp150rst000000dir111111
-
-//wpha015feed100unload100mix1500temp150rst000000dir111111
-//wphb015feed100unload100mix1500temp150rst000000dir111111
-
-//wpha055feed090unload100mix1500temp150rst000000dir111111
-//wpha005feed009unload003mix1500temp005rst000000dir111111
-//wphb005feed009unload003mix1500temp005rst000000dir111111
-
-//wpha150feed000unload000mix1500temp000rst000000dir111111
-
-//wpha050feed000unload000mix1500temp000rst000000dir111111
-//wphb050feed000unload000mix1500temp000rst000000dir111111

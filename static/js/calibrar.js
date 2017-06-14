@@ -100,4 +100,28 @@ var socket = io.connect(location.protocol + '//' +
           });
 
 
+
+
+          //CALIBRAR ACTUADOR
+          //se emiten la calibración hacia el servidor
+          $('form#calibrar_u').submit(function(event) {
+              socket.emit('u_calibrar',
+                          {   u_base_max : $('#u_b').val(),
+                              u_acido_max: $('#u_a').val()
+                           });
+
+                console.log("en socket.emit actuador:");
+                console.log( $('#u_a').val() );
+                console.log( $('#u_b').val() );
+              return false;
+          });
+
+          //se escuchan desde el servidor los valores seteados para calibración.
+          socket.on('u_calibrar', function(msg) {
+            $('#rpm_max_acido').text('Set MAX rpm acido: ' + msg.set[0]).html();
+            $('#rmp_max_base').text('Set MAX rmp base:   ' + msg.set[1]).html();
+          });
+
+
+
 });

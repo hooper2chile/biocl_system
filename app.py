@@ -15,6 +15,10 @@ else:
 
 
 SPEED_MAX = 150 #150 [rpm]
+kp = 200
+ki = 45 # ki = kp/Ti
+kd = 0  # kd = kp*Td
+
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -28,6 +32,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
 
 u_set  = [-SPEED_MAX,+SPEED_MAX]
+k_pid  = [kp,ki,kd]
 ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
 temp_set = [0,0,0,0]
@@ -112,6 +117,7 @@ def function_thread():
     emit('ph_calibrar',   {'set': ph_set})
     emit('od_calibrar',   {'set': od_set})
     emit('temp_calibrar', {'set': temp_set})
+    emit('u_calibrar',    {'set:' u_set})
 
     global thread1
     if thread1 is None:
@@ -362,7 +368,7 @@ def calibrar_temp(dato):
         f = open("u_set.txt","w")
         f.write(str(u_set) + '\n')
         f.close()
-        #communication.calibrate(3,u_set)  #FALTA IMPLEMENTARIO EN communication.py
+        communication.actuador(1,u_set)  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
         logging.info("no se pudo guardar en u_set en u_set.txt")

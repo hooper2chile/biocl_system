@@ -121,6 +121,29 @@ def calibrate(var, coef):
         logging.info("no se pudo guardar set de calibrate()")
 
 
+def actuador(var, u_set, k_pid):
+    k_pid = [ int(k_pid[0]), int(k_pid[1]), int(k_pid[2]) ]
+    try:
+        if var == 1:
+            u_cook = 'u' + str(var) + str(u_set[0])
+
+        elif var == 2:
+            u_cook = 'u' + str(var) + str(u_set[1])
+
+        elif var == 3:
+            u_cook = 'u' + str(var) + str(kp)
+
+        elif var == 4:
+            u_cook = 'u' + str(var) + str(ki)
+
+        elif var == 5:
+            u_cook = 'u' + str(var) + str(kd)
+
+    except:
+        logging.info("no se pudo generar u_cook")
+
+
+
 
 def cook_setpoint(set_data):
     #format string

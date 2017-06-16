@@ -117,7 +117,7 @@ def function_thread():
     emit('ph_calibrar',   {'set': ph_set})
     emit('od_calibrar',   {'set': od_set})
     emit('temp_calibrar', {'set': temp_set})
-    emit('u_calibrar',    {'set:' u_set})
+    emit('u_calibrar',    {'set': u_set})
 
     global thread1
     if thread1 is None:

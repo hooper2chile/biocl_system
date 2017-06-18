@@ -22,6 +22,9 @@ SPEED_MAX = 100
 TEMP_MAX  = 130
 PH_MIN = 0
 PH_MAX = 14
+kp = 200
+ki = 45 # ki = kp/Ti
+kd = 0  # kd = kp*Td
 
 #download data measures with client zmq
 def published_setpoint(set_data):
@@ -121,8 +124,18 @@ def calibrate(var, coef):
         logging.info("no se pudo guardar set de calibrate()")
 
 
-def actuador(var, u_set, k_pid):
-    k_pid = [ int(k_pid[0]), int(k_pid[1]), int(k_pid[2]) ]
+
+
+
+
+
+def actuador(var, pid, u_set, k_pid):
+    try:
+        k_pid = [ float(k_pid[0]), float(k_pid[1]), float(k_pid[2]) ]
+
+    except:
+        k_pid = [kp, ki, kd]
+
     try:
         if var == 1:
             u_cook = 'u' + str(var) + str(u_set[0])
@@ -131,16 +144,24 @@ def actuador(var, u_set, k_pid):
             u_cook = 'u' + str(var) + str(u_set[1])
 
         elif var == 3:
-            u_cook = 'u' + str(var) + str(kp)
+            u_cook = 'u' + str(var+pid) + str(kp)
 
         elif var == 4:
-            u_cook = 'u' + str(var) + str(ki)
+            u_cook = 'u' + str(var+pid) + str(ki)
 
         elif var == 5:
-            u_cook = 'u' + str(var) + str(kd)
+            u_cook = 'u' + str(var+pid) + str(kd)
+
+        else:
+            u_cook = 'u0'
+
+        published_setpoint(u_cook);
 
     except:
-        logging.info("no se pudo generar u_cook")
+        logging.info("no se pudo generar u_cook para actuador")
+
+
+
 
 
 

@@ -15,9 +15,20 @@ else:
 
 
 SPEED_MAX = 150 #150 [rpm]
+
 kp = 200
 ki = 45 # ki = kp/Ti
 kd = 0  # kd = kp*Td
+
+u_set  = [-SPEED_MAX,+SPEED_MAX]
+k_pid_ph   = [kp,ki,kd]
+k_pid_temp = [kp,ki,kd]
+
+ph_set = [0,0,0,0]
+od_set = [0,0,0,0]
+temp_set = [0,0,0,0]
+
+set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
@@ -31,12 +42,6 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
 
-u_set  = [-SPEED_MAX,+SPEED_MAX]
-k_pid  = [kp,ki,kd]
-ph_set = [0,0,0,0]
-od_set = [0,0,0,0]
-temp_set = [0,0,0,0]
-set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 
 #CONFIGURACION DE PAGINAS WEB
 @app.route('/', methods=['GET', 'POST'])
@@ -82,27 +87,6 @@ def descargar_csv(path):
     return send_from_directory(directory='./csv', filename=path2)
 
 
-'''
-@app.route('/descargar')
-def csv_get():
-    testa = []
-    testb = []
-    for i in range(1,len(APIRest)):
-        testa.append(str(APIRest[i][0]))
-        testb.append(str(APIRest[i][1]))
-
-    csv = []
-    for i in range(1, len(APIRest)):
-        #csv[i] = testa[i] + testb[i]
-        csv = '1\n'
-
-    return Response(
-                        csv,
-                        mimetype="text/csv",
-                        headers={"Content-disposition":
-                                 "attachment; filename=myplot.csv"}
-                    )
-'''
 
 #CONFIGURACION DE FUNCIONES SocketIO
 #Connect to the Socket.IO server. (Este socket es OBLIGACION)
@@ -118,6 +102,7 @@ def function_thread():
     emit('od_calibrar',   {'set': od_set})
     emit('temp_calibrar', {'set': temp_set})
     emit('u_calibrar',    {'set': u_set})
+    emit('u_pid_ph',     {'set': k_pid_ph})
 
     global thread1
     if thread1 is None:
@@ -184,7 +169,7 @@ def setpoints(dato):
 def calibrar_ph(dato):
     global ph_set
     #se reciben los parametros para calibración
-    setting = [ dato['ph'], dato['iph'], dato['medx'] ]
+    #setting = [ dato['ph'], dato['iph'], dato['medx'] ]
 
     #ORDEN DE: ph_set:
     #ph_set = [ph1_set, iph1_set, ph2_set, iph2_set]
@@ -233,12 +218,14 @@ def calibrar_ph(dato):
     except:
         logging.info("no se pudo guardar parameters en ph_set.txt")
 
+
+
 #CALIBRACION OXIGENO DISUELTO
 @socketio.on('od_calibrar', namespace='/biocl')
 def calibrar_od(dato):
     global od_set
     #se reciben los parametros para calibración
-    setting = [ dato['od'], dato['iod'], dato['medx'] ]
+    #setting = [ dato['od'], dato['iod'], dato['medx'] ]
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
@@ -296,7 +283,7 @@ def calibrar_od(dato):
 def calibrar_temp(dato):
     global temp_set
     #se reciben los parametros para calibración
-    setting = [ dato['temp'], dato['itemp'], dato['medx'] ]
+    #setting = [ dato['temp'], dato['itemp'], dato['medx'] ]
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
@@ -349,12 +336,12 @@ def calibrar_temp(dato):
 
 
 
-#Calibración Actuador
+#CALIBRACION ACTUADOR
 @socketio.on('u_calibrar', namespace='/biocl')
-def calibrar_temp(dato):
+def calibrar_u(dato):
     global u_set
     #se reciben los parametros para calibración
-    setting = [ dato['u_acido_max'], dato['u_base_max']]
+    #setting = [ dato['u_acido_max'], dato['u_base_max'] ]
 
     try:
         u_set[0] = int(dato['u_acido_max'])
@@ -378,6 +365,34 @@ def calibrar_temp(dato):
     socketio.emit('u_calibrar', {'set': u_set}, namespace='/biocl', broadcast=True)
 
 
+
+#CALIBRAR PID_PH
+@socketio.on('u_pid_ph', namespace='/biocl')
+def calibrar_pid_ph(dato):
+    global k_pid_ph
+
+    setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
+
+    try:
+        k_pid_ph[0] = float(setting[0])
+        k_pid_ph[1] = float(setting[1])
+        k_pid_ph[2] = float(setting[2])
+
+    except:
+        k_pid_ph = [kp, ki, kd]
+
+    try:
+        f = open("pid_ph_set.txt","w")
+        f.write(str(k_pid_ph) + '\n')
+        f.close()
+
+        communication.actuador(2,k_pid_ph)
+
+    except:
+        logging.info("no se pudo guardar en k_pid_ph.txt")
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
 
 
 

@@ -38,6 +38,8 @@ String  t_temp = "";
 String  t_ph   = "";
 String  svar   = "";
 
+char pid_x, k_x;
+
 
 //RESET SETUP
 char rst1 = 1;  char rst2 = 1;  char rst3 = 1;
@@ -204,6 +206,33 @@ void calibrate(){
   return;
 }
 
+
+
+
+void actuador(){
+
+  switch (pid_x) {
+
+    case 1://pid_ph
+      if( k_x == '1' )
+        Kp_ph = message.substring(3).toFloat();
+      else if( k_x == '2' )
+        Ki_ph = message.substring(3).toFloat();
+      else if( k_x == '3' )
+        Kd_ph = message.substring(3).toFloat();
+      break;
+
+    case 2://pid_temp
+      if( k_x == '1' )
+        Kp_temp = message.substring(3).toFloat();
+      else if( k_x == '2' )
+        Ki_temp = message.substring(3).toFloat();
+      else if( k_x == '3' )
+        Kd_temp = message.substring(3).toFloat();
+      break;
+  }
+
+}
 
 
 
@@ -416,6 +445,14 @@ int validate() {
                 message[14] == 'e' &&
                 message.substring(3,8 ).toFloat() < 100 &&
                 message.substring(9,14).toFloat() < 100
+              )
+          return 1;
+
+      //Validete actuador calibrate
+      else if ( message[0] == 'u' &&
+                (message[1] == '1' || message[1] == '2' ||
+                 message[1] == '3' || message[1] == '4' ||
+                 message[1] == '5')
               )
           return 1;
 

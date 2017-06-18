@@ -103,7 +103,7 @@ var socket = io.connect(location.protocol + '//' +
 
 
           //CALIBRAR ACTUADOR
-          //se emiten la calibración hacia el servidor
+          //se emite la calibración hacia el servidor
           $('form#calibrar_u').submit(function(event) {
               socket.emit('u_calibrar',
                           {   u_acido_max : $('#u_a').val(),
@@ -125,6 +125,43 @@ var socket = io.connect(location.protocol + '//' +
             console.log( msg.set[1] );
 
           });
+
+
+          /////////////////////
+          //CALIBRAR PID PH
+          //se emite la calibración hacia el servidor
+          $('form#pid_ph').submit(function(event) {
+              socket.emit('u_pid_ph',
+                          {   kp_ph : $('#kp_ph').val(),
+                              ki_ph : $('#ki_ph').val(),
+                              kd_ph : $('#kd_ph')
+                           });
+
+                //console.log("en socket.emit u_pid_ph:");
+                //console.log( $('#kp_ph').val() );
+                //console.log( $('#ki_ph').val() );
+              return false;
+          });
+
+          //se escuchan desde el servidor los valores seteados para calibración.
+          socket.on('u_pid_ph', function(msg) {
+            $('#kp_ph_set').text('Kp: ' + msg.set[0]).html();
+            $('#ki_ph_set').text('Ki: ' + msg.set[1]).html();
+            $('#kd_ph_set').text('Kd: ' + msg.set[2]).html();
+            //test
+            console.log( msg.set[0] );
+            console.log( msg.set[1] );
+            console.log( msg.set[2] );
+
+          });
+
+
+
+
+
+
+
+
 
 
 

@@ -150,6 +150,43 @@
 
 
 
+<!parametros pid_ph>
+<h4>Parametros controlador PID pH</h4>
+<form id="pid_ph" method="POST" action='#'>
+  <div> Kp:</div>
+      <input type="number"
+             id="kp_ph"
+             style="width: 50px;"
+             value="200"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+  <div> Ki:</div>
+      <input type="number"
+             id="ki_ph"
+             style="width: 50px;"
+             value="45"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+  <div> Kd:</div>
+      <input type="number"
+             id="kd_ph"
+             style="width: 50px;"
+             value="25"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+      <button type="submit" class="button_apply"> + </button>
+  </div>
+  <div id="kp_ph_set">kp_ph_set</div>
+  <div id="ki_ph_set">ki_ph_set</div>
+  <div id="kd_ph_set">kd_ph_set</div>
+</form><br><br>
+
 
 
 

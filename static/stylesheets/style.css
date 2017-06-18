@@ -339,8 +339,26 @@ fieldset {
   font-size: 16px;
   font-family: verdana;
   background: rgb(65, 182, 230);
-  width: 900px;
+  width: 1100px;
   height: 600px;
+  padding: 20px;
+  border: 2px solid lightblue;
+  margin-top: 2px;
+  margin-right: -50px;
+  text-align: left;
+
+  margin-bottom: 110px;
+  margin-left: 60px;
+  border-radius: 50px;
+}
+
+.caja_ph {
+  position: relative;
+  font-size: 16px;
+  font-family: verdana;
+  background: rgb(65, 182, 230);
+  width: 300px;
+  height: 450px;
   padding: 20px;
   border: 2px solid lightblue;
   margin-top: 2px;

@@ -134,7 +134,7 @@ var socket = io.connect(location.protocol + '//' +
               socket.emit('u_pid_ph',
                           {   kp_ph : $('#kp_ph').val(),
                               ki_ph : $('#ki_ph').val(),
-                              kd_ph : $('#kd_ph')
+                              kd_ph : $('#kd_ph').val()
                            });
 
                 console.log("en socket.emit u_pid_ph:");

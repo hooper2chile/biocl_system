@@ -392,7 +392,7 @@ def calibrar_pid_ph(dato):
         logging.info("no se pudo guardar en k_pid_ph.txt")
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
-    socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
+    socketio.emit('u_pid_ph', {'set': [0,1,2]]}, namespace='/biocl', broadcast=True)
 
 
 

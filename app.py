@@ -374,9 +374,9 @@ def calibrar_pid_ph(dato):
     setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
 
     try:
-        k_pid_ph[0] = float(dato['kp_ph'])
-        k_pid_ph[1] = float(dato['ki_ph'])
-        k_pid_ph[2] = float(dato['kd_ph'])
+        k_pid_ph[0] = dato['kp_ph']
+        k_pid_ph[1] = dato['ki_ph']
+        k_pid_ph[2] = dato['kd_ph']
 
     except:
         #k_pid_ph = [kp, ki, kd]
@@ -393,7 +393,7 @@ def calibrar_pid_ph(dato):
         logging.info("no se pudo guardar en k_pid_ph.txt")
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
-    socketio.emit('u_pid_ph', {'set': [0,1,2]}, namespace='/biocl', broadcast=True)
+    socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
 
 
 

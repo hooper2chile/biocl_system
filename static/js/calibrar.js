@@ -137,9 +137,9 @@ var socket = io.connect(location.protocol + '//' +
                               kd_ph : $('#kd_ph')
                            });
 
-                //console.log("en socket.emit u_pid_ph:");
-                //console.log( $('#kp_ph').val() );
-                //console.log( $('#ki_ph').val() );
+                console.log("en socket.emit u_pid_ph:");
+                console.log( $('#kp_ph').val() );
+                console.log( $('#ki_ph').val() );
               return false;
           });
 

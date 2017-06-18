@@ -55,6 +55,10 @@ void loop() {
                 calibrate();
                 break;
 
+              case 'u':
+                actuador();
+                break;
+
               default:
                 break;
           }

@@ -382,7 +382,7 @@ def calibrar_pid_ph(dato):
         k_pid_ph = [kp, ki, kd]
 
     try:
-        f = open("pid_ph_set.txt","w")
+        f = open("pid_ph_set.txt","a+")
         f.write(str(k_pid_ph) + '\n')
         f.close()
 

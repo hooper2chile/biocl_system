@@ -374,20 +374,20 @@ def calibrar_pid_ph(dato):
     setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
 
     try:
-        k_pid_ph[0] = dato['kp_ph']
-        k_pid_ph[1] = dato['ki_ph']
-        k_pid_ph[2] = dato['kd_ph']
+        k_pid_ph[0] = float(dato['kp_ph'])
+        k_pid_ph[1] = float(dato['ki_ph'])
+        k_pid_ph[2] = float(dato['kd_ph'])
 
     except:
-        #k_pid_ph = [kp, ki, kd]
-        k_pid_ph = [-6,-6,-6]
+        k_pid_ph = [kp, ki, kd]
+
 
 
     try:
         f = open("pid_ph_set.txt","a+")
         f.write(str(k_pid_ph) + '\n')
         f.close()
-        communication.actuador(2,k_pid_ph)
+        communication.actuador(3,k_pid_ph)
 
     except:
         logging.info("no se pudo guardar en k_pid_ph.txt")

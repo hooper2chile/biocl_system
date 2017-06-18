@@ -169,7 +169,7 @@ def setpoints(dato):
 def calibrar_ph(dato):
     global ph_set
     #se reciben los parametros para calibración
-    #setting = [ dato['ph'], dato['iph'], dato['medx'] ]
+    setting = [ dato['ph'], dato['iph'], dato['medx'] ]
 
     #ORDEN DE: ph_set:
     #ph_set = [ph1_set, iph1_set, ph2_set, iph2_set]
@@ -225,7 +225,7 @@ def calibrar_ph(dato):
 def calibrar_od(dato):
     global od_set
     #se reciben los parametros para calibración
-    #setting = [ dato['od'], dato['iod'], dato['medx'] ]
+    setting = [ dato['od'], dato['iod'], dato['medx'] ]
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
@@ -283,7 +283,7 @@ def calibrar_od(dato):
 def calibrar_temp(dato):
     global temp_set
     #se reciben los parametros para calibración
-    #setting = [ dato['temp'], dato['itemp'], dato['medx'] ]
+    setting = [ dato['temp'], dato['itemp'], dato['medx'] ]
 
     #ORDEN DE: od_set:
     #ph_set = [od1_set, iod1_set, od2_set, iod2_set]
@@ -379,13 +379,14 @@ def calibrar_pid_ph(dato):
         k_pid_ph[2] = float(setting[2])
 
     except:
-        k_pid_ph = [kp, ki, kd]
+        #k_pid_ph = [kp, ki, kd]
+        k_pid_ph = [-6,-6,-6]
+
 
     try:
         f = open("pid_ph_set.txt","a+")
         f.write(str(k_pid_ph) + '\n')
         f.close()
-
         communication.actuador(2,k_pid_ph)
 
     except:

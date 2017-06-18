@@ -374,9 +374,9 @@ def calibrar_pid_ph(dato):
     setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
 
     try:
-        k_pid_ph[0] = float(setting[0])
-        k_pid_ph[1] = float(setting[1])
-        k_pid_ph[2] = float(setting[2])
+        k_pid_ph[0] = float(dato['kp_ph'])
+        k_pid_ph[1] = float(dato['ki_ph'])
+        k_pid_ph[2] = float(dato['kd_ph'])
 
     except:
         #k_pid_ph = [kp, ki, kd]

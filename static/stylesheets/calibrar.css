@@ -90,7 +90,7 @@ fieldset {
   font-family: verdana;
   background: rgb(65, 182, 230);
   width: 300px;
-  height: 200px;
+  height: 250px;
   padding: 20px;
   border: 2px solid lightblue;
   margin-top: 100px;
@@ -107,13 +107,14 @@ fieldset {
   font-size: 16px;
   font-family: verdana;
   width: 400px;
-  height: 78px;
+  height: 250px;
   margin-top: 50px;
   margin-right: 40px;
+  margin-left: 560px;
   margin-bottom: 1px;
   text-align: center;
   border: 2px solid lightblue;
-  margin-left: 260px;
+
   background: rgb(65, 182, 230);
   border-radius: 50px;
 

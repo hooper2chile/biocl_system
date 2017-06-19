@@ -106,18 +106,18 @@ fieldset {
 .caja2{
   font-size: 16px;
   font-family: verdana;
-  width: 400px;
-  height: 250px;
-  margin-top: 50px;
-  margin-right: 40px;
-  margin-left: 560px;
-  margin-bottom: 1px;
-  text-align: center;
-  border: 2px solid lightblue;
-
   background: rgb(65, 182, 230);
-  border-radius: 50px;
+  width: 300px;
+  height: 250px;
+  padding: 20px;
+  border: 2px solid lightblue;
+  margin-top: 100px;
+  margin-bottom: -275px;
+  margin-right: -50px;
+  text-align: left;
 
+  margin-left: 60px;
+  border-radius: 50px;
 }
 
 

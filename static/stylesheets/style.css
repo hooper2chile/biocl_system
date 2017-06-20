@@ -258,7 +258,9 @@ fieldset {
 
 }
 
-
+.centrar{
+  margin-left: 30px;
+}
 
 .button {
     border-radius: 12px;

@@ -212,6 +212,12 @@ fieldset {
 }
 
 
+.centrar{
+  margin: 0 auto;
+}
+
+
+
 
 .button {
     border-radius: 12px;

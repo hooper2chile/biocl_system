@@ -171,7 +171,7 @@ fieldset {
   text-align: left;
 
   margin-bottom: 5px;
-  margin-left: 400px;
+  margin-left: 200px;
   border-radius: 50px;
 }
 
@@ -179,16 +179,16 @@ fieldset {
   font-size: 16px;
   font-family: verdana;
   background: rgb(65, 182, 230);
-  width: 200px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
   padding: 20px;
   border: 2px solid lightblue;
-  margin-top: 2px;
-  margin-right: -50px;
+  margin-top: 10px;
+  margin-right: 10px;
   text-align: left;
 
-  margin-bottom: 110px;
-  margin-left: 60px;
+  margin-bottom: 5px;
+  margin-left: 750px;
   border-radius: 50px;
 }
 

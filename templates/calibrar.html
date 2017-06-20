@@ -159,12 +159,12 @@
 
 
 <!calibrar_actuacion_temp>
-<form id="calibrar_u" method="POST" action='#'>
+<form id="calibrar_u_temp" method="POST" action='#'>
 <div class="caja5">
     <h4>Calibración Actuador Temperatura</h4>
     <div> RPM Bomba Temperatura</div>
           <input type="number"
-                 id="u_b"
+                 id="u_temp"
                  style="width: 50px;"
                  value="25"
                  MIN="0"
@@ -186,7 +186,7 @@
 <!parametros pid_ph>
 <form id="pid_ph" method="POST" action='#'>
 <div class="caja6">
-  <h4>Parametros controlador PID pH</h4>
+  <h4>Parámetros controlador PID pH</h4>
   <div> Kp:</div>
       <input type="number"
              id="kp_ph"
@@ -222,6 +222,42 @@
 </form><br><br>
 
 
-
+<!parametros pid_temp>
+<form id="pid_temp" method="POST" action='#'>
+<div class="caja7">
+  <h4>Parámetros controlador PID Temp</h4>
+  <div> Kp:</div>
+      <input type="number"
+             id="kp_temp"
+             style="width: 50px;"
+             value="200"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+  <div> Ki:</div>
+      <input type="number"
+             id="ki_temp"
+             style="width: 50px;"
+             value="45"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+  <div> Kd:</div>
+      <input type="number"
+             id="kd_temp"
+             style="width: 50px;"
+             value="25"
+             min="-500"
+             max="500"
+             step="0.1"
+      />
+      <button type="submit" class="button_apply"> + </button>
+  <div id="kp_temp_set">kp_ph_set</div>
+  <div id="ki_temp_set">ki_ph_set</div>
+  <div id="kd_temp_set">kd_ph_set</div>
+</div>
+</form><br><br>
 
 {% endblock %}

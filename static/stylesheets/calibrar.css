@@ -162,16 +162,16 @@ fieldset {
   font-size: 16px;
   font-family: verdana;
   background: rgb(65, 182, 230);
-  width: 200px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
   padding: 20px;
   border: 2px solid lightblue;
-  margin-top: -325px;
-  margin-right: -150px;
+  margin-top: 10px;
+  margin-right: 10px;
   text-align: left;
 
   margin-bottom: 5px;
-  margin-left: 60px;
+  margin-left: 400px;
   border-radius: 50px;
 }
 

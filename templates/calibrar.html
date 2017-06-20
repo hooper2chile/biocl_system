@@ -125,7 +125,7 @@
 
 
 
-<!calibrar_actuacion>
+<!calibrar_actuacion_ph>
 <h4>Calibración Actuador pH</h4>
 <form id="calibrar_u" method="POST" action='#'>
 
@@ -154,7 +154,35 @@
     <div id="rpm_max_a"></div>
     <div id="rpm_max_b"></div>
 </form><br><br>
-<!calibrar_actuacion>
+<!calibrar_actuacion_ph>
+
+
+
+
+
+<!calibrar_actuacion_temp>
+<h4>Calibración Actuador Temperatura</h4>
+<form id="calibrar_u" method="POST" action='#'>
+<div class="caja4">
+    <div> Solución Básica</div>
+          <input type="number"
+                 id="u_b"
+                 style="width: 50px;"
+                 value="25"
+                 MIN="0"
+                 MAX="150"
+                 step="1"
+          />
+          <button  type="submit" class="button_apply"> + </button>
+    </div>
+</div>  
+<div id="rpm_max_temp"></div>
+</form><br><br>
+<!calibrar_actuacion_temp>
+
+
+
+
 
 
 

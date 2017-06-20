@@ -143,7 +143,7 @@ fieldset {
     font-family: verdana;
     background: rgb(65, 182, 230);
     width: 290px;
-    height: 270px;
+    height: 265px;
     padding: 20px;
     border: 2px solid lightblue;
     margin-top: -360px;
@@ -185,7 +185,7 @@ fieldset {
   margin-right: 10px;
   text-align: left;
   margin-bottom: 5px;
-  margin-left: 750px;
+  margin-left: 680px;
   border-radius: 50px;
 }
 
@@ -208,19 +208,6 @@ fieldset {
 }
 
 
-.caja7{
-  background-image: url("bioreactor.svg");
-  font-size: 16px;
-  font-family: verdana;
-  width: 300px;
-  height: 450px;
-  margin-top: 10px;
-  margin-right: 40px;
-  margin-bottom: 10px;
-  text-align: center;
-  border: 2px solid lightblue;
-  margin-left: 305px;
-}
 
 
 .caja_login{

@@ -102,41 +102,60 @@ fieldset {
   border-radius: 50px;
 }
 
-
-.caja2{
-  font-size: 16px;
-  font-family: verdana;
-  background: rgb(65, 182, 230);
-  width: 300px;
-  height: 250px;
-  padding: 20px;
-  border: 2px solid lightblue;
-  margin-top: 50px;
-  margin-bottom: 75px;
-  margin-right: 100px;
-  text-align: left;
-  margin-left: 550px;
-  border-radius: 50px;
+.caja1 {
+    font-size: 16px;
+    font-family: verdana;
+    background: rgb(65, 182, 230);
+    width: 300px;
+    height: 280px;
+    padding: 10px;
+    border: 2px solid lightblue;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-right: 5px;
+    text-align: left;
+    margin-left: 150px;
+    border-radius: 50px;
 }
 
 
 
-.caja3{
-  font-size: 18px;
-  font-family: verdana;
-  background: YellowGreen;
-  width: 200px;
-  height: 30px;
-  padding: 10px;
-  border: 2px solid lightblue;
-  margin-right: 150px;
-  text-align: center;
-  margin-left: 610px;
 
-  margin-bottom: 10px;
-  margin-top: -550px;
-  border-radius: 50px;
+.caja2 {
+    font-size: 16px;
+    font-family: verdana;
+    background: rgb(65, 182, 230);
+    width: 300px;
+    height: 285px;
+    padding: 10px;
+    border: 2px solid lightblue;
+    margin-top: -355px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    text-align: left;
+    margin-left: 500px;
+    border-radius: 50px;
 }
+
+
+
+.caja3 {
+    font-size: 16px;
+    font-family: verdana;
+    background: rgb(65, 182, 230);
+    width: 300px;
+    height: 270px;
+    padding: 20px;
+    border: 2px solid lightblue;
+    margin-top: -360px;
+    margin-right: -50px;
+    text-align: left;
+    margin-bottom: 110px;
+    margin-left: 855px;
+    border-radius: 50px;
+}
+
+
 
 
 .caja4{

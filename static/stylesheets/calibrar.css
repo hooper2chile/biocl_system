@@ -85,21 +85,6 @@ fieldset {
   text-align: center;
   }
 
-.caja1{
-  font-size: 16px;
-  font-family: verdana;
-  background: rgb(65, 182, 230);
-  width: 300px;
-  height: 250px;
-  padding: 20px;
-  border: 2px solid lightblue;
-  margin-top: 100px;
-  margin-bottom: -275px;
-  margin-right: -50px;
-  text-align: left;
-  margin-left: 60px;
-  border-radius: 50px;
-}
 
 
 .caja1 {
@@ -125,7 +110,7 @@ fieldset {
     font-family: verdana;
     background: rgb(65, 182, 230);
     width: 300px;
-    height: 285px;
+    height: 280px;
     padding: 10px;
     border: 2px solid lightblue;
     margin-top: -355px;
@@ -142,8 +127,8 @@ fieldset {
     font-size: 16px;
     font-family: verdana;
     background: rgb(65, 182, 230);
-    width: 290px;
-    height: 265px;
+    width: 300px;
+    height: 280px;
     padding: 20px;
     border: 2px solid lightblue;
     margin-top: -360px;
@@ -161,7 +146,7 @@ fieldset {
   font-family: verdana;
   background: rgb(65, 182, 230);
   width: 300px;
-  height: 300px;
+  height: 280px;
   padding: 20px;
   border: 2px solid lightblue;
   margin-top: -140px;
@@ -178,7 +163,7 @@ fieldset {
   font-family: verdana;
   background: rgb(65, 182, 230);
   width: 300px;
-  height: 300px;
+  height: 280px;
   padding: 20px;
   border: 2px solid lightblue;
   margin-top: -392px;

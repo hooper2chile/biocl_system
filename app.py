@@ -20,8 +20,8 @@ kp = 200
 ki = 45 # ki = kp/Ti
 kd = 0  # kd = kp*Td
 
+u_set_temp = SPEED_MAX
 u_set_ph   = [-SPEED_MAX,+SPEED_MAX]
-u_set_temp = [-SPEED_MAX,+SPEED_MAX]
 k_pid_ph   = [kp,ki,kd]
 k_pid_temp = [kp,ki,kd]
 
@@ -375,7 +375,7 @@ def calibrar_u(dato):
     #se reciben los parametros para calibración
 
     try:
-        u_set_temp[0] = int(dato['u_temp'])
+        u_set_temp = int(dato['u_temp'])
 
     except:
         u_set_temp = [-SPEED_MAX/10,+SPEED_MAX/10]

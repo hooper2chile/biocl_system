@@ -416,7 +416,7 @@ def calibrar_pid_ph(dato):
 
 
     try:
-        f = open("pid_ph_set.txt","a+")
+        f = open("pid_ph_set.txt","w")
         f.write(str(k_pid_ph) + '\n')
         f.close()
         communication.actuador(3,k_pid_ph)
@@ -447,7 +447,7 @@ def calibrar_pid_ph(dato):
 
 
     try:
-        f = open("pid_temp_set.txt","a+")
+        f = open("pid_temp_set.txt","w")
         f.write(str(k_pid_temp) + '\n')
         f.close()
         communication.actuador(3,k_pid_temp)

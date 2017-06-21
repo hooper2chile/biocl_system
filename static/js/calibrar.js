@@ -131,7 +131,7 @@ var socket = io.connect(location.protocol + '//' +
           //se emite la calibración hacia el servidor
           $('form#calibrar_u_temp').submit(function(event) {
               socket.emit('u_calibrar_temp',
-                          {   u_temp : $('#u_temp').val();
+                          {   u_temp : $('#u_temp').val()
                           });
 
                 //console.log("en socket.emit actuador temp:");

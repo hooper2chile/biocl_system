@@ -213,9 +213,10 @@ fieldset {
 
 
 .centrar{
-  /*margin-left: 30px;*/
-  margin-right: auto;
-  margin-left: auto;
+  margin-left: 30px;
+/*  margin-right: auto;
+    margin-left: auto;
+  */
 }
 
 

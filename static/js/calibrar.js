@@ -188,7 +188,7 @@ var socket = io.connect(location.protocol + '//' +
                               kd_temp : $('#kd_temp').val()
                            });
 
-                console.log("en socket.emit u_pid_ph:");
+                console.log("en socket.emit u_pid_temp:");
                 console.log( $('#kp_temp').val() );
                 console.log( $('#ki_temp').val() );
                 console.log( $('#kd_temp').val() );

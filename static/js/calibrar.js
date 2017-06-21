@@ -177,8 +177,6 @@ var socket = io.connect(location.protocol + '//' +
           });
 
 
-
-
           //CALIBRAR PID TEMP
           //se emite la calibración hacia el servidor
           $('form#pid_temp').submit(function(event) {

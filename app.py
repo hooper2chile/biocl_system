@@ -20,7 +20,8 @@ kp = 200
 ki = 45 # ki = kp/Ti
 kd = 0  # kd = kp*Td
 
-u_set  = [-SPEED_MAX,+SPEED_MAX]
+u_set_ph   = [-SPEED_MAX,+SPEED_MAX]
+u_set_temp = [-SPEED_MAX,+SPEED_MAX]
 k_pid_ph   = [kp,ki,kd]
 k_pid_temp = [kp,ki,kd]
 
@@ -97,12 +98,13 @@ def function_thread():
 
 
     #Se emite durante la primera conexión de un cliente el estado actual de los setpoints
-    emit('Setpoints',     {'set': set_data})
-    emit('ph_calibrar',   {'set': ph_set})
-    emit('od_calibrar',   {'set': od_set})
-    emit('temp_calibrar', {'set': temp_set})
-    emit('u_calibrar',    {'set': u_set})
-    emit('u_pid_ph',     {'set': k_pid_ph})
+    emit('Setpoints',       {'set': set_data})
+    emit('ph_calibrar',     {'set': ph_set})
+    emit('od_calibrar',     {'set': od_set})
+    emit('temp_calibrar',   {'set': temp_set})
+    emit('u_calibrar',      {'set': u_set_ph})
+    emit('u_calibrar_temp', {'set': u_set_temp})
+    emit('u_pid_ph',        {'set': k_pid_ph})
 
     global thread1
     if thread1 is None:
@@ -336,33 +338,64 @@ def calibrar_temp(dato):
 
 
 
-#CALIBRACION ACTUADOR
+#CALIBRACION ACTUADOR PH
 @socketio.on('u_calibrar', namespace='/biocl')
 def calibrar_u(dato):
-    global u_set
+    global u_set_ph
     #se reciben los parametros para calibración
     #setting = [ dato['u_acido_max'], dato['u_base_max'] ]
 
     try:
-        u_set[0] = int(dato['u_acido_max'])
-        u_set[1] = int(dato['u_base_max'])
+        u_set_ph[0] = int(dato['u_acido_max'])
+        u_set_ph[1] = int(dato['u_base_max'])
 
     except:
-        u_set = [-SPEED_MAX/10,+SPEED_MAX/10]
+        u_set_ph = [-SPEED_MAX/10,+SPEED_MAX/10]
 
 
     try:
-        f = open("u_set.txt","w")
-        f.write(str(u_set) + '\n')
+        f = open("u_set_ph.txt","w")
+        f.write(str(u_set_ph) + '\n')
         f.close()
-        communication.actuador(1,u_set)  #FALTA IMPLEMENTARIO EN communication.py
+        communication.actuador(1,u_set_ph)  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
-        logging.info("no se pudo guardar en u_set en u_set.txt")
+        logging.info("no se pudo guardar en u_set en u_set_ph.txt")
 
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
-    socketio.emit('u_calibrar', {'set': u_set}, namespace='/biocl', broadcast=True)
+    socketio.emit('u_calibrar', {'set': u_set_ph}, namespace='/biocl', broadcast=True)
+
+
+
+#CALIBRACION ACTUADOR TEMP
+@socketio.on('u_calibrar_temp', namespace='/biocl')
+def calibrar_u(dato):
+    global u_set_temp
+    #se reciben los parametros para calibración
+
+    try:
+        u_set_temp[0] = int(dato['u_temp'])
+
+    except:
+        u_set_temp = [-SPEED_MAX/10,+SPEED_MAX/10]
+
+
+    try:
+        f = open("u_set_temp.txt","w")
+        f.write(str(u_set_temp) + '\n')
+        f.close()
+        communication.actuador(1,u_set_temp)  #FALTA IMPLEMENTARIO EN communication.py
+
+    except:
+        logging.info("no se pudo guardar en u_set en u_set_temp.txt")
+
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('u_calibrar_temp', {'set': u_set_temp}, namespace='/biocl', broadcast=True)
+
+
+
 
 
 

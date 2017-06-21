@@ -44,9 +44,9 @@ var socket = io.connect(location.protocol + '//' +
 
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('ph_calibrar', function(msg) {
-            $('#ph1_set').text('Set pH1:   ' + msg.set[0]).html();
+            $('#ph1_set').text('Set pH1 :   ' + msg.set[0]).html();
             $('#iph1_set').text('Set IpH1: ' + msg.set[1]).html();
-            $('#ph2_set').text('Set pH2:   ' + msg.set[2]).html();
+            $('#ph2_set').text('Set pH2 :   ' + msg.set[2]).html();
             $('#iph2_set').text('Set IpH2: ' + msg.set[3]).html();
           });
 
@@ -70,9 +70,9 @@ var socket = io.connect(location.protocol + '//' +
 
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('od_calibrar', function(msg) {
-            $('#od1_set').text('Set OD1:   ' + msg.set[0]).html();
+            $('#od1_set').text('Set OD1 :   ' + msg.set[0]).html();
             $('#iod1_set').text('Set IOd1: ' + msg.set[1]).html();
-            $('#od2_set').text('Set OD2:   ' + msg.set[2]).html();
+            $('#od2_set').text('Set OD2 :   ' + msg.set[2]).html();
             $('#iod2_set').text('Set IOd2: ' + msg.set[3]).html();
           });
 

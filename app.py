@@ -378,7 +378,7 @@ def calibrar_u(dato):
         u_set_temp = int(dato['u_temp'])
 
     except:
-        u_set_temp = [-SPEED_MAX/10,+SPEED_MAX/10]
+        u_set_temp = SPEED_MAX/10
 
 
     try:

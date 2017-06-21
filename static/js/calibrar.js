@@ -102,7 +102,7 @@ var socket = io.connect(location.protocol + '//' +
 
 
 
-          //CALIBRAR ACTUADOR
+          //CALIBRAR ACTUADOR PH
           //se emite la calibración hacia el servidor
           $('form#calibrar_u').submit(function(event) {
               socket.emit('u_calibrar',
@@ -124,6 +124,26 @@ var socket = io.connect(location.protocol + '//' +
             console.log( msg.set[0] );
             console.log( msg.set[1] );
 
+          });
+
+
+          //CALIBRAR ACTUADOR TEMP
+          //se emite la calibración hacia el servidor
+          $('form#calibrar_u_temp').submit(function(event) {
+              socket.emit('u_calibrar_temp',
+                          {   u_temp : $('#u_temp').val();
+                          });
+
+                //console.log("en socket.emit actuador temp:");
+                //console.log( $('#u_temp').val() );
+              return false;
+          });
+
+          //se escuchan desde el servidor los valores seteados para calibración.
+          socket.on('u_calibrar_temp', function(msg) {
+            $('#rpm_max_temp').text('Set MAX rpm Temperatura: ' + msg.set[0]).html();
+            //test
+            console.log( msg.set[0] );
           });
 
 
@@ -158,6 +178,34 @@ var socket = io.connect(location.protocol + '//' +
 
 
 
+
+          //CALIBRAR PID TEMP
+          //se emite la calibración hacia el servidor
+          $('form#pid_temp').submit(function(event) {
+              socket.emit('u_pid_temp',
+                          {   kp_temp : $('#kp_temp').val(),
+                              ki_temp : $('#ki_temp').val(),
+                              kd_temp : $('#kd_temp').val()
+                           });
+
+                console.log("en socket.emit u_pid_ph:");
+                console.log( $('#kp_temp').val() );
+                console.log( $('#ki_temp').val() );
+                console.log( $('#kd_temp').val() );
+              return false;
+          });
+
+          //se escuchan desde el servidor los valores seteados para calibración.
+          socket.on('u_pid_temp', function(msg) {
+            $('#kp_temp_set').text('Kp: ' + msg.set[0]).html();
+            $('#ki_temp_set').text('Ki: ' + msg.set[1]).html();
+            $('#kd_temp_set').text('Kd: ' + msg.set[2]).html();
+            //test
+            console.log( msg.set[0] );
+            console.log( msg.set[1] );
+            console.log( msg.set[2] );
+
+          });
 
 
 

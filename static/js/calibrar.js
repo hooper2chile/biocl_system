@@ -22,7 +22,7 @@ var socket = io.connect(location.protocol + '//' +
           });//fin de la función socket.on
 
 
-
+          $('#ph').css({ 'color': 'red', 'font-size': '150%' });
 
           //CALIBRAR PH
           //se emiten la calibración hacia el servidor

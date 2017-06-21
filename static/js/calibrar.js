@@ -22,7 +22,7 @@ var socket = io.connect(location.protocol + '//' +
           });//fin de la función socket.on
 
 
-          $('#med1_c').css({ 'color': 'lightred', 'font-size': '100%' });
+          $('#med1_c').css({ 'color': 'green', 'font-size': '100%' });
           $('#med2_c').css({ 'color': 'red', 'font-size': '100%' });
           $('#med3_c').css({ 'color': 'red', 'font-size': '100%' });
 

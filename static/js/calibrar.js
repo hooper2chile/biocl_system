@@ -141,9 +141,9 @@ var socket = io.connect(location.protocol + '//' +
 
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('u_calibrar_temp', function(msg) {
-            $('#rpm_max_temp').text('Set MAX rpm Temperatura: ' + msg.set[0]).html();
+            $('#rpm_max_temp').text('Set MAX rpm Temperatura: ' + msg.set ).html();
             //test
-            console.log( msg.set[0] );
+            console.log( msg.set );
           });
 
 

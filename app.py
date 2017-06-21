@@ -105,6 +105,7 @@ def function_thread():
     emit('u_calibrar',      {'set': u_set_ph})
     emit('u_calibrar_temp', {'set': u_set_temp})
     emit('u_pid_ph',        {'set': k_pid_ph})
+    emit('u_pid_temp',      {'set': k_pid_temp})
 
     global thread1
     if thread1 is None:
@@ -397,8 +398,6 @@ def calibrar_u(dato):
 
 
 
-
-
 #CALIBRAR PID_PH
 @socketio.on('u_pid_ph', namespace='/biocl')
 def calibrar_pid_ph(dato):
@@ -427,6 +426,40 @@ def calibrar_pid_ph(dato):
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
     socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
+
+
+
+#CALIBRAR PID_TEMP
+@socketio.on('u_pid_temp', namespace='/biocl')
+def calibrar_pid_ph(dato):
+    global k_pid_temp
+
+    setting = [ dato['kp_temp'], dato['ki_temp'], dato['kd_temp'] ]
+
+    try:
+        k_pid_ph[0] = float(dato['kp_ph'])
+        k_pid_ph[1] = float(dato['ki_ph'])
+        k_pid_ph[2] = float(dato['kd_ph'])
+
+    except:
+        k_pid_temp = [kp, ki, kd]
+
+
+
+    try:
+        f = open("pid_temp_set.txt","a+")
+        f.write(str(k_pid_temp) + '\n')
+        f.close()
+        communication.actuador(3,k_pid_temp)
+
+    except:
+        logging.info("no se pudo guardar en k_pid_ph.txt")
+
+    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
+    socketio.emit('u_pid_temp', {'set': k_pid_temp}, namespace='/biocl', broadcast=True)
+
+
+
 
 
 

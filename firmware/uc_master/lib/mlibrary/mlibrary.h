@@ -206,11 +206,12 @@ void calibrate(){
   return;
 }
 
+//debe alterar las variables globales de controles
+void pid(){};
 
 
-
+//modifica los umbrales de cualquiera de los dos actuadores
 void actuador(){
-
   switch (pid_x) {
 
     case 1://pid_ph

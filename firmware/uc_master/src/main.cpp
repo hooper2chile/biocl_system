@@ -59,6 +59,10 @@ void loop() {
                 actuador();
                 break;
 
+              case 'p':
+                pid();
+                break;
+
               default:
                 break;
           }

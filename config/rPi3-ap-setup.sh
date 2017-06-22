@@ -16,7 +16,7 @@ if [[ $# -lt 1 ]];
 fi
 
 APPASS="$1"
-APSSID="rPi3"
+APSSID="BIOCL-REACTOR"
 
 if [[ $# -eq 2 ]]; then
 	APSSID=$2

@@ -15,7 +15,7 @@ else:
 
 
 TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
-ID = '0B3jT9_WfcyT9SV8xeG1SMmdCVzA'
+ID = '0B3jT9_WfcyT9SXg3eExUdWoxRUU'
 
 if(sys.platform=='darwin'):
     gdrive = './gdrive-osx-x64'

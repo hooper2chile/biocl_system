@@ -141,7 +141,7 @@ def my_json(dato):
     global APIRest
     APIRest = reviewDB.window_db(filedb, var, dt)
     socketio.emit('my_json', {'data': APIRest, 'No': len(APIRest), 'var': var}, namespace='/biocl')
-
+    #put files in csv with dt time for samples
     tocsv.csv_file(filedb,dt)
 
 

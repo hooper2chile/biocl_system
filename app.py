@@ -5,13 +5,7 @@ from flask_socketio import SocketIO, emit, disconnect
 
 import os, sys, logging, communication, reviewDB, tocsv
 
-
-if(sys.platform=='darwin'):
-    logging.basicConfig(filename='./log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
-else:
-    logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
+logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 SPEED_MAX = 150 #150 [rpm]

@@ -3,7 +3,7 @@
 '''
     Adquisición de datos por sockets (ZMQ) para la base de datos.
 '''
-import sys, time, datetime, sqlite3, sqlitebck, logging, communication
+import os, sys, time, datetime, sqlite3, sqlitebck, logging, communication
 
 if(sys.platform=='darwin'):
     logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
@@ -48,6 +48,12 @@ def update_db(real_data, connector, c, first_time, BACKUP):
         bck = sqlite3.connect(filedb)
         sqlitebck.copy(connector, bck)
         #print "\n Backup REALIZADO \n"
+        #Full db backup
+        os.system('sqlite3 -header -csv %s "select * from ph;" > ./csv/%s'   % (filedb,filedb[:-3])+'full_ph.csv' )
+        os.system('sqlite3 -header -csv %s "select * from od;" > ./csv/%s'   % (filedb,filedb[:-3])+'full_od.csv' )
+        os.system('sqlite3 -header -csv %s "select * from temp;" > ./csv/%s' % (filedb,filedb[:-3])+'full_temp.csv' )
+
+
         logging.info("\n Backup REALIZADO \n")
 
         try:

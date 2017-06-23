@@ -6,79 +6,38 @@
 
 import os, sys, time, datetime, logging
 
+if(sys.platform=='darwin'):
+    logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
-
-def select():
-    if(sys.platform=='darwin'):
-        logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
-    else:
-        logging.basicConfig(filename='/home/pi/biocl_system/log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+else:
+    logging.basicConfig(filename='/home/pi/biocl_system/log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 
-    TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
-    ID = '0B3jT9_WfcyT9SXg3eExUdWoxRUU'
+TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
+ID = '0B3jT9_WfcyT9SV8xeG1SMmdCVzA'
+
+if(sys.platform=='darwin'):
+    gdrive = './gdrive-osx-x64'
+    DIR1 = '/Users/hooper/Dropbox/BIOCL/biocl_system/config/'
+    DIR2 = '/Users/hooper/Dropbox/BIOCL/biocl_system/csv/'
+
+else:
+    time.sleep(15)
+    gdrive = '/home/pi/biocl_system/config/./gdrive-linux-rpi'
+    DIR1   = ' ' #'/home/pi/biocl_system/config/'
+    DIR2   = '/home/pi/biocl_system/csv/'
 
 
-    if(sys.platform=='darwin'):
-        gdrive = './gdrive-osx-x64'
-        DIR1 = '/Users/hooper/Dropbox/BIOCL/biocl_system/config/'
-        DIR2 = '/Users/hooper/Dropbox/BIOCL/biocl_system/csv/'
-
-    else:
-        time.sleep(5)
-        gdrive = '/home/pi/biocl_system/config/./gdrive-linux-rpi'
-        DIR1   = ' ' #'/home/pi/biocl_system/config/'
-        DIR2   = '/home/pi/biocl_system/csv/'
-
-    print("System selected")
-
-
-def async_syncro():
-    select
+while True:
     hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")
-
     try:
         os.system(DIR1 + gdrive + ' sync upload ' + DIR2 + '.' + ' ' + ID)
-
         logging.info('sincronizado: ' + hora)
         f = open(DIR2+'gdrive_sync.txt','a+')
         f.write('sincronizado: ' + hora + ' \n')
         f.close()
+        time.sleep(TIME_SYNC)
 
     except:
         logging.info('Fallo al subir a cloud:' + hora)
-
-
-
-
-
-def main():
-    select()
-
-    while True:
-        hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")
-        try:
-            print("up up...")
-            os.system(DIR1 + gdrive + ' sync upload ' + DIR2 + '.' + ' ' + ID)
-            print("sync up")
-            logging.info('sincronizado: ' + hora)
-            f = open(DIR2+'gdrive_sync.txt','a+')
-            f.write('sincronizado: ' + hora + ' \n')
-            f.close()
-
-            time.sleep(TIME_SYNC)
-
-
-        except:
-            logging.info('Fallo al subir a cloud:' + hora)
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    main()

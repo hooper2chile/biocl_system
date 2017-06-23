@@ -8,7 +8,7 @@ import os, sys, time, datetime, logging
 
 
 
-def select:
+def select():
     if(sys.platform=='darwin'):
         logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 

@@ -65,10 +65,11 @@ def calibrar():
     return render_template('calibrar.html', title_html="Calibrar")
 
 
-
+'''
 @app.route('/descargar')
 def descargar():
     return "<br>".join( os.listdir("./database") )
+'''
 
 '''
 @app.route('/descargar/<path:filename>', methods=['GET', 'POST'])
@@ -79,6 +80,7 @@ def download(filename):
     return send_from_directory(directory='csv', filename=path2)
 '''
 
+'''
 @app.route('/descargar/<path:path>')
 def descargar_csv(path):
     #convert path to path2:
@@ -86,7 +88,7 @@ def descargar_csv(path):
     print path2
     os.system('sqlite3 -header -csv ./database/%s "select * from ph;" > ./csv/%s' % (path,path2) )
     return send_from_directory(directory='./csv', filename=path2)
-
+'''
 
 
 #CONFIGURACION DE FUNCIONES SocketIO

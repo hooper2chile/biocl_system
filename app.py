@@ -3,7 +3,7 @@
 from flask import Flask, render_template, session, request, Response, send_from_directory, make_response
 from flask_socketio import SocketIO, emit, disconnect
 
-import os, sys, logging, communication, reviewDB, tocsv
+import os, sys, logging, communication, reviewDB, tocsv, cloud
 
 
 if(sys.platform=='darwin'):
@@ -145,6 +145,8 @@ def my_json(dato):
     socketio.emit('my_json', {'data': APIRest, 'No': len(APIRest), 'var': var}, namespace='/biocl')
     #put files in csv with dt time for samples
     tocsv.csv_file(filedb,dt)
+    #sync new csv now up cloud
+    cloud.async_syncro()
 
 
 

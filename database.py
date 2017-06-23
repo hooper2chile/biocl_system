@@ -49,9 +49,9 @@ def update_db(real_data, connector, c, first_time, BACKUP):
         sqlitebck.copy(connector, bck)
         #print "\n Backup REALIZADO \n"
         #Full db backup
-        os.system('sqlite3 -header -csv %s "select * from ph;" > ./csv/%s'   % (filedb,filedb[:-3])+'full_ph.csv' )
-        os.system('sqlite3 -header -csv %s "select * from od;" > ./csv/%s'   % (filedb,filedb[:-3])+'full_od.csv' )
-        os.system('sqlite3 -header -csv %s "select * from temp;" > ./csv/%s' % (filedb,filedb[:-3])+'full_temp.csv' )
+        os.system('sqlite3 -header -csv %s "select * from ph;"   > %s'  % (filedb,filedb[:-3])+'full_ph.csv' )
+        os.system('sqlite3 -header -csv %s "select * from od;"   > %s'  % (filedb,filedb[:-3])+'full_od.csv' )
+        os.system('sqlite3 -header -csv %s "select * from temp;" > %s'  % (filedb,filedb[:-3])+'full_temp.csv' )
 
 
         logging.info("\n Backup REALIZADO \n")

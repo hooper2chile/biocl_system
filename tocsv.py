@@ -98,7 +98,3 @@ def csv_file(FILE_DB, dt):
 
     c.close()
     db.close()
-
-
-if __name__ ="__main__":
-    main()

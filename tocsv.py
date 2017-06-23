@@ -1,8 +1,7 @@
 import csv, sqlite3, sys
 
 #python aer2.py testa.db 10
-
-    def csv_file(FILE_DB, dt):
+def csv_file(FILE_DB, dt):
 
     db = sqlite3.connect( FILE_DB )
     c  = db.cursor()

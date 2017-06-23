@@ -5,13 +5,7 @@
 '''
 import os, sys, time, datetime, sqlite3, sqlitebck, logging, communication
 
-if(sys.platform=='darwin'):
-    logging.basicConfig(filename='./log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
-else:
-    logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
-
+logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 TIME_MIN_BD = 1 # 1 [s]
 
 def update_db(real_data, connector, c, first_time, BACKUP):
@@ -33,28 +27,28 @@ def update_db(real_data, connector, c, first_time, BACKUP):
     except:
         #print "no se pudo insertar dato en db"
         logging.info("no se pudo insertar dato en db")
+
     #se guardan los datos agregados en la db
     connector.commit()
 
     #Backup DB in RAM to DISK SD
     if BACKUP:
-        if(sys.platform=='darwin'):
-            filedb='/Users/hooper/Dropbox/BIOCL/biocl_system/database/backup__' + first_time + '__.db'
-            #filedb='/Users/hooper/Dropbox/BIOCL/biocl_system/database/backup.db'
-        else:
-            filedb='/home/pi/biocl_system/database/backup__' + first_time + '__.db'
-            #filedb='/home/pi/biocl_system/database/backup.db'
+
+        filedb='/home/pi/biocl_system/database/backup__' + first_time + '__.db'
 
         bck = sqlite3.connect(filedb)
         sqlitebck.copy(connector, bck)
-        #print "\n Backup REALIZADO \n"
-        #Full db backup
-        os.system('sqlite3 -header -csv %s "select * from ph;"   > %s'  % (filedb,filedb[:-3])+'full_ph.csv' )
-        os.system('sqlite3 -header -csv %s "select * from od;"   > %s'  % (filedb,filedb[:-3])+'full_od.csv' )
-        os.system('sqlite3 -header -csv %s "select * from temp;" > %s'  % (filedb,filedb[:-3])+'full_temp.csv' )
 
+        try:
+            os.system('sqlite3 -header -csv %s "select * from ph;"   > .csv/%s' % (filedb,filedb[31:-3])+'full_ph.csv' )
+            os.system('sqlite3 -header -csv %s "select * from od;"   > .csv/%s' % (filedb,filedb[31:-3])+'full_od.csv' )
+            os.system('sqlite3 -header -csv %s "select * from temp;" > .csv/%s' % (filedb,filedb[31:-3])+'full_temp.csv' )
 
-        logging.info("\n Backup REALIZADO \n")
+            logging.info("\n Backup FULL REALIZADO \n")
+
+        except:
+            logging.info("\n Backup FULL NO REALIZADO, NO REALIZADO \n")
+
 
         try:
             #Se guarda el nombre de la db para ser utilizado en app.py

@@ -18,7 +18,7 @@ def select():
 
 
     TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
-    ID = '0B3jT9_WfcyT9SV8xeG1SMmdCVzA'
+    ID = '0B3jT9_WfcyT9SXg3eExUdWoxRUU'
 
 
     if(sys.platform=='darwin'):
@@ -32,6 +32,7 @@ def select():
         DIR1   = ' ' #'/home/pi/biocl_system/config/'
         DIR2   = '/home/pi/biocl_system/csv/'
 
+    print("System selected")
 
 
 def async_syncro():
@@ -54,19 +55,21 @@ def async_syncro():
 
 
 def main():
-    select
+    select()
 
     while True:
         hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")
         try:
+            print("up up...")
             os.system(DIR1 + gdrive + ' sync upload ' + DIR2 + '.' + ' ' + ID)
-
+            print("sync up")
             logging.info('sincronizado: ' + hora)
             f = open(DIR2+'gdrive_sync.txt','a+')
             f.write('sincronizado: ' + hora + ' \n')
             f.close()
 
             time.sleep(TIME_SYNC)
+
 
         except:
             logging.info('Fallo al subir a cloud:' + hora)

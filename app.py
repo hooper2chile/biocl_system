@@ -3,7 +3,7 @@
 from flask import Flask, render_template, session, request, Response, send_from_directory, make_response
 from flask_socketio import SocketIO, emit, disconnect
 
-import os, sys, logging, communication, reviewDB
+import os, sys, logging, communication, reviewDB, tocsv
 
 
 if(sys.platform=='darwin'):
@@ -96,7 +96,6 @@ def function_thread():
     #print "\n Cliente Conectado al Thread del Bioreactor\n"
     logging.info("\n Cliente Conectado al Thread del Bioreactor\n")
 
-
     #Se emite durante la primera conexión de un cliente el estado actual de los setpoints
     emit('Setpoints',       {'set': set_data})
     emit('ph_calibrar',     {'set': ph_set})
@@ -142,6 +141,8 @@ def my_json(dato):
     global APIRest
     APIRest = reviewDB.window_db(filedb, var, dt)
     socketio.emit('my_json', {'data': APIRest, 'No': len(APIRest), 'var': var}, namespace='/biocl')
+
+    tocsv.csv_file(filedb,dt)
 
 
 

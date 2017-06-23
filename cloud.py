@@ -8,7 +8,7 @@ import os, sys, time, datetime, logging
 
 
 
-def select():
+def select:
     if(sys.platform=='darwin'):
         logging.basicConfig(filename='./log/cloud.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
@@ -19,6 +19,7 @@ def select():
 
     TIME_SYNC = 60#3600 #sync for 3600 [s] = 1 [hr]
     ID = '0B3jT9_WfcyT9SV8xeG1SMmdCVzA'
+
 
     if(sys.platform=='darwin'):
         gdrive = './gdrive-osx-x64'
@@ -34,7 +35,7 @@ def select():
 
 
 def async_syncro():
-    select()
+    select
     hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")
 
     try:
@@ -53,7 +54,7 @@ def async_syncro():
 
 
 def main():
-    select()
+    select
 
     while True:
         hora = time.strftime("Hora=%H:%M:%S__Fecha=%d-%m-%y")

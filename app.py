@@ -360,7 +360,7 @@ def calibrar_u(dato):
         f = open("umbral_set_temp.txt","w")
         f.write(str(u_set_temp) + '\n')
         f.close()
-        communication.actuador(2,u_set_temp)  #FALTA IMPLEMENTARIO EN communication.py
+        communication.actuador(2,[u_set_temp, 0])  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
         logging.info("no se pudo guardar u_set_temp en umbral_set_temp.txt")

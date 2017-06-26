@@ -60,7 +60,7 @@ void loop() {
                 break;
 
               case 'p':
-                pid();
+                pid_parametros();
                 break;
 
               default:

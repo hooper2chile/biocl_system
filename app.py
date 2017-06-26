@@ -329,13 +329,13 @@ def calibrar_u(dato):
 
 
     try:
-        f = open("u_set_ph.txt","w")
+        f = open("umbral_set_ph.txt","w")
         f.write(str(u_set_ph) + '\n')
         f.close()
         communication.actuador(1,u_set_ph)  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
-        logging.info("no se pudo guardar en u_set en u_set_ph.txt")
+        logging.info("no se pudo guardar umbrales u_set_ph en umbral_set_ph.txt")
 
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
@@ -357,13 +357,13 @@ def calibrar_u(dato):
 
 
     try:
-        f = open("u_set_temp.txt","w")
+        f = open("umbral_set_temp.txt","w")
         f.write(str(u_set_temp) + '\n')
         f.close()
         communication.actuador(1,u_set_temp)  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
-        logging.info("no se pudo guardar en u_set en u_set_temp.txt")
+        logging.info("no se pudo guardar u_set_temp en umbral_set_temp.txt")
 
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.

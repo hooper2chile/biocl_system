@@ -8,8 +8,8 @@ SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port
 double Setpoint_temp, Input_temp, Output_temp;
 double Setpoint_ph, Input_ph, Output_ph;
 
-double Kp_ph=277, Ki_ph=1.54, Kd_ph=0;
-double Kp_temp=1, Ki_temp=3, Kd_temp=0;
+double Kp_ph=200, Ki_ph=45, Kd_ph=0;
+double Kp_temp=200, Ki_temp=45, Kd_temp=0;
 
 PID TEMP_PID(&Input_temp, &Output_temp, &Setpoint_temp, Kp_temp, Ki_temp, Kd_temp, DIRECT);
 PID   PH_PID(&Input_ph, &Output_ph, &Setpoint_ph, Kp_ph, Ki_ph, Kd_ph, DIRECT);
@@ -19,7 +19,7 @@ PID   PH_PID(&Input_ph, &Output_ph, &Setpoint_ph, Kp_ph, Ki_ph, Kd_ph, DIRECT);
 #define iINT(x)   (x+48)  //inverse ascii convertion
 #define SPEED_MAX 150
 #define TEMP_MAX  130
-#define Ts        150 //200ms
+#define Ts        500 //500ms
 
 String  message     = "";
 String  new_write   = "";
@@ -206,12 +206,10 @@ void calibrate(){
   return;
 }
 
-//debe alterar las variables globales de controles
-void pid(){};
 
 
-//modifica los umbrales de cualquiera de los dos actuadores
-void actuador(){
+//debe alterar los parametros de los pid
+void pid_parametros(){
   switch (pid_x) {
 
     case 1://pid_ph
@@ -232,6 +230,13 @@ void actuador(){
         Kd_temp = message.substring(3).toFloat();
       break;
   }
+};
+
+
+//modifica los umbrales de cualquiera de los dos actuadores
+void actuador(){
+
+  PH_PID.SetOutputLimits(-SPEED_MAX/2,+SPEED_MAX/2);
 
 }
 
@@ -324,10 +329,14 @@ void pid_ph() {
   //Algoritmo de seleccion de acido o base
   if ( Output_ph < 0 ) {
     ph_select = "a"; //=> Acido
-    Output_ph = - Output_ph;
+    Output_ph = (int) -Output_ph;
   }
-  else
+  else if ( Output_ph > 0 ) {
     ph_select = "b"; //=> Básico
+    Output_ph = (int) +Output_ph;
+  }
+
+
 
   return;
 }

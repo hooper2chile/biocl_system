@@ -22,7 +22,7 @@ void setup() {
 
   DDRB = DDRB | (1<<PB0) | (1<<PB1) | (1<<PB2) | (1<<PB3) | (1<<PB4) | (1<<PB5);
   DDRC = DDRC | (1<<PC1) | (1<<PC2) | (1<<PC3) | (1<<PC4) | (1<<PC5);
-  DDRD = DDRD | (1<<PD4) | (1<<PD5);
+  DDRD = DDRD | (1<<PD3) | (1<<PD4) | (1<<PD5);
 
 
 
@@ -60,7 +60,7 @@ void loop() {
         time_setup(mytemp, &count_m5_set, &count_m5);  //setear en otra función que reciba este mensaje desde un lazo de control
         mytemp_save = mytemp;
       }
-
+/*
       //PH TEST: TIME SETUP
       if ( myph1 != myph1_save ) {
         time_setup(myph1, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
@@ -70,7 +70,23 @@ void loop() {
       if ( myph2 != myph2_save ) {
         time_setup(myph2, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph2_save = myph2;
+*/
+      if ( myph_a != myph_a_save ) {
+        time_setup(myph_a, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
+        myph_a_save = myph_a;
       }
+      if ( myph_b != myph_b_save ) {
+        time_setup(myph_b, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
+        myph_b_save = myph_b;
+      }
+
+
+
+      setup_dir_rst( _BV(RST_PHa), _BV(DIR_PH), &myph_a, &rst3, &dir2, &PORTD, &PORTC );
+      setup_dir_rst( _BV(RST_PHb), _BV(DIR_PH), &myph_b, &rst6, &dir2, &PORTD, &PORTC );
+
+
+
 
 
 
@@ -89,12 +105,12 @@ void loop() {
       setup_dir_rst( _BV(RST_TEMP), _BV(DIR_TEMP),
                      &mytemp, &rst5, &dir3,
                      &PORTC,  &PORTB );
-
+/*
       //pH: rst3, dir2:
       setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
                      &myphset, &rst3, &dir2,
                      &PORTD, &PORTC );
-
+*/
 
 
 

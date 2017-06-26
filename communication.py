@@ -125,43 +125,54 @@ def calibrate(var, coef):
 
 
 
+# var = 1 => ph
+# var = 2 => temp
+# e = end
+def actuador(var,u_set):
+
+    if var == 1:
+        u_set[0] = int(u_set[0])
+        u_set[1] = int(u_set[1])
+
+        #format for u_set[0]
+        if u_set[0] > 10 and u_set[0] < 100:
+            u_set_0 = '0' + str(u_set[0])
+
+        elif u_set[0] > 0 and u_set[0] < 10:
+            u_set_0 = '00' + str(u_set[0])
 
 
+        #format for u_set[1]
+        if u_set[1] > 10 and u_set[1] < 100:
+            u_set_1 = '0' + str(u_set[1])
+
+        elif u_set[1] > 0 and u_set[1] < 10:
+            u_set_1 = '00' + str(u_set[1])
+
+        u_cook = 'u' + str(var) + 'a' + u_set_0 + 'b' + u_set_1 + 'e'
 
 
-def actuador(var, pid, u_set, k_pid):
+    elif var == 2:
+        u_set[0] = int(u_set[0])
+        u_set[1] = 0
+
+        #format for u_set[0]
+        if u_set[0] > 10 and u_set[0] < 100:
+            u_set_0 = '0' + str(u_set[0])
+
+        elif u_set[0] > 0 and u_set[0] < 10:
+            u_set_0 = '00' + str(u_set[0])
+
+        u_cook = 'u' + str(var) + 't' + u_set_0 + 'e'
+
     try:
-        k_pid = [ float(k_pid[0]), float(k_pid[1]), float(k_pid[2]) ]
-
-    except:
-        k_pid = [kp, ki, kd]
-
-    try:
-        if var == 1:
-            u_cook = 'u' + str(var) + str(u_set[0])
-
-        elif var == 2:
-            u_cook = 'u' + str(var) + str(u_set[1])
-
-        elif var == 3:
-            u_cook = 'u' + str(var+pid) + str(kp)
-
-        elif var == 4:
-            u_cook = 'u' + str(var+pid) + str(ki)
-
-        elif var == 5:
-            u_cook = 'u' + str(var+pid) + str(kd)
-
-        else:
-            u_cook = 'u0'
-
+        f = open("actuador.txt","w")
+        f.write(u_cook + '\n')
+        f.close()
         published_setpoint(u_cook);
 
     except:
-        logging.info("no se pudo generar u_cook para actuador")
-
-
-
+        logging.info("no se pudo guardar set de actuador()")
 
 
 

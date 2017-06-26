@@ -2,12 +2,12 @@
   * uc_slave
   *======================
   * RESET, DIR SETUP
-  * rst3, dir2: myphset
+  * rst3, dir2: rst3 is myph_a (acido), dir2 is for two bombs
   * rst1, dir1: myfeed
   * rst4, dir456: unload  (dir4 para unload, no se usa)
   * rst2, dir456: mymix
   * rst5, dir3: mytemp
-  * rst6, dir6: FREE !
+  * rst6, dir6: rst6 is myph_b, dir2 is for two bombs  dir6 is FREE !
 */
 
 
@@ -43,10 +43,12 @@
 #define START5 PB4  //temp
 
 #define PORT_CONTROL  PORTD
-#define START_CONTROL PD5
+#define START_CONTROL PD3
 
 //PH: las dos bombas de ph usan el mismo rst y dir
-#define RST_PH     PD4  //pc0 no funciona, PLOP! probe dos micros
+//#define RST_PH     PD4  //pc0 no funciona, PLOP! probe dos micros
+#define RST_PHa    PD4
+#define RST_PHb    PD5
 #define DIR_PH     PC1
 
 #define RST_FEED   PC2
@@ -78,8 +80,11 @@ uint8_t dir1 = 1;  uint8_t dir2 = 1;  uint8_t dir3 = 1;
 uint8_t dir4 = 1;  uint8_t dir5 = 1;  uint8_t dir6 = 1;
 
 uint8_t myphset  = 0;
-uint8_t myph1    = 0;
-uint8_t myph2    = 0;
+uint8_t myph_a    = 0;
+uint8_t myph_b    = 0;
+uint8_t myph_a_save = 0;
+uint8_t myph_b_save = 0;
+
 
 uint8_t myfeed   = 0;
 uint8_t myunload = 0;
@@ -281,12 +286,12 @@ void crumble() {  //se puede alivianar usando .toFloat() directamente despues de
   //setting setpoints
   myphset  = ph_set.toFloat();
   if (ph_var == 'a') {
-    myph1 = myphset;
-    myph2 = 0;
+    myph_a = myphset;
+    myph_b = 0;
   }
   else if (ph_var == 'b') {
-    myph2 = myphset;
-    myph1 = 0;
+    myph_b = myphset;
+    myph_a = 0;
   }
 
   myfeed   = feed_set.toInt();

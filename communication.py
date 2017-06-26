@@ -18,7 +18,7 @@ temp_save_set_data = None
 tau_zmq_connect = 0.3 #0.3 [s]: no ha funcionado con menos
 
 SPEED_MAX_MIX = 1500
-SPEED_MAX = 100
+SPEED_MAX = 150
 TEMP_MAX  = 130
 PH_MIN = 0
 PH_MAX = 14
@@ -171,7 +171,7 @@ def actuador(var,u_set):
             u_set_0 = '00' + str(u_set[0])
 
         elif u_set[0] >= 100 and u_set[0] <= SPEED_MAX:
-            u_set_0 = str(u_set)
+            u_set_0 = str(u_set[0])
 
         #creation for threshold actuador of temp command
         u_cook = 'u' + str(var) + 't' + u_set_0 + 'e'

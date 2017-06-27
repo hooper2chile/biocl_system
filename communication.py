@@ -187,8 +187,9 @@ def actuador(var,u_set):
 
 
 #tuning for pid ph and temp.-
-def pid_tuning(var, k_t):
+def pid_tuning(var, k_tuning):
 
+    k_t = k_tuning
     #format for parameters in array k_t = [kp,ki,kd]
     j = 0
     for i in k_t:

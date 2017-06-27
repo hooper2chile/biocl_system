@@ -22,7 +22,7 @@ PID   PH_PID(&Input_ph,   &Output_ph,   &Setpoint_ph,   Kp_ph,   Ki_ph,   Kd_ph,
 #define Ts        500 //500ms
 
 String  message     = "";
-String  new_write   = "";  String  new_write0   = ""; 
+String  new_write   = "";  String  new_write0   = "";
 
 boolean stringComplete = false;  // whether the string is complete
 
@@ -53,6 +53,10 @@ uint8_t myfeed   = 0;
 uint8_t myunload = 0;
 uint8_t mymix    = 0;
 uint8_t mytemp   = 0;
+
+uint8_t umbral_a = SPEED_MAX;
+uint8_t umbral_b = SPEED_MAX;
+uint8_t umbral_temp = SPEED_MAX;
 
 // for incoming serial data
 float Byte0 = 0;  char cByte0[15] = "";
@@ -236,8 +240,8 @@ void pid_tuning(){
 void actuador_umbral(){
   //setting threshold ph: u1a160b142e
   if ( message[1] == '1' ) {
-    uint8_t umbral_a = message.substring(3,6).toInt();
-    uint8_t umbral_b = message.substring(7,10).toInt();
+    umbral_a = message.substring(3,6).toInt();
+    umbral_b = message.substring(7,10).toInt();
 
     if ( umbral_b > 0 && umbral_a > 0 && umbral_a <= SPEED_MAX && umbral_b <= SPEED_MAX )
       PH_PID.SetOutputLimits(-umbral_a,+umbral_b);
@@ -246,7 +250,7 @@ void actuador_umbral(){
   }
   //setting threshold temp: u2t130e
   else if ( message[1] == '2' ) {
-    uint8_t umbral_temp = message.substring(3,6).toInt();
+    umbral_temp = message.substring(3,6).toInt();
 
     if ( umbral_temp > 0 && umbral_temp <= SPEED_MAX )
       TEMP_PID.SetOutputLimits(0,+umbral_temp);
@@ -254,7 +258,7 @@ void actuador_umbral(){
       TEMP_PID.SetOutputLimits(0,SPEED_MAX);
   }
 
-  Serial.println("umbral update good");
+  Serial.println(String(umbral_a)+'_'+String(umbral_b)+'_'+String(umbral_temp));
   return;
 }
 
@@ -372,22 +376,6 @@ void setpoint() {
 
 
 
-/*
-//Re-transmition of NEW command to slave micro controller
-void broadcast_setpoint() {
-  format_message(Output_temp);
-  uset_temp = svar;
-
-  format_message(Output_ph);
-  uset_ph = ph_select + svar;
-
-  new_write = "";
-  new_write = message.substring(0,3) + uset_ph + message.substring(7,34) + uset_temp + message.substring(37,55) + "\n";
-  mySerial.print(new_write);
-
-  return;
-}
-*/
 
 //Re-transmition commands to slave micro controller
 void broadcast_setpoint(uint8_t select) {

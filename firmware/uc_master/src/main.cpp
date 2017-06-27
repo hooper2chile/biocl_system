@@ -19,11 +19,11 @@ void setup() {
   PORTB = (0<<PB0) | (1<<PB5);
 
   TEMP_PID.SetMode(AUTOMATIC);
-  TEMP_PID.SetOutputLimits(0,+SPEED_MAX);
+  TEMP_PID.SetOutputLimits(0,+umbral_temp);
   TEMP_PID.SetSampleTime(Ts);
 
   PH_PID.SetMode(AUTOMATIC);
-  PH_PID.SetOutputLimits(-SPEED_MAX/2,+SPEED_MAX/2);
+  PH_PID.SetOutputLimits(-umbral_a,+umbral_a);
   PH_PID.SetSampleTime(Ts);
 
   wdt_enable(WDTO_8S);

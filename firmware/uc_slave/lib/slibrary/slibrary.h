@@ -203,7 +203,8 @@ void clean_strings() {
 }
 
 
-//message format write values: wph14.0feed100unload100mix1500temp100rst111111dir111111
+//message format write values: wpha140feed100unload100mix1500temp100rst111111dir111111
+//wphb040feed010unload010mix1500temp010rst000000dir111111
 int validate_write() {
 
   if (
@@ -283,16 +284,22 @@ void crumble() {  //se puede alivianar usando .toFloat() directamente despues de
   temp_var = message.substring(30, 34);
   temp_set = message.substring(34, 37);
 
+
   //setting setpoints
   myphset  = ph_set.toFloat();
-  if (ph_var == 'a') {
+  if ( ph_var == 'a' ) {
     myph_a = myphset;
     myph_b = 0;
+
+    rst6 = 1; //1=OFF Base bomb
   }
-  else if (ph_var == 'b') {
-    myph_b = myphset;
+  else if ( ph_var == 'b' ) {
     myph_a = 0;
+    myph_b = myphset;
+
+    rst3 = 1; //1=OFF Acid Bomb
   }
+
 
   myfeed   = feed_set.toInt();
   myunload = unload_set.toInt();

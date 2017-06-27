@@ -75,6 +75,7 @@ void loop() {
         time_setup(myph_a, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph_a_save = myph_a;
       }
+
       if ( myph_b != myph_b_save ) {
         time_setup(myph_b, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph_b_save = myph_b;

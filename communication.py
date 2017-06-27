@@ -228,8 +228,8 @@ def cook_setpoint(set_data):
             set_data[i] = 1
         else:
             set_data[i] = 0
-
-    string_rst = str(set_data[5]) + str(set_data[6]) + str(set_data[7]) + str(set_data[8]) + str(set_data[9]) + '1'
+                                                                                                            # + str(set_data[7]) = rst6
+    string_rst = str(set_data[5]) + str(set_data[6]) + str(set_data[7]) + str(set_data[8]) + str(set_data[9]) + str(set_data[7])
     string_dir = str(set_data[10])+ str(set_data[11])+ str(set_data[12]) + '111'
 
 
@@ -259,8 +259,6 @@ def cook_setpoint(set_data):
     except ValueError:
         set_data = temp_save_set_data #esto permite reenviar el ultimo si hay una exception
         logging.info("exception de set_data")
-        #set_data = [10,10,10,10,10,1,1,1,1,1,1,1,1]
-
 
     #threshold setting:
     #alimentar

@@ -8,7 +8,7 @@ SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port
 double Setpoint_temp, Input_temp, Output_temp;
 double Setpoint_ph, Input_ph, Output_ph;
 
-double Kp_ph=200,   Ki_ph=45,   Kd_ph=0;
+double   Kp_ph=200,   Ki_ph=45,   Kd_ph=0;
 double Kp_temp=200, Ki_temp=45, Kd_temp=0;
 
 PID TEMP_PID(&Input_temp, &Output_temp, &Setpoint_temp, Kp_temp, Ki_temp, Kd_temp, DIRECT);
@@ -22,7 +22,8 @@ PID   PH_PID(&Input_ph,   &Output_ph,   &Setpoint_ph,   Kp_ph,   Ki_ph,   Kd_ph,
 #define Ts        500 //500ms
 
 String  message     = "";
-String  new_write   = "";
+String  new_write   = "";  String  new_write0   = ""; 
+
 boolean stringComplete = false;  // whether the string is complete
 
 String  ph_var      = "";   String  ph_set      = "";
@@ -34,11 +35,9 @@ String  temp_var    = "";   String  temp_set    = "";
 
 //Re-formatting
 String  ph_select = "";
-String  t_temp = "";
-String  t_ph   = "";
-String  svar   = "";
-
-char pid_x, k_x;
+String  uset_temp = "";
+String  uset_ph   = "";
+String  svar      = "";
 
 
 //RESET SETUP
@@ -75,9 +74,9 @@ const int RS = 10;          // Shunt resistor value (in ohms)
 const int N  = 200; //500
 
 //calibrate function()
-char  var='0';
-float m=0;
-float n=0;
+char  var = '0';
+float m = 0;
+float n = 0;
 
 //pH=:(m0,n0)
 float m0 = +0.75;
@@ -139,10 +138,12 @@ void crumble() {
 
   //setting setpoints
   myphset  = ph_set.toFloat();
+  mytemp   = temp_set.toInt();
+
   myfeed   = feed_set.toInt();
   myunload = unload_set.toInt();
   mymix    = mix_set.toInt();
-  mytemp   = temp_set.toInt();
+
 
   //setting rst
   rst1 = INT(message[40]);  rst2 = INT(message[41]);  rst3 = INT(message[42]);
@@ -159,8 +160,7 @@ void crumble() {
 
 
 void format_message(int var) {
-
-  //reset to scar string
+  //reset to svar string
   svar = "";
 
   if (var < 10)
@@ -201,8 +201,8 @@ void sensor_calibrate(){
     default:
       break;
   }
-  Serial.println("good calibrate");
 
+  Serial.println("good calibrate");
   return;
 }
 
@@ -229,6 +229,7 @@ void pid_tuning(){
 
   Serial.println("pid_tuning ready");
 };
+
 
 
 //modifica los umbrales de cualquiera de los dos actuadores
@@ -336,6 +337,7 @@ void pid_temp() {
 
 
 
+
 void pid_ph() {
   Input_ph = pH;
   PH_PID.Compute();  //con esto se actualiza Output_ph
@@ -350,10 +352,10 @@ void pid_ph() {
     Output_ph = (int) +Output_ph;
   }
 
-
-
   return;
 }
+
+
 
 
 
@@ -365,29 +367,47 @@ void setpoint() {
   Setpoint_ph   = myphset;
 
   Serial.println("good setpoint");
-
   return;
 }
 
 
 
+/*
+//Re-transmition of NEW command to slave micro controller
+void broadcast_setpoint() {
+  format_message(Output_temp);
+  uset_temp = svar;
 
+  format_message(Output_ph);
+  uset_ph = ph_select + svar;
+
+  new_write = "";
+  new_write = message.substring(0,3) + uset_ph + message.substring(7,34) + uset_temp + message.substring(37,55) + "\n";
+  mySerial.print(new_write);
+
+  return;
+}
+*/
+
+//Re-transmition commands to slave micro controller
 void broadcast_setpoint(uint8_t select) {
-  //Re-transmition of NEW command to slave micro controller
+
+  format_message(Output_temp);
+  uset_temp = svar;
+
+  format_message(Output_ph);
+  uset_ph = ph_select + svar;
+
   switch (select) {
-    case 0: //only re-tx.
+    case 0: //only re-tx and update pid uset's.
+      new_write0 = "";
+      new_write0 = new_write.substring(0,3) + uset_ph + new_write.substring(7,34) + uset_temp + new_write.substring(37,55) + "\n";
       mySerial.print(new_write);
       break;
 
     case 1: //update command and re-tx.
-      format_message(Output_temp);
-      t_temp = svar;
-
-      format_message(Output_ph);
-      t_ph = svar;
-
       new_write = "";
-      new_write = message.substring(0,3) + ph_select + t_ph + message.substring(7,34) + t_temp + message.substring(37,55) + "\n";
+      new_write = message.substring(0,3) + uset_ph + message.substring(7,34) + uset_temp + message.substring(37,55) + "\n";
       mySerial.print(new_write);
       break;
 
@@ -398,15 +418,13 @@ void broadcast_setpoint(uint8_t select) {
   return;
 }
 
+
 //wph08.3feed100unload100mix1500temp022rst111111dir111111
 //wphb015feed100unload100mix1500temp150rst000000dir111111
-
-
 void clean_strings() {
   //clean strings
-  stringComplete = false; message = "";
-  t_temp = "";
-  t_ph = "";
+  stringComplete = false;
+  message   = "";  uset_temp = "";  uset_ph   = ""; ph_select ="";
 }
 
 
@@ -429,19 +447,19 @@ int validate() {
           ( message.substring(3, 7).toFloat() <= 14.0 ) &&
 
           //feed number
-          ( message.substring(11, 14).toInt() >= 0   ) &&
+          ( message.substring(11, 14).toInt() >= 0         ) &&
           ( message.substring(11, 14).toInt() <= SPEED_MAX ) &&
 
           //unload number
-          ( message.substring(20, 23).toInt() >= 0   ) &&
+          ( message.substring(20, 23).toInt() >= 0         ) &&
           ( message.substring(20, 23).toInt() <= SPEED_MAX ) &&
 
           //mix number
-          ( message.substring(26, 30).toInt() >= 0   ) &&
-          ( message.substring(26, 30).toInt() <= 1500) &&
+          ( message.substring(26, 30).toInt() >= 0    ) &&
+          ( message.substring(26, 30).toInt() <= 1500 ) &&
 
           //temp number
-          ( message.substring(34, 37).toInt() >= 0   ) &&
+          ( message.substring(34, 37).toInt() >= 0        ) &&
           ( message.substring(34, 37).toInt() <= TEMP_MAX ) &&
 
           //rst bits
@@ -473,8 +491,8 @@ int validate() {
           return 1;
 
       //Validete umbral actuador ph: u1a001b001e
-      else if ( message[0] == 'u' && message[1] == '1' &&
-                message[2] == 'a' && message[6] == 'b' &&
+      else if ( message[0]  == 'u' && message[1] == '1' &&
+                message[2]  == 'a' && message[6] == 'b' &&
                 message[10] == 'e'
               )
           return 1;

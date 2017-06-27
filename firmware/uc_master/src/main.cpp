@@ -52,14 +52,14 @@ void loop() {
                 break;
 
               case 'c':
-                calibrate();
+                sensor_calibrate();
                 break;
 
               case 'u':
-                actuador();
+                actuador_umbral();
                 break;
 
-              case 'p':
+              case 't':
                 pid_tuning();
                 break;
 

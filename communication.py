@@ -206,7 +206,7 @@ def pid_tuning(var, k_t):
 
         j+=1
 
-    pid_tuning_string = 'p' + str(var) + 'p' + k_t[0] + 'i' + k_t[1] + 'd' + k_t[2] + 'e'
+    pid_tuning_string = 't' + str(var) + 'p' + k_t[0] + 'i' + k_t[1] + 'd' + k_t[2] + 'e'
 
     try:
         f = open("pid_tuning.txt","a+")

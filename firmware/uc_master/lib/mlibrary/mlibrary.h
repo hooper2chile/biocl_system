@@ -176,7 +176,7 @@ void format_message(int var) {
 
 
 //c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
-void calibrate(){
+void sensor_calibrate(){
   //calibrate function for "message"
   var = message[1];
   m   = message.substring(2,8 ).toFloat();
@@ -219,7 +219,7 @@ void pid_tuning(){
 
 
 //modifica los umbrales de cualquiera de los dos actuadores
-void actuador(){
+void actuador_umbral(){
   //setting threshold ph: u1a160b142e
   if ( message[1] == '1' ) {
     uint8_t umbral_a = message.substring(3,6).toInt();
@@ -243,7 +243,6 @@ void actuador(){
   Serial.println("umbral update good");
   return;
 }
-
 
 
 

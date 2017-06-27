@@ -408,11 +408,13 @@ def calibrar_pid_ph(dato):
     except:
         k_pid_temp = [kp, ki, kd]
 
+
     try:
         f = open("pid_temp_set.txt","w")
         f.write(str(k_pid_temp) + '\n')
         f.close()
-        communication.pid_tuning(2,k_pid_temp)
+        k_pid_temporal = k_pid_temp
+        communication.pid_tuning(2,k_pid_temporal)
     except:
         logging.info("no se pudo guardar en k_pid_temp.txt")
 

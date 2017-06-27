@@ -376,25 +376,19 @@ def calibrar_u(dato):
 @socketio.on('u_pid_ph', namespace='/biocl')
 def calibrar_pid_ph(dato):
     global k_pid_ph
-
-    setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
-
+    #setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
     try:
         k_pid_ph[0] = float(dato['kp_ph'])
         k_pid_ph[1] = float(dato['ki_ph'])
         k_pid_ph[2] = float(dato['kd_ph'])
-
     except:
         k_pid_ph = [kp, ki, kd]
-
-
 
     try:
         f = open("pid_ph_set.txt","w")
         f.write(str(k_pid_ph) + '\n')
         f.close()
-        communication.actuador(3,k_pid_ph)
-
+        communication.pid_tuning(1,k_pid_ph)
     except:
         logging.info("no se pudo guardar en k_pid_ph.txt")
 
@@ -402,37 +396,28 @@ def calibrar_pid_ph(dato):
     socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
 
 
-
 #CALIBRAR PID_TEMP
 @socketio.on('u_pid_temp', namespace='/biocl')
 def calibrar_pid_ph(dato):
     global k_pid_temp
-
-    setting = [ dato['kp_temp'], dato['ki_temp'], dato['kd_temp'] ]
-
+    #setting = [ dato['kp_temp'], dato['ki_temp'], dato['kd_temp'] ]
     try:
         k_pid_temp[0] = float(dato['kp_temp'])
         k_pid_temp[1] = float(dato['ki_temp'])
         k_pid_temp[2] = float(dato['kd_temp'])
-
     except:
         k_pid_temp = [kp, ki, kd]
-
-
 
     try:
         f = open("pid_temp_set.txt","w")
         f.write(str(k_pid_temp) + '\n')
         f.close()
-        communication.actuador(3,k_pid_temp)
-
+        communication.pid_tuning(2,k_pid_temp)
     except:
-        logging.info("no se pudo guardar en k_pid_ph.txt")
+        logging.info("no se pudo guardar en k_pid_temp.txt")
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
     socketio.emit('u_pid_temp', {'set': k_pid_temp}, namespace='/biocl', broadcast=True)
-
-
 
 
 

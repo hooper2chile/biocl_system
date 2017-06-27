@@ -8,11 +8,11 @@ SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port
 double Setpoint_temp, Input_temp, Output_temp;
 double Setpoint_ph, Input_ph, Output_ph;
 
-double Kp_ph=200, Ki_ph=45, Kd_ph=0;
+double Kp_ph=200,   Ki_ph=45,   Kd_ph=0;
 double Kp_temp=200, Ki_temp=45, Kd_temp=0;
 
 PID TEMP_PID(&Input_temp, &Output_temp, &Setpoint_temp, Kp_temp, Ki_temp, Kd_temp, DIRECT);
-PID   PH_PID(&Input_ph, &Output_ph, &Setpoint_ph, Kp_ph, Ki_ph, Kd_ph, DIRECT);
+PID   PH_PID(&Input_ph,   &Output_ph,   &Setpoint_ph,   Kp_ph,   Ki_ph,   Kd_ph,   DIRECT);
 
 
 #define  INT(x)   (x-48)  //ascii convertion
@@ -209,35 +209,39 @@ void calibrate(){
 
 
 //debe alterar los parametros de los pid
-void pid_parametros(){
-  switch (pid_x) {
+void pid_tuning(){
+//  PH_PID.SetTunings(consKp, consKi, consKd);
+//TEMP_PID.SetTunings(consKp, consKi, consKd);
 
-    case 1://pid_ph
-      if( k_x == '1' )
-        Kp_ph = message.substring(3).toFloat();
-      else if( k_x == '2' )
-        Ki_ph = message.substring(3).toFloat();
-      else if( k_x == '3' )
-        Kd_ph = message.substring(3).toFloat();
-      break;
 
-    case 2://pid_temp
-      if( k_x == '1' )
-        Kp_temp = message.substring(3).toFloat();
-      else if( k_x == '2' )
-        Ki_temp = message.substring(3).toFloat();
-      else if( k_x == '3' )
-        Kd_temp = message.substring(3).toFloat();
-      break;
-  }
+
 };
 
 
 //modifica los umbrales de cualquiera de los dos actuadores
 void actuador(){
+  //setting threshold ph: u1a160b142e
+  if ( message[1] == '1' ) {
+    uint8_t umbral_a = message.substring(3,6).toInt();
+    uint8_t umbral_b = message.substring(7,10).toInt();
 
-  PH_PID.SetOutputLimits(-SPEED_MAX/2,+SPEED_MAX/2);
+    if ( umbral_b > 0 && umbral_a > 0 && umbral_a <= SPEED_MAX && umbral_b <= SPEED_MAX )
+      PH_PID.SetOutputLimits(-umbral_a,+umbral_b);
+    else
+      PH_PID.SetOutputLimits(-SPEED_MAX, +SPEED_MAX);
+  }
+  //setting threshold temp: u2t130e
+  else if ( message[1] == '2' ) {
+    uint8_t umbral_temp = message.substring(3,6).toInt();
 
+    if ( umbral_temp > 0 && umbral_temp <= SPEED_MAX )
+      TEMP_PID.SetOutputLimits(0,+umbral_temp);
+    else
+      TEMP_PID.SetOutputLimits(0,SPEED_MAX);
+  }
+
+  Serial.println("umbral update good");
+  return;
 }
 
 
@@ -268,7 +272,6 @@ void hamilton_sensors() {
   pH    = m0 * Iph    + n0;
   oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
-
 
   return;
 }
@@ -315,7 +318,6 @@ void daqmx() {
 void pid_temp() {
   Input_temp = Temp1;
   TEMP_PID.Compute();
-  //Algoritmo de seleccion de acido o base
 
   return;
 }
@@ -458,11 +460,16 @@ int validate() {
               )
           return 1;
 
-      //Validete actuador calibrate
-      else if ( message[0] == 'u' &&
-                (message[1] == '1' || message[1] == '2' ||
-                 message[1] == '3' || message[1] == '4' ||
-                 message[1] == '5')
+      //Validete actuador calibrate ph: u1a001b001e
+      else if ( message[0] == 'u' && message[1] == '1' &&
+                message[2] == 'a' && message[6] == 'b' &&
+                message[10] == 'e'
+              )
+          return 1;
+
+      //Validete actuador calibrate temp: u2t003e
+      else if ( message[0] == 'u' && message[1] == '2' &&
+                message[2] == 't' && message[6] == 'e'
               )
           return 1;
 

@@ -170,7 +170,7 @@ var socket = io.connect(location.protocol + '//' +
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('u_pid_ph', function(msg) {
             $('#kp_ph_set').text('Kp: ' + msg.set[0]).html();
-            $('#ki_ph_set').text('Ki: ' + msg.set[1]).html();
+            $('#ki_ph_set').text('Ki : ' + msg.set[1]).html();
             $('#kd_ph_set').text('Kd: ' + msg.set[2]).html();
             //test
             console.log( msg.set[0] );
@@ -199,7 +199,7 @@ var socket = io.connect(location.protocol + '//' +
           //se escuchan desde el servidor los valores seteados para calibración.
           socket.on('u_pid_temp', function(msg) {
             $('#kp_temp_set').text('Kp: ' + msg.set[0]).html();
-            $('#ki_temp_set').text('Ki: ' + msg.set[1]).html();
+            $('#ki_temp_set').text('Ki : ' + msg.set[1]).html();
             $('#kd_temp_set').text('Kd: ' + msg.set[2]).html();
             //test
             console.log( msg.set[0] );

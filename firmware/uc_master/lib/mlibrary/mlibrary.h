@@ -207,14 +207,27 @@ void sensor_calibrate(){
 }
 
 
-
-//debe alterar los parametros de los pid
+//t1p9999.9i3333.3d5555.5e
+//t0p0200.0i0044.7d0025.5e
 void pid_tuning(){
-//  PH_PID.SetTunings(consKp, consKi, consKd);
-//TEMP_PID.SetTunings(consKp, consKi, consKd);
+  // message[1] = 1 => pid ph tuning
+  if ( message[1] == 1 ){
+    Kp_ph = message.substring(3,9).toFloat();
+    Ki_ph = message.substring(10,16).toFloat();
+    Kd_ph = message.substring(17,23).toFloat();
 
+    PH_PID.SetTunings(Kp_ph, Ki_ph, Kd_ph);
+  }
+  // message[1] = 2 => pid temp tuning
+  else if ( message[1] == 2 ){
+    Kp_temp = message.substring(3,9).toFloat();
+    Ki_temp = message.substring(10,16).toFloat();
+    Kd_temp = message.substring(17,23).toFloat();
 
+    TEMP_PID.SetTunings(Kp_temp, Ki_temp, Kd_temp);
+  }
 
+  Serial.println("pid_tuning ready");
 };
 
 
@@ -459,16 +472,23 @@ int validate() {
               )
           return 1;
 
-      //Validete actuador calibrate ph: u1a001b001e
+      //Validete umbral actuador ph: u1a001b001e
       else if ( message[0] == 'u' && message[1] == '1' &&
                 message[2] == 'a' && message[6] == 'b' &&
                 message[10] == 'e'
               )
           return 1;
 
-      //Validete actuador calibrate temp: u2t003e
+      //Validete umbral actuador temp: u2t003e
       else if ( message[0] == 'u' && message[1] == '2' &&
                 message[2] == 't' && message[6] == 'e'
+              )
+          return 1;
+
+      //Validate for pid parameters of temp and ph
+      else if ( message[0] == 't' && (message[1] == '1' || message[1] == '2') &&
+                message[2] == 'p' &&  message[9] == 'i' && message[16]== 'd'  &&
+                message[23]== 'e'
               )
           return 1;
 

@@ -1,28 +1,33 @@
 #include "Arduino.h"
 
 #include "SoftwareSerial.h"
-SoftwareSerial mySerial(2, 3); //RX(Digital2), TX(Digital3) Software serial port.
-
-
-#include "PID_v1.h"
-double Setpoint_temp, Input_temp, Output_temp;
-double Setpoint_ph, Input_ph, Output_ph;
-
-double   Kp_ph=200,   Ki_ph=45,   Kd_ph=0;
-double Kp_temp=200, Ki_temp=45, Kd_temp=0;
-
-PID TEMP_PID(&Input_temp, &Output_temp, &Setpoint_temp, Kp_temp, Ki_temp, Kd_temp, DIRECT);
-PID   PH_PID(&Input_ph,   &Output_ph,   &Setpoint_ph,   Kp_ph,   Ki_ph,   Kd_ph,   DIRECT);
+SoftwareSerial mySerial(2, 3);  //RX(Digital2), TX(Digital3) Software serial port.
+SoftwareSerial mySerial2(4, 5); //for control in mezclador
 
 
 #define  INT(x)   (x-48)  //ascii convertion
 #define iINT(x)   (x+48)  //inverse ascii convertion
-#define SPEED_MAX 150
-#define TEMP_MAX  130
-#define Ts        500 //500ms
 
-String  message     = "";
-String  new_write   = "";  String  new_write0   = "";
+#define SPEED_MAX 150     //[RPM]
+#define TEMP_MAX  130     //[ºC]
+
+#define Ts        1000     //1000ms
+
+#define Gap_temp0 0.5
+#define Gap_temp1 1       //1ºC
+#define Gap_temp2 2
+#define Gap_temp3 3
+#define Gap_temp4 5
+
+#define Gap_pH_0  0.05
+#define Gap_pH_1  0.10     // 0.1 (pH)
+#define Gap_pH_2  0.50
+#define Gap_pH_3  0.75
+#define Gap_pH_4  1.00
+#define Gap_pH_5  2.00
+
+
+String  message     = "";  String  new_write   = "";  String  new_write0   = "";
 
 boolean stringComplete = false;  // whether the string is complete
 
@@ -54,12 +59,12 @@ uint8_t myunload = 0;
 uint8_t mymix    = 0;
 uint8_t mytemp   = 0;
 
-uint8_t umbral_a = SPEED_MAX;
-uint8_t umbral_b = SPEED_MAX;
-uint8_t umbral_temp = SPEED_MAX;
+int umbral_a = SPEED_MAX/3;
+int umbral_b = SPEED_MAX/3;
+int umbral_temp = SPEED_MAX/1;
 
 // for incoming serial data
-float Byte0 = 0;  char cByte0[15] = "";
+float Byte0 = 0;  char cByte0[15] = "";  //por que no a 16?
 float Byte1 = 0;  char cByte1[15] = "";
 float Byte2 = 0;  char cByte2[15] = "";
 float Byte3 = 0;  char cByte3[15] = "";
@@ -101,10 +106,21 @@ float Itemp1 = 0;
 float Itemp2 = 0;
                                    //   DEFAULT:
 float pH    = m0*Iph    + n0;      //   ph = 0.75*IpH   - 3.5
-float oD    = m1*Iod    + n1;      // Temp = 5.31*Itemp - 42.95;
-float Temp1 = m2*Itemp1 + n2;
+float oD    = m1*Iod    + n1;
+float Temp1 = m2*Itemp1 + n2;      // Temp = 5.31*Itemp - 42.95;
 //float Temp2;
 
+
+//variable for control
+float u_temp = 0;
+float u_ph = 0;
+float dTemp= 0;
+float dpH  = 0;
+
+
+
+
+//for sensors 4-20mA
 #define mA 1000.0
 #define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
 
@@ -163,22 +179,6 @@ void crumble() {
 
 
 
-void format_message(int var) {
-  //reset to svar string
-  svar = "";
-
-  if (var < 10)
-    svar = "00"+ String(var);
-  else if (var < 100)
-    svar = "0" + String(var);
-  else
-    svar = String(var);
-
-  return;
-}
-
-
-
 //c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
 void sensor_calibrate(){
   //calibrate function for "message"
@@ -206,59 +206,42 @@ void sensor_calibrate(){
       break;
   }
 
-  Serial.println("good calibrate");
+  Serial.println("Sensor calibrated");
   return;
 }
-
-
-//t1p9999.9i3333.3d5555.5e
-//t0p0200.0i0044.7d0025.5e
-void pid_tuning(){
-  // message[1] = 1 => pid ph tuning
-  if ( message[1] == 1 ){
-    Kp_ph = message.substring(3,9).toFloat();
-    Ki_ph = message.substring(10,16).toFloat();
-    Kd_ph = message.substring(17,23).toFloat();
-
-    PH_PID.SetTunings(Kp_ph, Ki_ph, Kd_ph);
-  }
-  // message[1] = 2 => pid temp tuning
-  else if ( message[1] == 2 ){
-    Kp_temp = message.substring(3,9).toFloat();
-    Ki_temp = message.substring(10,16).toFloat();
-    Kd_temp = message.substring(17,23).toFloat();
-
-    TEMP_PID.SetTunings(Kp_temp, Ki_temp, Kd_temp);
-  }
-
-  Serial.println("pid_tuning ready");
-};
 
 
 
 //modifica los umbrales de cualquiera de los dos actuadores
 void actuador_umbral(){
-  //setting threshold ph: u1a160b142e
+  //setting threshold ph: u1a160b141e
   if ( message[1] == '1' ) {
     umbral_a = message.substring(3,6).toInt();
     umbral_b = message.substring(7,10).toInt();
 
-    if ( umbral_b > 0 && umbral_a > 0 && umbral_a <= SPEED_MAX && umbral_b <= SPEED_MAX )
-      PH_PID.SetOutputLimits(-umbral_a,+umbral_b);
-    else
-      PH_PID.SetOutputLimits(-SPEED_MAX, +SPEED_MAX);
+    if ( umbral_a <= 0.1 * SPEED_MAX )
+      umbral_a = 0.1 * SPEED_MAX;
+    else if ( umbral_a > SPEED_MAX)
+      umbral_a = SPEED_MAX;
+
+    if ( umbral_b <= 0.1 * SPEED_MAX )
+      umbral_b = 0.1 * SPEED_MAX;
+    else if ( umbral_b > SPEED_MAX)
+      umbral_b = SPEED_MAX;
+
   }
-  //setting threshold temp: u2t130e
+  //setting threshold temp: u2t011e
   else if ( message[1] == '2' ) {
     umbral_temp = message.substring(3,6).toInt();
 
-    if ( umbral_temp > 0 && umbral_temp <= SPEED_MAX )
-      TEMP_PID.SetOutputLimits(0,+umbral_temp);
-    else
-      TEMP_PID.SetOutputLimits(0,SPEED_MAX);
+    if ( umbral_temp <= 0.1 * SPEED_MAX )
+      umbral_temp = 0.1 * SPEED_MAX;
+    else if ( umbral_temp > SPEED_MAX)
+      umbral_temp = SPEED_MAX;
+
   }
 
-  Serial.println(String(umbral_a)+'_'+String(umbral_b)+'_'+String(umbral_temp));
+  Serial.println( String(umbral_a) + '_' + String(umbral_b) + '_' + String(umbral_temp) );
   return;
 }
 
@@ -266,10 +249,8 @@ void actuador_umbral(){
 
 void hamilton_sensors() {
 
-  Iph    = 0;
-  Iod    = 0;
-  Itemp1 = 0;
-  Itemp2 = 0;
+  Iph    = 0;   Iod    = 0;
+  Itemp1 = 0;   Itemp2 = 0;
 
   for (int i = 1; i <= N; i++) {
      Iph    += analogRead(SENSOR_PH);
@@ -290,6 +271,9 @@ void hamilton_sensors() {
   oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
 
+  //for debug
+  //pH =    Iph/3.57;
+  //Temp1 = Iph/0.5;
   return;
 }
 
@@ -306,6 +290,28 @@ void daqmx() {
   Byte4 = Iod;
   Byte5 = Itemp1;
   Byte6 = Itemp2;
+
+  //debug ph
+  /*
+  Byte0 = pH;
+  Byte1 = myphset;//oD;
+  Byte2 = u_ph;//Temp1;
+  Byte3 = dpH; //Iph;
+  Byte4 = 0;//Iod;
+  Byte5 = 0;//Itemp1;
+  Byte6 = 0;//Itemp2;
+  */
+
+  //debug temp
+  /*
+  Byte0 = Temp1;///pH;
+  Byte1 = mytemp;//oD;
+  Byte2 = u_temp;//Temp1;
+  Byte3 = dTemp; //Iph;
+  Byte4 = 0;//Iod;
+  Byte5 = 0;//Itemp1;
+  Byte6 = 0;//Itemp2;
+  */
 
   dtostrf(Byte0, 7, 2, cByte0);
   dtostrf(Byte1, 7, 2, cByte1);
@@ -329,31 +335,111 @@ void daqmx() {
 }
 
 
+/*
+#define Gap_temp0 0.5
+#define Gap_temp1 1       //1ºC
+#define Gap_temp2 2
+#define Gap_temp3 3
+#define Gap_temp4 4
+*/
+void control_temp() {
+  //for debug
+  //mytemp  = 50;
 
+  //touch my delta temp
+  dTemp = mytemp - Temp1;
 
+  if ( dTemp > 0 ) {
+    if ( dTemp <= Gap_temp1 )
+      u_temp = 0.20 * umbral_temp;
 
-void pid_temp() {
-  Input_temp = Temp1;
-  TEMP_PID.Compute();
+    else if ( dTemp <= Gap_temp2 )
+      u_temp = 0.50 * umbral_temp; //50%
+
+    else if ( dTemp <= Gap_temp3 )
+      u_temp = 0.75 * umbral_temp; //75%
+
+    else if ( dTemp <= Gap_temp4 )
+      u_temp = 1.00 * umbral_temp; //100%
+  }
+
+  //dTemp > 0.5 => off actuador
+  else if ( dTemp < 0 )
+    u_temp = 0;
 
   return;
 }
 
+/*
+#define Gap_pH_0  0.05
+#define Gap_pH_1  0.10     // 0.1 (pH)
+#define Gap_pH_2  0.50
+#define Gap_pH_3  0.75
+#define Gap_pH_4  1.00
+#define Gap_pH_5  2.00
+*/
+void control_ph() {
+  //for debug
+  //myphset = 7.0;
 
+  //touch my delta ph
+  dpH = myphset - pH;
 
+  // Escenario en que se debe aplicar acido.
+  if ( dpH > 0 ) {
+    if ( dpH <= Gap_pH_0 ) //5% ó OFF según sí el 5% de umbral_a sea < 1
+      u_ph = 0.05 * umbral_a;
 
-void pid_ph() {
-  Input_ph = pH;
-  PH_PID.Compute();  //con esto se actualiza Output_ph
+    else if ( dpH <= Gap_pH_1 )
+      u_ph = 0.1 * umbral_a;  //10%
 
-  //Algoritmo de seleccion de acido o base
-  if ( Output_ph < 0 ) {
-    ph_select = "a"; //=> Acido
-    Output_ph = (int) -Output_ph;
+    else if ( dpH <= Gap_pH_2 )
+      u_ph = 0.2 * umbral_a;  //20%
+
+    else if ( dpH <= Gap_pH_3 )
+      u_ph = 0.3 * umbral_a;  //30%
+
+    else if ( dpH <= Gap_pH_4 )
+      u_ph = 0.5 * umbral_a; //50%
+
+    else if ( dpH <= Gap_pH_5 )
+      u_ph = 0.75 * umbral_a;//75%
+
+    else
+      u_ph = umbral_b;       //100%
+
+    ph_select = "a";  //=> Acido
+    }
+
+  // Escenario en que se debe aplicar base.
+  else if ( dpH < 0 ) {
+    if ( dpH >= -Gap_pH_0 )
+    u_ph = 0.05 * umbral_b;   //5%
+
+    else if ( dpH >= -Gap_pH_1 )
+      u_ph = 0.1 * umbral_b;  //10%
+
+    else if ( dpH >= -Gap_pH_2 )
+      u_ph = 0.2 * umbral_b;  //20%
+
+    else if ( dpH >= -Gap_pH_3 )
+      u_ph = 0.3 * umbral_b;  //30%
+
+    else if ( dpH >= -Gap_pH_4 )
+      u_ph = 0.5 * umbral_b;  //50%
+
+    else if ( dpH >= -Gap_pH_5 )
+      u_ph = 0.75 * umbral_b; //75%
+
+    else
+      u_ph = umbral_b;        //100%
+
+    ph_select = "b";  //=> Básico
   }
-  else if ( Output_ph > 0 ) {
-    ph_select = "b"; //=> Básico
-    Output_ph = (int) +Output_ph;
+
+  else {
+    u_ph = 0;
+    ph_select = "N";  //no hacer nada
   }
 
   return;
@@ -365,26 +451,41 @@ void pid_ph() {
 
 void setpoint() {
   //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
+
+  //acá se leen los nuevos setpoint para los lazos de control
   crumble();
-  //acá se leen los nuevos setpoint para los pid
-  Setpoint_temp = mytemp;
-  Setpoint_ph   = myphset;
 
   Serial.println("good setpoint");
   return;
 }
 
 
+//function for transform numbers to string format of message
+void format_message(int var) {
+  //reset to svar string
+  svar = "";
 
+  if (var < 10)
+    svar = "00"+ String(var);
 
+  else if (var < 100)
+    svar = "0" + String(var);
+
+  else
+    svar = String(var);
+
+  return;
+}
 //Re-transmition commands to slave micro controller
 void broadcast_setpoint(uint8_t select) {
 
-  format_message(Output_temp);
-  uset_temp = svar;
+  //se prepara el setpoint para el renvio hacia uc slave.
+  format_message(u_temp);
+  uset_temp = svar; //string variable for control: uset_temp
 
-  format_message(Output_ph);
-  uset_ph = ph_select + svar;
+  format_message(u_ph);
+  uset_ph = ph_select + svar; //add strings for ph control: uset_ph
+
 
   switch (select) {
     case 0: //only re-tx and update pid uset's.
@@ -412,7 +513,10 @@ void broadcast_setpoint(uint8_t select) {
 void clean_strings() {
   //clean strings
   stringComplete = false;
-  message   = "";  uset_temp = "";  uset_ph   = ""; ph_select ="";
+  message   = "";
+  uset_temp = "";
+  uset_ph   = "";
+  ph_select ="";
 }
 
 

@@ -144,6 +144,9 @@ def actuador(var,u_set):
         elif u_set[0] >= 100 and u_set[0] <= SPEED_MAX:
             u_set_0 = str(u_set[0])
 
+        else:
+            u_set_0 = str(1)
+
 
         #format for u_set[1]
         if u_set[1] > 10 and u_set[1] < 100:
@@ -154,6 +157,9 @@ def actuador(var,u_set):
 
         elif u_set[1] >= 100 and u_set[1] <= SPEED_MAX:
             u_set_1 = str(u_set[1])
+
+        else:
+            u_set_1 = str(1)
 
         #creation for threshold actuador of ph command
         u_cook = 'u' + str(var) + 'a' + u_set_0 + 'b' + u_set_1 + 'e'
@@ -172,6 +178,9 @@ def actuador(var,u_set):
 
         elif u_set[0] >= 100 and u_set[0] <= SPEED_MAX:
             u_set_0 = str(u_set[0])
+
+        else:
+            u_set_0 = str(1)
 
         #creation for threshold actuador of temp command
         u_cook = 'u' + str(var) + 't' + u_set_0 + 'e'

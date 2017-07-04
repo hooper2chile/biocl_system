@@ -481,7 +481,7 @@ void broadcast_setpoint(uint8_t select) {
     case 0: //only re-tx and update pid uset's.
       new_write0 = "";
       new_write0 = new_write.substring(0,3) + uset_ph + new_write.substring(7,34) + uset_temp + new_write.substring(37,55) + "\n";
-      mySerial.print(new_write);
+      mySerial.print(new_write0);
       break;
 
     case 1: //update command and re-tx.

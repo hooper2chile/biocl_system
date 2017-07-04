@@ -1,0 +1,11 @@
+Instalado platformio hacer
+
+cp config/platformio firmware/uc_master (o uc_slave)
+cp nano_obtiboot.json ~/platformio/platforms/atmelavr/boards/.
+
+Estando en firmware:
+
+./platformio run —-target upload
+
+
+READY!

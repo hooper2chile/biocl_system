@@ -243,8 +243,8 @@ void actuador_umbral(){
       umbral_temp = SPEED_MIN;
     else if ( umbral_temp >= SPEED_MAX)
       umbral_temp = SPEED_MAX;
-  //  else
-  //    umbral_temp = umbral_temp;
+    else
+      umbral_temp = umbral_temp;
 
   }
 

@@ -15,10 +15,10 @@ SoftwareSerial mySerial2(4, 5); //for control in mezclador
 #define Ts        1000     //1000ms
 
 #define Gap_temp0 0.5
-#define Gap_temp1 1       //1ºC
-#define Gap_temp2 2
-#define Gap_temp3 3
-#define Gap_temp4 5
+#define Gap_temp1 1.0       //1ºC
+#define Gap_temp2 2.0
+#define Gap_temp3 3.0
+#define Gap_temp4 5.0
 
 #define Gap_pH_0  0.05
 #define Gap_pH_1  0.10     // 0.1 (pH)
@@ -357,7 +357,7 @@ void control_temp() {
   //touch my delta temp
   dTemp = mytempset - Temp1;
 
-  if ( dTemp > 0 ) {
+  if ( dTemp >= 0.0 ) {
     if ( dTemp <= Gap_temp1 )
       u_temp = 0.20 * umbral_temp;
 
@@ -370,13 +370,9 @@ void control_temp() {
     else if ( dTemp <= Gap_temp4 )
       u_temp = 1.00 * umbral_temp; //100%
   }
-
-  //dTemp > 0.5 => off actuador
-  else if ( dTemp < 0 )
+  //dTemp < 0 => speed min in actuador temp
+  else if ( dTemp < 0.0 )
     u_temp = SPEED_MIN;
-
-  //for debug
-  //Serial.println("____u_temp="+String(u_temp)+"___");
 
   return;
 }

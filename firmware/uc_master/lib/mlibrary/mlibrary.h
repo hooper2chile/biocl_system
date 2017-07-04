@@ -335,13 +335,7 @@ void daqmx() {
 }
 
 
-/*
-#define Gap_temp0 0.5
-#define Gap_temp1 1       //1ºC
-#define Gap_temp2 2
-#define Gap_temp3 3
-#define Gap_temp4 4
-*/
+
 void control_temp() {
   //for debug
   //mytemp  = 50;
@@ -367,17 +361,13 @@ void control_temp() {
   else if ( dTemp < 0 )
     u_temp = 0;
 
+  //for debug
+  Serial.println("____u_temp="+String(u_temp)+"___");
+
   return;
 }
 
-/*
-#define Gap_pH_0  0.05
-#define Gap_pH_1  0.10     // 0.1 (pH)
-#define Gap_pH_2  0.50
-#define Gap_pH_3  0.75
-#define Gap_pH_4  1.00
-#define Gap_pH_5  2.00
-*/
+
 void control_ph() {
   //for debug
   //myphset = 7.0;

@@ -362,7 +362,7 @@ void control_temp() {
     u_temp = 0;
 
   //for debug
-  Serial.println("____u_temp="+String(u_temp)+"___");
+  //Serial.println("____u_temp="+String(u_temp)+"___");
 
   return;
 }

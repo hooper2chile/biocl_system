@@ -217,6 +217,8 @@ void sensor_calibrate(){
 void actuador_umbral(){
   //setting threshold ph: u1a160b141e
   if ( message[1] == '1' ) {
+	
+    umbral_a = 0; umbral_b = 0;
     umbral_a = message.substring(3,6).toInt();
     umbral_b = message.substring(7,10).toInt();
 
@@ -233,6 +235,8 @@ void actuador_umbral(){
   }
   //setting threshold temp: u2t011e
   else if ( message[1] == '2' ) {
+    
+    umbral_temp = 0;
     umbral_temp = message.substring(3,6).toInt();
 
     if ( umbral_temp <= 0.02 * SPEED_MAX )

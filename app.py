@@ -10,8 +10,8 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.
 
 SPEED_MAX = 150 #150 [rpm]
 
-u_set_temp = SPEED_MAX
-u_set_ph   = [-SPEED_MAX,+SPEED_MAX]
+u_set_temp = [SPEED_MAX,0]
+u_set_ph   = [SPEED_MAX,SPEED_MAX]
 
 ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
@@ -308,7 +308,7 @@ def calibrar_temp(dato):
 
 #CALIBRACION ACTUADOR PH
 @socketio.on('u_calibrar', namespace='/biocl')
-def calibrar_u(dato):
+def calibrar_u_ph(dato):
     global u_set_ph
     #se reciben los parametros para calibración
     #setting = [ dato['u_acido_max'], dato['u_base_max'] ]
@@ -318,7 +318,7 @@ def calibrar_u(dato):
         u_set_ph[1] = int(dato['u_base_max'])
 
     except:
-        u_set_ph = [-SPEED_MAX,+SPEED_MAX]
+        u_set_ph = [SPEED_MAX,SPEED_MAX]
 
 
     try:
@@ -338,22 +338,23 @@ def calibrar_u(dato):
 
 #CALIBRACION ACTUADOR TEMP
 @socketio.on('u_calibrar_temp', namespace='/biocl')
-def calibrar_u(dato):
+def calibrar_u_temp(dato):
     global u_set_temp
     #se reciben los parametros para calibración
 
     try:
-        u_set_temp = int(dato['u_temp'])
+        u_set_temp[0] = int(dato['u_temp'])
+        u_set_temp[1] = 0
 
     except:
-        u_set_temp = SPEED_MAX
+        u_set_temp = [SPEED_MAX,SPEED_MAX]
 
 
     try:
         f = open("umbral_set_temp.txt","w")
         f.write(str(u_set_temp) + '\n')
         f.close()
-        communication.actuador(2,[u_set_temp, 20])  #FALTA IMPLEMENTARIO EN communication.py
+        communication.actuador(2,u_set_temp)  #FALTA IMPLEMENTARIO EN communication.py
 
     except:
         logging.info("no se pudo guardar u_set_temp en umbral_set_temp.txt")

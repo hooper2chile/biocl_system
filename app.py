@@ -10,14 +10,8 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.
 
 SPEED_MAX = 150 #150 [rpm]
 
-kp = 200
-ki = 45 # ki = kp/Ti
-kd = 0  # kd = kp*Td
-
 u_set_temp = SPEED_MAX
 u_set_ph   = [-SPEED_MAX,+SPEED_MAX]
-k_pid_ph   = [kp,ki,kd]
-k_pid_temp = [kp,ki,kd]
 
 ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
@@ -74,8 +68,7 @@ def function_thread():
     emit('temp_calibrar',   {'set': temp_set})
     emit('u_calibrar',      {'set': u_set_ph})
     emit('u_calibrar_temp', {'set': u_set_temp})
-    emit('u_pid_ph',        {'set': k_pid_ph})
-    emit('u_pid_temp',      {'set': k_pid_temp})
+
 
     global thread1
     if thread1 is None:
@@ -368,57 +361,6 @@ def calibrar_u(dato):
 
     #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
     socketio.emit('u_calibrar_temp', {'set': u_set_temp}, namespace='/biocl', broadcast=True)
-
-
-
-
-#CALIBRAR PID_PH
-@socketio.on('u_pid_ph', namespace='/biocl')
-def calibrar_pid_ph(dato):
-    global k_pid_ph
-    #setting = [ dato['kp_ph'], dato['ki_ph'], dato['kd_ph'] ]
-    try:
-        k_pid_ph[0] = float(dato['kp_ph'])
-        k_pid_ph[1] = float(dato['ki_ph'])
-        k_pid_ph[2] = float(dato['kd_ph'])
-    except:
-        k_pid_ph = [kp, ki, kd]
-
-    try:
-        f = open("pid_ph_set.txt","w")
-        f.write(str(k_pid_ph) + '\n')
-        f.close()
-        communication.pid_tuning(1,k_pid_ph)
-    except:
-        logging.info("no se pudo guardar en k_pid_ph.txt")
-
-    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
-    socketio.emit('u_pid_ph', {'set': k_pid_ph}, namespace='/biocl', broadcast=True)
-
-
-#CALIBRAR PID_TEMP
-@socketio.on('u_pid_temp', namespace='/biocl')
-def calibrar_pid_ph(dato):
-    global k_pid_temp
-    #setting = [ dato['kp_temp'], dato['ki_temp'], dato['kd_temp'] ]
-    try:
-        k_pid_temp[0] = float(dato['kp_temp'])
-        k_pid_temp[1] = float(dato['ki_temp'])
-        k_pid_temp[2] = float(dato['kd_temp'])
-    except:
-        k_pid_temp = [kp, ki, kd]
-
-
-    try:
-        f = open("pid_temp_set.txt","w")
-        f.write(str(k_pid_temp) + '\n')
-        f.close()
-        communication.pid_tuning(2,k_pid_temp)
-    except:
-        logging.info("no se pudo guardar en k_pid_temp.txt")
-
-    #Con cada cambio en los parametros, se vuelven a emitir a todos los clientes.
-    socketio.emit('u_pid_temp', {'set': k_pid_temp}, namespace='/biocl', broadcast=True)
 
 
 

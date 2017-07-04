@@ -22,9 +22,7 @@ SPEED_MAX = 150
 TEMP_MAX  = 130
 PH_MIN = 0
 PH_MAX = 14
-kp = 200
-ki = 45 # ki = kp/Ti
-kd = 0  # kd = kp*Td
+
 
 #download data measures with client zmq
 def published_setpoint(set_data):
@@ -193,38 +191,6 @@ def actuador(var,u_set):
 
     except:
         logging.info("no se pudo guardar set de actuador()")
-
-
-#tuning for pid ph and temp.-
-def pid_tuning(var, k_t):
-
-    #format for parameters in array k_t = [kp,ki,kd]
-    j = 0
-    for i in k_t:
-        if i < 10:
-            k_t[j]='000'+str(i)
-
-        elif i < 100:
-            k_t[j]='00'+str(i)
-
-        elif i < 1000:
-            k_t[j]='0'+str(i)
-
-        else:
-            k_t[j]=str(i)
-
-        j+=1
-
-    pid_tuning_string = 't' + str(var) + 'p' + k_t[0] + 'i' + k_t[1] + 'd' + k_t[2] + 'e'
-
-    try:
-        f = open("pid_tuning.txt","a+")
-        f.write(pid_tuning_string + '\n')
-        f.close()
-        published_setpoint(pid_tuning_string);
-
-    except:
-        logging.info("no se pudo guardar pid_tuning_string de pid_tuning()")
 
 
 

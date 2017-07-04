@@ -586,13 +586,6 @@ int validate() {
               )
           return 1;
 
-      //Validate for pid parameters of temp and ph
-      else if ( message[0] == 't' && (message[1] == '1' || message[1] == '2') &&
-                message[2] == 'p' &&  message[9] == 'i' && message[16]== 'd'  &&
-                message[23]== 'e'
-              )
-          return 1;
-
       // Validate READING
       else if ( message[0] == 'r' )
           return 1;

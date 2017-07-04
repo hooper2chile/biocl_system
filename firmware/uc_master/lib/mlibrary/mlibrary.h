@@ -8,7 +8,7 @@ SoftwareSerial mySerial2(4, 5); //for control in mezclador
 #define  INT(x)   (x-48)  //ascii convertion
 #define iINT(x)   (x+48)  //inverse ascii convertion
 
-#define SPEED_MIN 5
+#define SPEED_MIN 2.0
 #define SPEED_MAX 150     //[RPM]
 #define TEMP_MAX  130     //[ºC]
 
@@ -357,22 +357,26 @@ void control_temp() {
   //touch my delta temp
   dTemp = mytempset - Temp1;
 
-  if ( dTemp >= 0.0 ) {
+  if ( dTemp > 0.0 ) {
     if ( dTemp <= Gap_temp1 )
-      u_temp = 0.20 * umbral_temp;
+      u_temp = 0.20*umbral_temp;
 
     else if ( dTemp <= Gap_temp2 )
-      u_temp = 0.50 * umbral_temp; //50%
+      u_temp = 0.35*umbral_temp; //50%
 
     else if ( dTemp <= Gap_temp3 )
-      u_temp = 0.75 * umbral_temp; //75%
+      u_temp = 0.50*umbral_temp; //75%
 
     else if ( dTemp <= Gap_temp4 )
-      u_temp = 1.00 * umbral_temp; //100%
+      u_temp = 0.75*umbral_temp; //100%
+
+    else if ( dTemp >= Gap_temp4 )
+      u_temp = umbral_temp;
   }
   //dTemp < 0 => speed min in actuador temp
-  else if ( dTemp < 0.0 )
+  else if ( dTemp <= 0.0 )
     u_temp = SPEED_MIN;
+
 
   return;
 }

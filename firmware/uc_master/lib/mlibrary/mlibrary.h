@@ -60,9 +60,9 @@ uint8_t myunload = 0;
 uint8_t mymix    = 0;
 uint8_t mytemp   = 0;
 
-int umbral_a = SPEED_MAX;
-int umbral_b = SPEED_MAX;
-int umbral_temp = SPEED_MAX;
+volatile int umbral_a = SPEED_MAX;
+volatile int umbral_b = SPEED_MAX;
+volatile int umbral_temp = SPEED_MAX;
 
 // for incoming serial data
 float Byte0 = 0;  char cByte0[15] = "";  //por que no a 16?
@@ -140,7 +140,7 @@ void serialEvent() {
 
 
 //desmenuza el string de comandos
-void crumble() {
+void write_crumble() {
   //Serial.println("good");
   ph_var = message.substring(1, 3);
   ph_set = message.substring(3, 7);
@@ -217,7 +217,7 @@ void sensor_calibrate(){
 void actuador_umbral(){
   //setting threshold ph: u1a160b141e
   if ( message[1] == '1' ) {
-	
+
     umbral_a = 0; umbral_b = 0;
     umbral_a = message.substring(3,6).toInt();
     umbral_b = message.substring(7,10).toInt();
@@ -235,7 +235,7 @@ void actuador_umbral(){
   }
   //setting threshold temp: u2t011e
   else if ( message[1] == '2' ) {
-    
+
     umbral_temp = 0;
     umbral_temp = message.substring(3,6).toInt();
 
@@ -448,7 +448,7 @@ void setpoint() {
   //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
 
   //acá se leen los nuevos setpoint para los lazos de control
-  crumble();
+  write_crumble();
 
   Serial.println("good setpoint");
   return;

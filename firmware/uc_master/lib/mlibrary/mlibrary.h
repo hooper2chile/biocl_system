@@ -370,7 +370,7 @@ void control_temp() {
     else if ( dTemp <= Gap_temp4 )
       u_temp = 0.75*umbral_temp; //100%
 
-    else if ( dTemp >= Gap_temp4 )
+    else if ( dTemp > Gap_temp4 )
       u_temp = umbral_temp;
   }
   //dTemp < 0 => speed min in actuador temp
@@ -390,7 +390,7 @@ void control_ph() {
   dpH = myphset - pH;
 
   // Escenario en que se debe aplicar acido.
-  if ( dpH > 0 ) {
+  if ( dpH > 0.0 ) {
     if ( dpH <= Gap_pH_0 ) //5% ó OFF según sí el 5% de umbral_a sea < 1
       u_ph = 0.05 * umbral_a;
 
@@ -409,14 +409,14 @@ void control_ph() {
     else if ( dpH <= Gap_pH_5 )
       u_ph = 0.75 * umbral_a;//75%
 
-    else
-      u_ph = umbral_b;       //100%
+    else if ( dpH > Gap_pH_5 )
+      u_ph = umbral_a;       //100%
 
     ph_select = "a";  //=> Acido
     }
 
   // Escenario en que se debe aplicar base.
-  else if ( dpH < 0 ) {
+  else if ( dpH <= 0.0 ) {
     if ( dpH >= -Gap_pH_0 )
     u_ph = 0.05 * umbral_b;   //5%
 
@@ -435,7 +435,7 @@ void control_ph() {
     else if ( dpH >= -Gap_pH_5 )
       u_ph = 0.75 * umbral_b; //75%
 
-    else
+    else if ( dpH > -Gap_pH_5 )
       u_ph = umbral_b;        //100%
 
     ph_select = "b";  //=> Básico

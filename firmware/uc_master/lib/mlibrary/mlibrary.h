@@ -8,6 +8,7 @@ SoftwareSerial mySerial2(4, 5); //for control in mezclador
 #define  INT(x)   (x-48)  //ascii convertion
 #define iINT(x)   (x+48)  //inverse ascii convertion
 
+#define SPEED_MIN 5
 #define SPEED_MAX 150     //[RPM]
 #define TEMP_MAX  130     //[ºC]
 
@@ -220,12 +221,12 @@ void actuador_umbral(){
     umbral_b = message.substring(7,10).toInt();
 
     if ( umbral_a <= 0.02 * SPEED_MAX )
-      umbral_a = 0.02 * SPEED_MAX;
+      umbral_a = SPEED_MIN;
     else if ( umbral_a > SPEED_MAX)
       umbral_a = SPEED_MAX;
 
     if ( umbral_b <= 0.02 * SPEED_MAX )
-      umbral_b = 0.02 * SPEED_MAX;
+      umbral_b = SPEED_MIN;
     else if ( umbral_b > SPEED_MAX)
       umbral_b = SPEED_MAX;
 
@@ -235,7 +236,7 @@ void actuador_umbral(){
     umbral_temp = message.substring(3,6).toInt();
 
     if ( umbral_temp <= 0.02 * SPEED_MAX )
-      umbral_temp = 0.02 * SPEED_MAX;
+      umbral_temp = SPEED_MIN;
     else if ( umbral_temp > SPEED_MAX)
       umbral_temp = SPEED_MAX;
 
@@ -359,7 +360,7 @@ void control_temp() {
 
   //dTemp > 0.5 => off actuador
   else if ( dTemp < 0 )
-    u_temp = 0;
+    u_temp = SPEED_MIN;
 
   //for debug
   //Serial.println("____u_temp="+String(u_temp)+"___");

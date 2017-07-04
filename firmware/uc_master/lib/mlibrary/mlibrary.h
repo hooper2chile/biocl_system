@@ -59,9 +59,9 @@ uint8_t myunload = 0;
 uint8_t mymix    = 0;
 uint8_t mytemp   = 0;
 
-int umbral_a = SPEED_MAX/3;
-int umbral_b = SPEED_MAX/3;
-int umbral_temp = SPEED_MAX/1;
+int umbral_a = SPEED_MAX;
+int umbral_b = SPEED_MAX;
+int umbral_temp = SPEED_MAX;
 
 // for incoming serial data
 float Byte0 = 0;  char cByte0[15] = "";  //por que no a 16?

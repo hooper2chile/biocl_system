@@ -54,15 +54,17 @@ char rst4 = 1;  char rst5 = 1;  char rst6 = 1;
 char dir1 = 1;  char dir2 = 1;  char dir3 = 1;
 char dir4 = 1;  char dir5 = 1;  char dir6 = 1;
 
-float   myphset  = 0;
-uint8_t myfeed   = 0;
-uint8_t myunload = 0;
-uint8_t mymix    = 0;
-uint8_t mytemp   = 0;
+float   myphset   = 0;
+float   mytempset = 0;
 
-int umbral_a = SPEED_MAX;
-int umbral_b = SPEED_MAX;
-int umbral_temp = SPEED_MAX;
+uint8_t myfeed    = 0;
+uint8_t myunload  = 0;
+uint8_t mymix     = 0;
+
+
+float umbral_a = SPEED_MAX;
+float umbral_b = SPEED_MAX;
+float umbral_temp = SPEED_MAX;
 
 // for incoming serial data
 float Byte0 = 0;  char cByte0[15] = "";  //por que no a 16?
@@ -159,7 +161,7 @@ void write_crumble() {
 
   //setting setpoints
   myphset  = ph_set.toFloat();
-  mytemp   = temp_set.toInt();
+  mytempset= temp_set.toFloat();
 
   myfeed   = feed_set.toInt();
   myunload = unload_set.toInt();
@@ -219,8 +221,8 @@ void actuador_umbral(){
   if ( message[1] == '1' ) {
 
     umbral_a = 0; umbral_b = 0;
-    umbral_a = message.substring(3,6).toInt();
-    umbral_b = message.substring(7,10).toInt();
+    umbral_a = message.substring(3,6).toFloat();
+    umbral_b = message.substring(7,10).toFloat();
 
     if ( umbral_a <= SPEED_MIN )
       umbral_a = SPEED_MIN;
@@ -237,7 +239,7 @@ void actuador_umbral(){
   else if ( message[1] == '2' ) {
 
     umbral_temp = 0;
-    umbral_temp = message.substring(3,6).toInt();
+    umbral_temp = message.substring(3,6).toFloat();
 
     if ( umbral_temp <= SPEED_MIN )
       umbral_temp = SPEED_MIN;
@@ -338,7 +340,7 @@ void daqmx() {
   Serial.print(cByte6);  Serial.print("\t");
 
   //for debug
-  Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__ut="+String(umbral_temp)+"__mytemp="+String(mytemp)+"__Temp1="+String(Temp1)+"__dTemp="+String(dTemp));  Serial.print("\t");
+  Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__ut="+String(umbral_temp)+"__mytemp="+String(mytempset)+"__Temp1="+String(Temp1)+"__dTemp="+String(dTemp)+"__u_temp="+String(u_temp));  Serial.print("\t");
 
 
   Serial.print("\n");
@@ -353,7 +355,7 @@ void control_temp() {
   //mytemp  = 50;
 
   //touch my delta temp
-  dTemp = mytemp - Temp1;
+  dTemp = mytempset - Temp1;
 
   if ( dTemp > 0 ) {
     if ( dTemp <= Gap_temp1 )

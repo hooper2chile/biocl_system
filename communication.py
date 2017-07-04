@@ -147,7 +147,7 @@ def actuador(var,u_set):
 
 
         #format for u_set[1]
-        if u_set[1] > 10 and u_set[1] < 100:
+        if u_set[1] >= 10 and u_set[1] < 100:
             u_set_1 = '0' + str(u_set[1])
 
         elif u_set[1] > 0 and u_set[1] < 10:

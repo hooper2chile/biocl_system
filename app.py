@@ -269,7 +269,7 @@ def calibrar_temp(dato):
     except:
         temp_set = [0,0,0,0]
 
-    if temp_set[3] - temp_set[1]!=0 and temp_set[0]!=0 and temp_set[1]!=0:
+    if (temp_set[3] - temp_set[1])!=0 and temp_set[0]!=0 and temp_set[1]!=0:
         m_temp = float(format(( temp_set[2] - temp_set[0] )/( temp_set[3] - temp_set[1] ), '.2f'))
         n_temp = float(format(  temp_set[0] - temp_set[1]*(m_temp), '.2f'))
 
@@ -318,7 +318,7 @@ def calibrar_u(dato):
         u_set_ph[1] = int(dato['u_base_max'])
 
     except:
-        u_set_ph = [-SPEED_MAX/10,+SPEED_MAX/10]
+        u_set_ph = [-SPEED_MAX,+SPEED_MAX]
 
 
     try:
@@ -346,7 +346,7 @@ def calibrar_u(dato):
         u_set_temp = int(dato['u_temp'])
 
     except:
-        u_set_temp = SPEED_MAX/10
+        u_set_temp = SPEED_MAX
 
 
     try:

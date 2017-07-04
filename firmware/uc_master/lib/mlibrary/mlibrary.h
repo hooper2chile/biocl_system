@@ -222,14 +222,14 @@ void actuador_umbral(){
     umbral_a = message.substring(3,6).toInt();
     umbral_b = message.substring(7,10).toInt();
 
-    if ( umbral_a <= 0.02 * SPEED_MAX )
+    if ( umbral_a <= SPEED_MIN )
       umbral_a = SPEED_MIN;
-    else if ( umbral_a >= SPEED_MAX)
+    else if ( umbral_a >= SPEED_MAX )
       umbral_a = SPEED_MAX;
 
-    if ( umbral_b <= 0.02 * SPEED_MAX )
+    if ( umbral_b <= SPEED_MIN )
       umbral_b = SPEED_MIN;
-    else if ( umbral_b >= SPEED_MAX)
+    else if ( umbral_b >= SPEED_MAX )
       umbral_b = SPEED_MAX;
 
   }
@@ -239,10 +239,12 @@ void actuador_umbral(){
     umbral_temp = 0;
     umbral_temp = message.substring(3,6).toInt();
 
-    if ( umbral_temp <= 0.02 * SPEED_MAX )
+    if ( umbral_temp <= SPEED_MIN )
       umbral_temp = SPEED_MIN;
     else if ( umbral_temp >= SPEED_MAX)
       umbral_temp = SPEED_MAX;
+  //  else
+  //    umbral_temp = umbral_temp;
 
   }
 

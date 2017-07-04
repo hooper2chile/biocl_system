@@ -338,7 +338,7 @@ void daqmx() {
   Serial.print(cByte6);  Serial.print("\t");
 
   //for debug
-  Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__ut="+String(umbral_temp));  Serial.print("\t");
+  Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__ut="+String(umbral_temp)+"__mytemp="+String(mytemp)+"__Temp1="+String(Temp1));  Serial.print("\t");
 
 
   Serial.print("\n");

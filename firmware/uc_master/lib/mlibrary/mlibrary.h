@@ -95,12 +95,12 @@ float m0 = +0.75;
 float n0 = -3.5;
 
 //oD=:(m1,n1)
-float m1 = 1;
-float n1 = 0;
+float m1 = +6.02;
+float n1 = -20.42;
 
 //Temp1=:(m2,n2)
 float m2 = +5.31;
-float n2 = -42.95;
+float n2 = -41;
 
 
 float Iph = 0;

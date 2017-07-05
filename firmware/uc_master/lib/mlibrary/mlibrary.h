@@ -392,53 +392,53 @@ void control_ph() {
   // Escenario en que se debe aplicar acido.
   if ( dpH > 0.0 ) {
     if ( dpH <= Gap_pH_0 ) //5% ó OFF según sí el 5% de umbral_a sea < 1
-      u_ph = 0.05 * umbral_a;
+      u_ph = 0.05 * umbral_b;
 
     else if ( dpH <= Gap_pH_1 )
-      u_ph = 0.1 * umbral_a;  //10%
+      u_ph = 0.1 * umbral_b;  //10%
 
     else if ( dpH <= Gap_pH_2 )
-      u_ph = 0.2 * umbral_a;  //20%
+      u_ph = 0.2 * umbral_b;  //20%
 
     else if ( dpH <= Gap_pH_3 )
-      u_ph = 0.3 * umbral_a;  //30%
+      u_ph = 0.3 * umbral_b;  //30%
 
     else if ( dpH <= Gap_pH_4 )
-      u_ph = 0.5 * umbral_a; //50%
+      u_ph = 0.5 * umbral_b; //50%
 
     else if ( dpH <= Gap_pH_5 )
-      u_ph = 0.75 * umbral_a;//75%
+      u_ph = 0.75 * umbral_b;//75%
 
     else if ( dpH > Gap_pH_5 )
-      u_ph = umbral_a;       //100%
+      u_ph = umbral_b;       //100%
 
-    ph_select = "a";  //=> Acido
+    ph_select = "b";  //=> Acido
     }
 
   // Escenario en que se debe aplicar base.
   else if ( dpH <= 0.0 ) {
     if ( dpH >= -Gap_pH_0 )
-    u_ph = 0.05 * umbral_b;   //5%
+    u_ph = 0.05 * umbral_a;   //5%
 
     else if ( dpH >= -Gap_pH_1 )
-      u_ph = 0.1 * umbral_b;  //10%
+      u_ph = 0.1 * umbral_a;  //10%
 
     else if ( dpH >= -Gap_pH_2 )
-      u_ph = 0.2 * umbral_b;  //20%
+      u_ph = 0.2 * umbral_a;  //20%
 
     else if ( dpH >= -Gap_pH_3 )
-      u_ph = 0.3 * umbral_b;  //30%
+      u_ph = 0.3 * umbral_a;  //30%
 
     else if ( dpH >= -Gap_pH_4 )
-      u_ph = 0.5 * umbral_b;  //50%
+      u_ph = 0.5 * umbral_a;  //50%
 
     else if ( dpH >= -Gap_pH_5 )
-      u_ph = 0.75 * umbral_b; //75%
+      u_ph = 0.75 * umbral_a; //75%
 
     else if ( dpH > -Gap_pH_5 )
-      u_ph = umbral_b;        //100%
+      u_ph = umbral_a;        //100%
 
-    ph_select = "b";  //=> Básico
+    ph_select = "a";  //=> Básico
   }
 
   else {

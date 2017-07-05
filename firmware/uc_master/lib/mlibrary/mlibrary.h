@@ -100,7 +100,7 @@ float n1 = -20.42;
 
 //Temp1=:(m2,n2)
 float m2 = +5.31;
-float n2 = -41;
+float n2 = -42.95;
 
 
 float Iph = 0;

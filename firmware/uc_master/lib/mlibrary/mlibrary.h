@@ -443,7 +443,7 @@ void control_ph() {
 
   else {
     u_ph = 0;
-    ph_select = "V";  //no hacer nada
+    ph_select = "N";  //no hacer nada
   }
 
   return;

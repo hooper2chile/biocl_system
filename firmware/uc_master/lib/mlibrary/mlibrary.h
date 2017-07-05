@@ -435,7 +435,7 @@ void control_ph() {
     else if ( dpH >= -Gap_pH_5 )
       u_ph = 0.75 * umbral_a; //75%
 
-    else if ( dpH > -Gap_pH_5 )
+    else if ( dpH < -Gap_pH_5 )
       u_ph = umbral_a;        //100%
 
     ph_select = "a";  //=> Básico

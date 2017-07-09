@@ -2,11 +2,9 @@
 # --*- coding: utf-8 -*--
 import sys, zmq, time, logging
 
-if(sys.platform=='darwin'):
-    logging.basicConfig(filename='./log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+logging.basicConfig(filename='/home/pi/biocl_system/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
-else:
-    logging.basicConfig(filename='/home/pi/biocl_system/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+DIR="/home/pi/biocl_system/"
 
 #5556: for download data
 #5557: for upload data
@@ -113,7 +111,7 @@ def calibrate(var, coef):
 
     #guardo coef_cook en un archivo para depurar
     try:
-        f = open("coef_m_n.txt","w")
+        f = open(DIR + "coef_m_n.txt","w")
         f.write(coef_cook + '\n')
         f.close()
         published_setpoint(coef_cook)
@@ -184,7 +182,7 @@ def actuador(var,u_set):
         u_cook = 'u' + str(var) + 't' + u_set_0 + 'e'
 
     try:
-        f = open("actuador.txt","w")
+        f = open(DIR + "actuador.txt","w")
         f.write(u_cook + '\n')
         f.close()
         published_setpoint(u_cook);
@@ -336,7 +334,7 @@ def cook_setpoint(set_data):
     published_setpoint(command)
 
     try:
-        f = open("command.txt","a+")
+        f = open(DIR + "command.txt","a+")
         f.write(command)
         f.close()
 

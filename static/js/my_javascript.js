@@ -94,13 +94,13 @@ $(document).ready(function() {
     //se emiten señal de reinicio o apagado hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
-                    { action  : $('#select').find(":selected").text()),
+                    { action  : $('#select').find(":selected").text(),
                       checked : $('#confirm').is(':checked')
                    });
 
         //para depurar
         console.log('Emitiendo Valores de Acción');
-        console.log($('#select').find(":selected").text()))
+        console.log($('#select').find(":selected").text())
         console.log($('#confirm').is(':checked'));
 
         return false;

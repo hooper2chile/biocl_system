@@ -120,7 +120,7 @@ def setpoints(dato):
     #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
     socketio.emit('power', {'set': task}, namespace='/biocl', broadcast=True)
 
-    task[1] is True:
+    if task[1] is True:
         if task[0] == "grabar":
             flag_database = True
             try:

@@ -90,11 +90,12 @@ $(document).ready(function() {
 
 
 
+    //  $('#select').val($(this).find(":selected").text());
     //  .val($(this).find(":selected").text());
     //se emiten señal de reinicio o apagado hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
-                    { action  : $('#select').find(":selected").val(),
+                    { action  : $('#select').val($(this).find(":selected").text());,
                       checked : $('#confirm').is(':checked')
                    });
 

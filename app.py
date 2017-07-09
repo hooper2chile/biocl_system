@@ -30,12 +30,48 @@ app = Flask(__name__, static_url_path="")
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread1 = None
-
+error = None
 
 #CONFIGURACION DE PAGINAS WEB
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template("index.html", title_html="Configuracion de Procesos")
+@app.route('/'     , methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    global error
+
+    if request.method == 'POST':
+        if request.form['username'] != 'biocl' or request.form['password'] != 'felipe':
+            error = "Credencial Invalida"
+            return render_template("login.html", error=error)
+        else:
+            error='validado'
+            return render_template("index.html", error=error)
+
+    error="No Validado en login"
+    return render_template("login.html", error=error)
+
+
+
+
+@app.route('/calibrar', methods=['POST', 'GET'])
+def test():
+    global error
+
+    if request.method == 'POST':
+        if request.form['username'] != 'biocl' or request.form['password'] != 'felipe':
+            error = "Credencial Invalida"
+            return render_template("login.html", error=error)
+        else:
+            error='validado'
+            return render_template("calibrar.html", error=error)
+
+
+    error = 'No Validado en Calibracion'
+    return render_template("login.html", error=error)
+
+
+
+
+
 
 
 @app.route('/graphics')
@@ -48,9 +84,7 @@ def viewDB():
     return render_template('dbase.html', title_html="Data Logger")
 
 
-@app.route('/calibrar', methods=['GET', 'POST'])
-def calibrar():
-    return render_template('calibrar.html', title_html="Calibrar")
+
 
 
 

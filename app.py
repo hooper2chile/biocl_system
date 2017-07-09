@@ -121,7 +121,7 @@ def setpoints(dato):
     socketio.emit('power', {'set': realizar}, namespace='/biocl', broadcast=True)
 
 
-    if realizar[1] == 'True':
+    if realizar[1] == True:
         #guardo realizar en un archivo para depurar
         try:
             realizar = str(realizar)

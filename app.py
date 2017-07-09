@@ -109,6 +109,31 @@ def function_thread():
         thread1 = socketio.start_background_task(target=background_thread1)
 
 
+
+
+@socketio.on('power', namespace='/biocl')
+def setpoints(dato):
+    global realizar
+    #se reciben los nuevos setpoints
+    realizar = [ dato['action'], dato['checked'] ]
+
+    #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
+    socketio.emit('power', {'set': realizar}, namespace='/biocl', broadcast=True)
+
+    #guardo realizar en un archivo para depurar
+    try:
+        realizar = str(realizar)
+        f = open("realizar.txt","a+")
+        f.write(realizar + '\n')
+        f.close()
+
+    except:
+        logging.info("no se pudo guardar en realizar en realizar.txt")
+
+
+
+
+
 N = None
 APIRest = None
 @socketio.on('my_json', namespace='/biocl')
@@ -167,7 +192,6 @@ def setpoints(dato):
 
 
 #Sockets de calibración de instrumentación
-
 #CALIBRACION DE PH
 @socketio.on('ph_calibrar', namespace='/biocl')
 def calibrar_ph(dato):

@@ -1,26 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<!script type="text/javascript" charset="utf-8" src="/static/js/my_javascript.js"> <!/script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/my_javascript.js') }}"></script>
 
 <section>
+  <form id="process" method="POST" action='#'>
   <fieldset>
-      <label for="email-address"><span>Email <span class="required">*</span></span>
-      <input type="email" name="email-address" placeholder="tu_email@abcd.com">
-
-      <label for="interval"> Grabar: </label>
-      <input type="number" name="interval" value="1" min="1">
-
-      <select name="time_process">
-            <option value="min">[Min]</option>
-            <option value="hr">[Hr]</option>
-            <option value="dias">[Días]</option>
-            <option value="manual" selected> Manual</option>
+      <select name="selection" id="select">
+            <option value="grabar" selected> Grabar</option>
+            <option value="limpiar">Borrar Archivos</option>
+            <option value="reiniciar">Reiniciar</option>
+            <option value="apagar">Apagar</option>
       </select>
-      <input type="checkbox" name="day" value="Sunday">
+
+      <input type="checkbox" id="confirm" value="Sunday">
       <button class="button" type="submit">+</button>
   </fieldset>
+</form>
 </section>
+
 
 
 <form id="setpoints" method="POST" action='#'>

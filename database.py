@@ -83,6 +83,8 @@ def main():
         try:
             f = open(DIR + "flag_database.txt","r")
             flag_database = bool(f.readlines()[-1].split()[1][:-1])
+                logging.info("FLAG_DATABASE WHILE SUPERIOR:")
+                logging.info(flag_database)
             f.close()
 
         except:
@@ -114,6 +116,8 @@ def main():
             try:
                 f = open(DIR + "flag_database.txt","r")
                 flag_database = bool(f.readlines()[-1].split()[1][:-1])
+                logging.info("FLAG_DATABASE WHILE SECUNDARIO:")
+                logging.info(flag_database)
                 f.close()
 
             except:

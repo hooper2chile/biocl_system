@@ -120,15 +120,17 @@ def setpoints(dato):
     #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
     socketio.emit('power', {'set': realizar}, namespace='/biocl', broadcast=True)
 
-    #guardo realizar en un archivo para depurar
-    try:
-        realizar = str(realizar)
-        f = open("realizar.txt","a+")
-        f.write(realizar + '\n')
-        f.close()
 
-    except:
-        logging.info("no se pudo guardar en realizar en realizar.txt")
+    if realizar[1] == 'True':
+        #guardo realizar en un archivo para depurar
+        try:
+            realizar = str(realizar)
+            f = open("realizar.txt","a+")
+            f.write(realizar + '\n')
+            f.close()
+
+        except:
+            logging.info("no se pudo guardar en realizar en realizar.txt")
 
 
 

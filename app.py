@@ -17,6 +17,9 @@ ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
 temp_set = [0,0,0,0]
 
+task = ["vacio",False]
+flag_database = False
+
 set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]
 
 
@@ -71,9 +74,6 @@ def test():
 
 
 
-
-
-
 @app.route('/graphics')
 def graphics():
     return render_template('graphics.html', title_html="Variables de Proceso")
@@ -113,24 +113,58 @@ def function_thread():
 
 @socketio.on('power', namespace='/biocl')
 def setpoints(dato):
-    global realizar
+    global task, flag_database
     #se reciben los nuevos setpoints
-    realizar = [ dato['action'], dato['checked'] ]
+    task = [ dato['action'], dato['checked'] ]
 
     #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
-    socketio.emit('power', {'set': realizar}, namespace='/biocl', broadcast=True)
+    socketio.emit('power', {'set': task}, namespace='/biocl', broadcast=True)
+
+    task[1] == True:
+        if task[0] == "grabar":
+            flag_database = True
+            try:
+                f = open("flag_database.txt","w")
+                f.write(flag_database + '\n')
+                f.close()
+
+            except:
+                print("no se pudo guardar el flag_database para iniciar grabacion")
+
+        elif task[0] == "no_grabar":
+            flag_database = False
+            try:
+                f = open("flag_database.txt","w")
+                f.write(flag_database + '\n')
+                f.close()
+
+            except:
+                print("no se pudo guardar el flag_database para detener grabacion")
+
+        elif task[0] == "reiniciar":
+            os.system(sudo reboot)
+
+        elif task[0] == "apagar":
+            os.system(sudo shutdown -h now)
+
+        elif task[0] == "limpiar":
+            os.system(rm -rf /home/pi/biocl_system/csv/*.csv)
+            os.system(rm -rf /home/pi/biocl_system/log/*.log)
+            os.system(rm -rf /home/pi/biocl_system/database/*.db)
+            os.system(rm -rf /home/pi/biocl_system/database/*.db-journal)
+            os.system(/home/pi/biocl_system/bash killall)
+            os.system(/home/pi/biocl_system/bash running)
 
 
-    if realizar[1] == True:
-        #guardo realizar en un archivo para depurar
-        try:
-            realizar = str(realizar)
-            f = open("realizar.txt","a+")
-            f.write(realizar + '\n')
-            f.close()
+    #guardo task en un archivo para depurar
+    try:
+        task = str(task)
+        f = open("task.txt","a+")
+        f.write(task + '\n')
+        f.close()
 
-        except:
-            logging.info("no se pudo guardar en realizar en realizar.txt")
+    except:
+        logging.info("no se pudo guardar en realizar en task.txt")
 
 
 

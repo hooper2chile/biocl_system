@@ -64,34 +64,61 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
 def main():
     first_time = time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y")
-    TIME_BCK = 5#120
+    TIME_BCK = 30#120
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     c = connector.cursor()
+
+    #flag para iniciar o detener la grabacion
+    flag_database = False
 
     #Algoritmo de respaldo cada "TIME_BCK [s]"
     BACKUP = False
     start_time = time.time()
     end_time   = time.time()
 
+
+    #reviso constantemente
     while True:
-        #ZMQ connection for download data
-        real_data = communication.zmq_client().split()
+        #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py
+        try:
+            f = open("flag_database.txt","r")
+            flag_database = bool(f.readlines()[-1].split()[1][:-1])
+            f.close()
 
-        update_db(real_data, connector, c, first_time, BACKUP)
+        except:
+            logging.info("no se pudo leer el flag en el while principal)
 
-        delta = end_time - start_time
+        time.sleep(5)
 
-        if delta <= TIME_BCK:
-            BACKUP = False
-            end_time = time.time()
+        while flag_database:
 
-        else:
-            start_time = time.time()
-            end_time   = time.time()
-            BACKUP = True
+            #ZMQ connection for download data
+            real_data = communication.zmq_client().split()
 
-        #Aqui se determina el tiempo con que guarda datos la BD.-
-        time.sleep(TIME_MIN_BD)
+            update_db(real_data, connector, c, first_time, BACKUP)
+
+            delta = end_time - start_time
+
+            if delta <= TIME_BCK:
+                BACKUP = False
+                end_time = time.time()
+
+            else:
+                start_time = time.time()
+                end_time   = time.time()
+                BACKUP = True
+
+            #Aqui se determina el tiempo con que guarda datos la BD.-
+            time.sleep(TIME_MIN_BD)
+
+            try:
+                f = open("flag_database.txt","r")
+                flag_database = bool(f.readlines()[-1].split()[1][:-1])
+                f.close()
+
+            except:
+                logging.info("no se pudo leer el flag en el while secundario)
+
 
 
 if __name__ == "__main__":

@@ -100,7 +100,7 @@ $(document).ready(function() {
 
         //para depurar
         console.log('Emitiendo Valores de Acción');
-        console.log($('#select').find(":selected").text())
+        console.log($('#select').find(":selected").value())
         console.log($('#mezclar_rst').is(':checked'));
 
         return false;

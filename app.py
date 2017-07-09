@@ -142,18 +142,18 @@ def setpoints(dato):
                 print("no se pudo guardar el flag_database para detener grabacion")
 
         elif task[0] == "reiniciar":
-            os.system(sudo reboot)
+            os.system("sudo reboot")
 
         elif task[0] == "apagar":
-            os.system(sudo shutdown -h now)
+            os.system("sudo shutdown -h now")
 
         elif task[0] == "limpiar":
-            os.system(rm -rf /home/pi/biocl_system/csv/*.csv)
-            os.system(rm -rf /home/pi/biocl_system/log/*.log)
-            os.system(rm -rf /home/pi/biocl_system/database/*.db)
-            os.system(rm -rf /home/pi/biocl_system/database/*.db-journal)
-            os.system(/home/pi/biocl_system/bash killall)
-            os.system(/home/pi/biocl_system/bash running)
+            os.system("rm -rf /home/pi/biocl_system/csv/*.csv")
+            os.system("rm -rf /home/pi/biocl_system/log/*.log")
+            os.system("rm -rf /home/pi/biocl_system/database/*.db")
+            os.system("rm -rf /home/pi/biocl_system/database/*.db-journal")
+            os.system("/home/pi/biocl_system/bash killall")
+            os.system("/home/pi/biocl_system/bash running")
 
 
     #guardo task en un archivo para depurar

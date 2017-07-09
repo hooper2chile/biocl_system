@@ -86,7 +86,7 @@ def main():
             f.close()
 
         except:
-            logging.info("no se pudo leer el flag en el while principal)
+            logging.info("no se pudo leer el flag en el while principal")
 
         time.sleep(5)
 
@@ -117,7 +117,7 @@ def main():
                 f.close()
 
             except:
-                logging.info("no se pudo leer el flag en el while secundario)
+                logging.info("no se pudo leer el flag en el while secundario")
 
 
 

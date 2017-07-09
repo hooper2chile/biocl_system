@@ -103,7 +103,7 @@ $(document).ready(function() {
         console.log($('#select').find(":selected").val()) )
         console.log($('#select').find(":selected").text()))
         console.log($('#select').find(":selected").value()) )
-        console.log($('#mezclar_rst').is(':checked'));
+        console.log($('#confirm').is(':checked'));
 
         return false;
     });

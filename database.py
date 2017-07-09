@@ -52,7 +52,7 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 
         try:
             #Se guarda el nombre de la db para ser utilizado en app.py
-            f = open("name_db.txt","w")
+            f = open(DIR + "name_db.txt","w")
             f.write(filedb + '\n')
             f.close()
 
@@ -81,7 +81,7 @@ def main():
     while True:
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py
         try:
-            f = open("flag_database.txt","r")
+            f = open(DIR + "flag_database.txt","r")
             flag_database = bool(f.readlines()[-1].split()[1][:-1])
             f.close()
 
@@ -112,7 +112,7 @@ def main():
             time.sleep(TIME_MIN_BD)
 
             try:
-                f = open("flag_database.txt","r")
+                f = open(DIR + "flag_database.txt","r")
                 flag_database = bool(f.readlines()[-1].split()[1][:-1])
                 f.close()
 

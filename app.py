@@ -7,7 +7,7 @@ import os, sys, logging, communication, reviewDB, tocsv
 
 logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
-
+DIR="/home/pi/biocl_system/"
 SPEED_MAX = 150 #150 [rpm]
 
 u_set_temp = [SPEED_MAX,0]
@@ -124,7 +124,7 @@ def setpoints(dato):
         if task[0] == "grabar":
             flag_database = True
             try:
-                f = open("flag_database.txt","w")
+                f = open(DIR + "flag_database.txt","w")
                 f.write(flag_database + '\n')
                 f.close()
 
@@ -134,7 +134,7 @@ def setpoints(dato):
         elif task[0] == "no_grabar":
             flag_database = False
             try:
-                f = open("flag_database.txt","w")
+                f = open(DIR + "flag_database.txt","w")
                 f.write(flag_database + '\n')
                 f.close()
 
@@ -159,7 +159,7 @@ def setpoints(dato):
     #guardo task en un archivo para depurar
     try:
         task = str(task)
-        f = open("task.txt","a+")
+        f = open(DIR + "task.txt","a+")
         f.write(task + '\n')
         f.close()
 
@@ -179,7 +179,7 @@ def my_json(dato):
     var = dato['var']
 
     try:
-        f = open("window.txt","a+")
+        f = open(DIR + "window.txt","a+")
         f.write(dato['var'] + ' ' + dato['dt'] +'\n')
         f.close()
 
@@ -189,7 +189,7 @@ def my_json(dato):
 
     #Se buscan los datos de la consulta en database
     try:
-        f = open("name_db.txt",'r')
+        f = open(DIR + "name_db.txt",'r')
         filedb = f.readlines()[-1][:-1]
         f.close()
 
@@ -219,7 +219,7 @@ def setpoints(dato):
     #guardo set_data en un archivo para depurar
     try:
         settings = str(set_data)
-        f = open("setpoints.txt","a+")
+        f = open(DIR + "setpoints.txt","a+")
         f.write(settings + '\n')
         f.close()
 
@@ -260,7 +260,7 @@ def calibrar_ph(dato):
     if ph_set[0]!=0 and ph_set[1]!=0 and ph_set[2]!=0 and ph_set[3]!=0 and m_ph!=0 and n_ph!=0:
         try:
             coef_ph_set = [m_ph, n_ph]
-            f = open("coef_ph_set.txt","w")
+            f = open(DIR + "coef_ph_set.txt","w")
             f.write(str(coef_ph_set) + '\n')
             f.close()
             #acá va el codigo que formatea el comando de calibración.
@@ -275,7 +275,7 @@ def calibrar_ph(dato):
     #guardo set_data en un archivo para depurar
     try:
         ph_set_txt = str(ph_set)
-        f = open("ph_set.txt","w")
+        f = open(DIR + "ph_set.txt","w")
         f.write(ph_set_txt + '\n')
         f.close()
 
@@ -317,7 +317,7 @@ def calibrar_od(dato):
     if od_set[0]!=0 and od_set[1]!=0 and od_set[2]!=0 and od_set[3]!=0 and m_od!=0 and n_od!=0:
         try:
             coef_od_set = [m_od, n_od]
-            f = open("coef_od_set.txt","w")
+            f = open(DIR + "coef_od_set.txt","w")
             f.write(str(coef_od_set) + '\n')
             f.close()
 
@@ -334,7 +334,7 @@ def calibrar_od(dato):
     #guardo set_data en un archivo para depurar
     try:
         od_set_txt = str(od_set)
-        f = open("od_set.txt","w")
+        f = open(DIR + "od_set.txt","w")
         f.write(od_set_txt + '\n')
         f.close()
 
@@ -374,7 +374,7 @@ def calibrar_temp(dato):
     if temp_set[0]!=0 and temp_set[1]!=0 and temp_set[2]!=0 and temp_set[3]!=0 and m_temp!=0 and n_temp!=0:
         try:
             coef_temp_set = [m_temp, n_temp]
-            f = open("coef_temp_set.txt","w")
+            f = open(DIR + "coef_temp_set.txt","w")
             f.write(str(coef_temp_set) + '\n')
             f.close()
 
@@ -391,7 +391,7 @@ def calibrar_temp(dato):
     #guardo set_data en un archivo para depurar
     try:
         temp_set_txt = str(temp_set)
-        f = open("temp_set.txt","w")
+        f = open(DIR + "temp_set.txt","w")
         f.write(temp_set_txt + '\n')
         f.close()
 
@@ -416,7 +416,7 @@ def calibrar_u_ph(dato):
 
 
     try:
-        f = open("umbral_set_ph.txt","w")
+        f = open(DIR + "umbral_set_ph.txt","w")
         f.write(str(u_set_ph) + '\n')
         f.close()
         communication.actuador(1,u_set_ph)  #FALTA IMPLEMENTARIO EN communication.py
@@ -445,7 +445,7 @@ def calibrar_u_temp(dato):
 
 
     try:
-        f = open("umbral_set_temp.txt","w")
+        f = open(DIR + "umbral_set_temp.txt","w")
         f.write(str(u_set_temp) + '\n')
         f.close()
         communication.actuador(2,u_set_temp)  #FALTA IMPLEMENTARIO EN communication.py

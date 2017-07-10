@@ -99,19 +99,22 @@ def main():
 
         time.sleep(5)
 
+        #depuracion log
         if flag_database_local is False:
-            try:
-                f = open(DIR + "db_log.txt","a+")
-                f.write("Grabando OFF\n")
-                f.close()
+            if i is 10:
+                try:
+                    f = open(DIR + "db_log.txt","a+")
+                    f.write("Grabando OFF\n")
+                    f.close()
 
-                logging.info("GRABANDO OFF")
+                    i = 0
+                    logging.info("GRABANDO OFF")
 
-            except:
-                logging.info("no se pudo leer grabar el log de grabar off")
+                except:
+                    logging.info("no se pudo leer grabar el log de grabar off")
+                #depuracion log
 
-
-        i = 0
+        i += 1
         while flag_database_local:
 
             #ZMQ connection for download data
@@ -157,12 +160,14 @@ def main():
                     f.write("Grabando ON\n")
                     f.close()
 
-                    i += 1
+                    i = 0
                     logging.info("GRABANDO ON")
 
                 except:
                     logging.info("no se pudo leer grabar el log de grabar on")
+                #depuracion log
 
+            i += 1
 
 
 if __name__ == "__main__":

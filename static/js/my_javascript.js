@@ -98,7 +98,7 @@ $(document).ready(function() {
 
         //para depurar
         console.log('Emitiendo Valores de Acción');
-        console.log($('select[name=selection]').val())
+        console.log($('myselect').val())
         console.log($('#confirm').is(':checked'));
 
         return false;

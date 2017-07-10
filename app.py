@@ -116,8 +116,7 @@ def function_thread():
 def setpoints(dato):
     global task, flag_database
     #se reciben los nuevos setpoints
-    setting = [ dato['action'], dato['checked'] ]
-
+    #setting = [ dato['action'], dato['checked'] ]
     task[0] = dato['action']
     task[1] = dato['checked']
 

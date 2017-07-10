@@ -151,7 +151,6 @@ def setpoints(dato):
 
         elif task[0] == "limpiar":
             try:
-                os.system("bash /home/pi/biocl_system/killallpython")
                 #os.system("sleep 2")
                 #os.system("rm -rf /home/pi/biocl_system/csv/*.csv")
                 #os.system("rm -rf /home/pi/biocl_system/log/*.log")

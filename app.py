@@ -150,14 +150,14 @@ def setpoints(dato):
             os.system("sudo shutdown -h now")
 
         elif task[0] == "limpiar":
+            os.system("bash /home/pi/biocl_system/killallpython")
             os.system("rm -rf /home/pi/biocl_system/csv/*.csv")
             os.system("rm -rf /home/pi/biocl_system/log/*.log")
             os.system("rm -rf /home/pi/biocl_system/log/my.log.*")
             os.system("rm -rf /home/pi/biocl_system/database/*.db")
             os.system("rm -rf /home/pi/biocl_system/database/*.db-journal")
-            os.system(DIR + "bash killall")
             os.system("sleep 2")
-            os.system(DIR + "bash running")
+            os.system("bash /home/pi/biocl_system/running")
 
 
     #guardo task en un archivo para depurar

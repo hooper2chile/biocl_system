@@ -132,7 +132,7 @@ def setpoints(dato):
                 print("no se pudo guardar el flag_database para iniciar grabacion")
 
         elif task[0] == "no_grabar":
-            flag_database = False
+            flag_database = "False"
             try:
                 f = open(DIR + "flag_database.txt","w")
                 f.write(flag_database + '\n')

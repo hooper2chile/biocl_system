@@ -107,32 +107,7 @@ $(document).ready(function() {
     //se escuchan desde el servidor señal de reinicio,apagado, grabacion y limpiaza
     //para ser desplegados en todos los clientes.
     socket.on('power', function(msg) {
-      //document.getElementById("mySelect").value = "banana";
-        //document.getElementById("select").value = "msg.set[0]",
-
-        if(msg.set[0]==undefined){
-          document.getElementById("myselect").value = "grabar"
-        }
-        else if (msg.set[0]=="grabar") {
-          document.getElementById("myselect").value = "grabar"
-        }
-        else if (msg.set[0]=="no_grabar") {
-          document.getElementById("myselect").value = "no_grabar"
-        }
-        else if (msg.set[0]=="reiniciar") {
-          document.getElementById("myselect").value = "reiniciar"
-        }
-        else if (msg.set[0]=="apagar") {
-          document.getElementById("myselect").value = "apagar"
-        }
-        else if (msg.set[0]=="limpiar") {
-          document.getElementById("myselect").value = "limpiar"
-        }
-        else {
-          document.getElementById("myselect").value = "grabar"
-        }
-
-
+        document.getElementById("myselect").value = "limpiar";
         document.getElementById('confirm').checked = msg.set[1]
 
 

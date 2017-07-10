@@ -172,8 +172,6 @@ def setpoints(dato):
 
 
 
-
-
 N = None
 APIRest = None
 @socketio.on('my_json', namespace='/biocl')

@@ -77,7 +77,7 @@ def main():
     start_time = time.time()
     end_time   = time.time()
 
-
+    global flag_database_local
     #reviso constantemente
     while True:
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py

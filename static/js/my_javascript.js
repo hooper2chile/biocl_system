@@ -107,8 +107,9 @@ $(document).ready(function() {
     //se escuchan desde el servidor señal de reinicio,apagado, grabacion y limpiaza
     //para ser desplegados en todos los clientes.
     socket.on('power', function(msg) {
-        document.getElementById('select[name=selection]').value = msg.set[0];
-        document.getElementById('checked').checked              = msg.set[1];
+
+        $('#select').text( msg.data[0]  ).html();
+        document.getElementById('checked').checked = msg.set[1];
     });
 
 

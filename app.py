@@ -118,8 +118,8 @@ def setpoints(dato):
     #se reciben los nuevos setpoints
     setting = [ dato['action'], dato['checked'] ]
 
-    task[0] = setting[0]
-    task[1] = setting[1]
+    task[0] = dato['action']
+    task[1] = dato['checked']
 
     if task[1] is True:
         if task[0] == "grabar":

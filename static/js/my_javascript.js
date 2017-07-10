@@ -108,8 +108,8 @@ $(document).ready(function() {
     //para ser desplegados en todos los clientes.
     socket.on('power', function(msg) {
 
-        $('#select').text( msg.set[0]  ).html();
-        document.getElementById('checked').checked = msg.set[1];
+        $('#select').text( msg.set[0] ).html();
+        //document.getElementById('checked').checked = msg.set[1];
     });
 
 

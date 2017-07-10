@@ -66,6 +66,7 @@ def update_db(real_data, connector, c, first_time, BACKUP):
         return True
 
 def main():
+    i = 0
     first_time = time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y")
     TIME_BCK = 30#120
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
@@ -98,6 +99,19 @@ def main():
 
         time.sleep(5)
 
+        if flag_database_local is False:
+            try:
+                f = open(DIR + "db_log.txt","a+")
+                f.write("Grabando OFF\n")
+                f.close()
+
+                logging.info("GRABANDO OFF")
+
+            except:
+                logging.info("no se pudo leer grabar el log de grabar off")
+
+
+        i = 0
         while flag_database_local:
 
             #ZMQ connection for download data
@@ -134,6 +148,20 @@ def main():
 
             except:
                 logging.info("no se pudo leer el flag en el while secundario")
+
+
+            #log de grabacion: cada 10 seg (dado el time sleep: TIME_MIN_BD del while) se actualiza el log
+            if i is 10:
+                try:
+                    f = open(DIR + "db_log.txt","a+")
+                    f.write("Grabando ON\n")
+                    f.close()
+
+                    i += 1
+                    logging.info("GRABANDO ON")
+
+                except:
+                    logging.info("no se pudo leer grabar el log de grabar on")
 
 
 

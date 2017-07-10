@@ -92,13 +92,13 @@ $(document).ready(function() {
     //se emiten señal de reinicio,apagado, grabacion y limpiaza hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
-                    { action  : $('myselect[name=selection]').val(),
+                    { action  : $('select[name=selection]').val(),
                       checked : $('#confirm').is(':checked')
                    });
 
         //para depurar
         console.log('Emitiendo Valores de Acción');
-        console.log($('myselect[name=selection]').val())
+        console.log($('select[name=selection]').val())
         console.log($('#confirm').is(':checked'));
 
         return false;
@@ -110,12 +110,33 @@ $(document).ready(function() {
       //document.getElementById("mySelect").value = "banana";
         //document.getElementById("select").value = "msg.set[0]",
 
+        if(msg.set[0]==undefined){
+          document.getElementById("select").value = "grabar"
+        }
+        else if (msg.set[0]=="grabar") {
+          document.getElementById("select").value = "grabar"
+        }
+        else if (msg.set[0]=="no_grabar") {
+          document.getElementById("select").value = "no_grabar"
+        }
+        else if (msg.set[0]=="reiniciar") {
+          document.getElementById("select").value = "reiniciar"
+        }
+        else if (msg.set[0]=="apagar") {
+          document.getElementById("select").value = "apagar"
+        }
+        else if (msg.set[0]=="limpiar") {
+          document.getElementById("select").value = "limpiar"
+        }
+        else {
+          document.getElementById("select").value = "grabar"
+        }
+
 
         document.getElementById('confirm').checked = msg.set[1]
 
 
         console.log('Recibiendo Valores de Acción');
-        console.log($('myselect[name=selection]').val());
         console.log(msg.set[0]);
         console.log(msg.set[1]);
     });

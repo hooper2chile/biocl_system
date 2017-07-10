@@ -17,7 +17,7 @@ ph_set = [0,0,0,0]
 od_set = [0,0,0,0]
 temp_set = [0,0,0,0]
 
-task = ["grabar", "false"]
+task = ["grabar", False]
 flag_database = False
 
 set_data = [0,0,0,0,0,1,1,1,1,1,0,0,0]

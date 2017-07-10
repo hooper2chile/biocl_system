@@ -106,14 +106,14 @@ $(document).ready(function() {
 
     //se escuchan desde el servidor señal de reinicio,apagado, grabacion y limpiaza
     //para ser desplegados en todos los clientes.
-    socket.on('power', function(msg,check) {
-        document.getElementById("select").value = msg.set;
-        document.getElementById('confirm').checked = check.set;
+    socket.on('power', function(msg) {
+        document.getElementById("select").value = msg.set[0]
+        document.getElementById('confirm').checked = msg.set[1]
 
 
         console.log('Recibiendo Valores de Acción');
-        console.log(msg.set);
-        console.log(check.set);
+        console.log(msg.set[0]);
+        console.log(msg.set[1]);
     });
 
 

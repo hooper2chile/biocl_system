@@ -10,7 +10,7 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/app.log', level=logging.
 DIR="/home/pi/biocl_system/"
 SPEED_MAX = 150 #150 [rpm]
 
-u_set_temp = [SPEED_MAX,0+0]
+u_set_temp = [SPEED_MAX,0]
 u_set_ph   = [SPEED_MAX,SPEED_MAX]
 
 ph_set = [0,0,0,0]

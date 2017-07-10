@@ -8,6 +8,7 @@ import os, sys, time, datetime, sqlite3, sqlitebck, logging, communication
 logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 TIME_MIN_BD = 1 # 1 [s]
 DIR="/home/pi/biocl_system/"
+flag_database = "False"
 flag_database_local = False
 
 def update_db(real_data, connector, c, first_time, BACKUP):
@@ -78,7 +79,7 @@ def main():
     start_time = time.time()
     end_time   = time.time()
 
-    global flag_database_local
+    global flag_database_local, flag_database
     #reviso constantemente
     while True:
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py

@@ -109,11 +109,36 @@ $(document).ready(function() {
     socket.on('power', function(msg) {
       //document.getElementById("mySelect").value = "banana";
         //document.getElementById("select").value = "msg.set[0]",
+
+        if(msg.set[0]==undefined){
+          document.getElementById("select").value = "grabar"
+        }
+        else if (msg.set[0]=="grabar") {
+          document.getElementById("select").value = "grabar"
+        }
+        else if (msg.set[0]=="no_grabar") {
+          document.getElementById("select").value = "no_grabar"
+        }
+        else if (msg.set[0]=="reiniciar") {
+          document.getElementById("select").value = "reiniciar"
+        }
+        else if (msg.set[0]=="apagar") {
+          document.getElementById("select").value = "apagar"
+        }
+        else if (msg.set[0]=="limpiar") {
+          document.getElementById("select").value = "limpiar"
+        }
+        else {
+          document.getElementById("select").value = "grabar"
+        }
+
+
+        document.getElementById('confirm').checked = msg.set[1]
+
+
         console.log('Recibiendo Valores de Acción');
         console.log(msg.set[0]);
         console.log(msg.set[1]);
-
-        document.getElementById('confirm').checked = msg.set[1]
     });
 
 

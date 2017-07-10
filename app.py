@@ -116,9 +116,21 @@ def function_thread():
 def setpoints(dato):
     global task, flag_database
     #se reciben los nuevos setpoints
-    #setting = [ dato['action'], dato['checked'] ]
-    task[0] = dato['action']
-    task[1] = dato['checked']
+    task = [ dato['action'], dato['checked'] ]
+
+    #guardo task en un archivo para depurar
+    try:
+        task = str(task)
+        f = open(DIR + "task.txt","a+")
+        f.write(task + '\n')
+        f.close()
+
+    except:
+        logging.info("no se pudo guardar en realizar en task.txt")
+
+
+    #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
+    socketio.emit('power', {'set': task}, namespace='/biocl', broadcast=True)
 
     if task[1] is True:
         if task[0] == "grabar":
@@ -161,19 +173,6 @@ def setpoints(dato):
                 logging.info("no se pudo completar limpiar\n")
 
 
-    #guardo task en un archivo para depurar
-    try:
-        task = str(task)
-        f = open(DIR + "task.txt","a+")
-        f.write(task + '\n')
-        f.close()
-
-    except:
-        logging.info("no se pudo guardar en realizar en task.txt")
-
-
-    #Con cada cambio en los setpoints, se vuelven a emitir a todos los clientes.
-    socketio.emit('power', {'set': task}, namespace='/biocl', broadcast=True)
 
 
 
@@ -207,7 +206,6 @@ def my_json(dato):
     global APIRest
     APIRest = reviewDB.window_db(filedb, var, dt)
     socketio.emit('my_json', {'data': APIRest, 'No': len(APIRest), 'var': var}, namespace='/biocl')
-
     #put files in csv with dt time for samples
     tocsv.csv_file(filedb, dt)
 

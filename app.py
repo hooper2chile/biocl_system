@@ -122,7 +122,7 @@ def setpoints(dato):
 
     if task[1] is True:
         if task[0] == "grabar":
-            flag_database = True
+            flag_database = "True"
             try:
                 f = open(DIR + "flag_database.txt","w")
                 f.write(flag_database + '\n')

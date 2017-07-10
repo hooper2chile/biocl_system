@@ -156,7 +156,7 @@ def setpoints(dato):
             os.system("rm -rf /home/pi/biocl_system/database/*.db")
             os.system("rm -rf /home/pi/biocl_system/database/*.db-journal")
             os.system(DIR + "bash killall")
-            os.system(sleep 2)
+            os.system("sleep 2")
             os.system(DIR + "bash running")
 
 

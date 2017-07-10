@@ -111,25 +111,25 @@ $(document).ready(function() {
         //document.getElementById("select").value = "msg.set[0]",
 
         if(msg.set[0]==undefined){
-          document.getElementById("select").value = "grabar"
+          document.getElementById("select").value = "Iniciar DataLogger"
         }
         else if (msg.set[0]=="grabar") {
-          document.getElementById("select").value = "grabar"
+          document.getElementById("select").value = "Iniciar DataLogger"
         }
         else if (msg.set[0]=="no_grabar") {
-          document.getElementById("select").value = "no_grabar"
+          document.getElementById("select").value = "Detener DataLogger"
         }
         else if (msg.set[0]=="reiniciar") {
-          document.getElementById("select").value = "reiniciar"
+          document.getElementById("select").value = "Reiniciar"
         }
         else if (msg.set[0]=="apagar") {
-          document.getElementById("select").value = "apagar"
+          document.getElementById("select").value = "Apagar"
         }
         else if (msg.set[0]=="limpiar") {
-          document.getElementById("select").value = "limpiar"
+          document.getElementById("select").value = "Borrar Archivos"
         }
         else {
-          document.getElementById("select").value = "grabar"
+          document.getElementById("select").value = "Iniciar DataLogger"
         }
 
 

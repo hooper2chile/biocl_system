@@ -109,7 +109,7 @@ $(document).ready(function() {
     socket.on('power', function(msg) {
 
         //$('#select[name=selection]').text( msg.set[0] ).html();
-        document.getElementById('checked').checked = msg.set[1];
+        document.getElementById('confirm').checked = msg.set[1];
     });
 
 

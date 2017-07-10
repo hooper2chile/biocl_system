@@ -83,11 +83,10 @@ def main():
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py
         try:
             f = open(DIR + "flag_database.txt","r")
-            flag_database = f.readlines()[-1].split()[1][:-1]
-            f.close()
+            flag_database = str(f.readlines()[-1].split()[1][:-1])
+            f.close()           
 
             logging.info("FLAG_DATABASE WHILE SUPERIOR:")
-            logging.info(flag_database)
 
             if flag_database == "True":
                 flag_database_local = True
@@ -122,11 +121,11 @@ def main():
 
             try:
                 f = open(DIR + "flag_database.txt","r")
-                flag_database = f.readlines()[-1].split()[1][:-1]
+                flag_database = str(f.readlines()[-1].split()[1][:-1])
                 f.close()
 
                 logging.info("FLAG_DATABASE WHILE SECUNDARIO:")
-                logging.info(flag_database)
+
 
                 if flag_database == "True":
                     flag_database_local = True

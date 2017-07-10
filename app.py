@@ -125,7 +125,7 @@ def setpoints(dato):
             flag_database = "True"
             try:
                 f = open(DIR + "flag_database.txt","w")
-                f.write(flag_database + '\n')
+                f.write(flag_database)
                 f.close()
 
             except:
@@ -135,7 +135,7 @@ def setpoints(dato):
             flag_database = "False"
             try:
                 f = open(DIR + "flag_database.txt","w")
-                f.write(flag_database + '\n')
+                f.write(flag_database)
                 f.close()
 
             except:

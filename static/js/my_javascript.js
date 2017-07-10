@@ -92,7 +92,7 @@ $(document).ready(function() {
     //se emiten señal de reinicio,apagado, grabacion y limpiaza hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
-                    { action  : $('select[name=selection]').val(),
+                    { action  : $('myselect').val(),
                       checked : $('#confirm').is(':checked')
                    });
 
@@ -111,25 +111,25 @@ $(document).ready(function() {
         //document.getElementById("select").value = "msg.set[0]",
 
         if(msg.set[0]==undefined){
-          document.getElementById("select").value = "Iniciar DataLogger"
+          document.getElementById("myselect").value = "grabar"
         }
         else if (msg.set[0]=="grabar") {
-          document.getElementById("select").value = "Iniciar DataLogger"
+          document.getElementById("myselect").value = "grabar"
         }
         else if (msg.set[0]=="no_grabar") {
-          document.getElementById("select").value = "Detener DataLogger"
+          document.getElementById("myselect").value = "no_grabar"
         }
         else if (msg.set[0]=="reiniciar") {
-          document.getElementById("select").value = "Reiniciar"
+          document.getElementById("myselect").value = "reiniciar"
         }
         else if (msg.set[0]=="apagar") {
-          document.getElementById("select").value = "Apagar"
+          document.getElementById("myselect").value = "apagar"
         }
         else if (msg.set[0]=="limpiar") {
-          document.getElementById("select").value = "Borrar Archivos"
+          document.getElementById("myselect").value = "limpiar"
         }
         else {
-          document.getElementById("select").value = "Iniciar DataLogger"
+          document.getElementById("myselect").value = "grabar"
         }
 
 

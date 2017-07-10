@@ -111,7 +111,6 @@ $(document).ready(function() {
         document.getElementById("select").value = msg.set[0]
         document.getElementById('confirm').checked = msg.set[1]
 
-
         console.log('Recibiendo Valores de Acción');
         console.log(msg.set[0]);
         console.log(msg.set[1]);

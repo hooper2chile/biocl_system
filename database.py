@@ -83,7 +83,7 @@ def main():
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py
         try:
             f = open(DIR + "flag_database.txt","r")
-            flag_database = f.readlines()[-1][:-1]
+            flag_database = f.readlines()[-1]
             f.close()
 
             logging.info("FLAG_DATABASE WHILE SUPERIOR:")

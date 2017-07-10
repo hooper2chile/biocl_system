@@ -90,7 +90,7 @@ def main():
             logging.info("FLAG_DATABASE WHILE SUPERIOR:")
             logging.info(flag_database)
 
-            if flag_database is "True":
+            if flag_database == "True":
                 flag_database_local = True
             else:
                 flag_database_local = False
@@ -129,7 +129,7 @@ def main():
                 logging.info("FLAG_DATABASE WHILE SECUNDARIO:")
                 logging.info(flag_database)
 
-                if flag_database is "True":
+                if flag_database == "True":
                     flag_database_local = True
                 else:
                     flag_database_local = False

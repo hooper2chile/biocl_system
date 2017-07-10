@@ -71,8 +71,6 @@ def main():
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     c = connector.cursor()
 
-    #flag para iniciar o detener la grabacion
-    flag_database = False
 
     #Algoritmo de respaldo cada "TIME_BCK [s]"
     BACKUP = False

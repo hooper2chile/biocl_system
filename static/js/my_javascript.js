@@ -7,8 +7,8 @@ $(document).ready(function() {
 	    		       document.domain + ':' +
 		             location.port + namespace);
 
-    document.getElementById('confirm').checked = false
-    
+
+
     //Se escuchan las mediciones de ph, OD, Temp.
     socket.on('Medidas', function(msg) {
         $('#med1').text('Ph: '    + msg.data[0]          ).html();

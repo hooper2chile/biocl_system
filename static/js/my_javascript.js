@@ -137,7 +137,7 @@ $(document).ready(function() {
 
 
         console.log('Recibiendo Valores de Acción');
-        console.log($('select').val());
+        console.log($('myselect').val());
         console.log(msg.set[0]);
         console.log(msg.set[1]);
     });

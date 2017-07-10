@@ -7,6 +7,7 @@ import os, sys, time, datetime, sqlite3, sqlitebck, logging, communication
 
 logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 TIME_MIN_BD = 1 # 1 [s]
+flag_database_local = False
 
 def update_db(real_data, connector, c, first_time, BACKUP):
     #CREACION DE TABLAS PH, OD, TEMP. CADA ITEM ES UNA COLUMNA
@@ -82,17 +83,21 @@ def main():
         #reviso la primera vez si cambio el flag, y luego sirve para revisar cuando salga por que fue apagado el flag desde app.py
         try:
             f = open(DIR + "flag_database.txt","r")
-            flag_database = bool(f.readlines()[-1].split()[1][:-1])
-                logging.info("FLAG_DATABASE WHILE SUPERIOR:")
-                logging.info(flag_database)
+            flag_database = f.readlines()[-1].split()[1][:-1]
+            logging.info("FLAG_DATABASE WHILE SUPERIOR:")
+            logging.info(flag_database)
             f.close()
+            if flag_database is "True":
+                flag_database_local = True
+            else:
+                flag_database_local = False
 
         except:
             logging.info("no se pudo leer el flag en el while principal")
 
         time.sleep(5)
 
-        while flag_database:
+        while flag_database_local:
 
             #ZMQ connection for download data
             real_data = communication.zmq_client().split()
@@ -115,10 +120,14 @@ def main():
 
             try:
                 f = open(DIR + "flag_database.txt","r")
-                flag_database = bool(f.readlines()[-1].split()[1][:-1])
+                flag_database = f.readlines()[-1].split()[1][:-1]
                 logging.info("FLAG_DATABASE WHILE SECUNDARIO:")
                 logging.info(flag_database)
                 f.close()
+                if flag_database is "True":
+                    flag_database_local = True
+                else:
+                    flag_database_local = False
 
             except:
                 logging.info("no se pudo leer el flag en el while secundario")

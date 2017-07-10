@@ -108,8 +108,8 @@ $(document).ready(function() {
     //para ser desplegados en todos los clientes.
     socket.on('power', function(msg) {
       //document.getElementById("mySelect").value = "banana";
-        document.getElementById("select").value = msg.set[0];
-        document.getElementById('confirm').checked = msg.set[1];
+        document.getElementById("select").value = "msg.set[0]",
+        document.getElementById('confirm').checked = msg.set[1]
     });
 
 

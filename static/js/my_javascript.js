@@ -109,7 +109,7 @@ $(document).ready(function() {
     socket.on('power', function(msg) {
       //document.getElementById("mySelect").value = "banana";
         //document.getElementById("select").value = "msg.set[0]",
-
+        /*
         if(msg.set[0]==undefined){
           document.getElementById("select").value = "grabar"
         }
@@ -131,8 +131,8 @@ $(document).ready(function() {
         else {
           document.getElementById("select").value = "grabar"
         }
-
-
+        */
+        document.getElementById("select").value = msg.set[0]
         document.getElementById('confirm').checked = msg.set[1]
 
 

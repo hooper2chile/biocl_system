@@ -7,6 +7,7 @@ import os, sys, time, datetime, sqlite3, sqlitebck, logging, communication
 
 logging.basicConfig(filename='/home/pi/biocl_system/log/database.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 TIME_MIN_BD = 1 # 1 [s]
+DIR="/home/pi/biocl_system/"
 flag_database_local = False
 
 def update_db(real_data, connector, c, first_time, BACKUP):
@@ -84,9 +85,11 @@ def main():
         try:
             f = open(DIR + "flag_database.txt","r")
             flag_database = f.readlines()[-1].split()[1][:-1]
+            f.close()
+
             logging.info("FLAG_DATABASE WHILE SUPERIOR:")
             logging.info(flag_database)
-            f.close()
+
             if flag_database is "True":
                 flag_database_local = True
             else:
@@ -121,9 +124,11 @@ def main():
             try:
                 f = open(DIR + "flag_database.txt","r")
                 flag_database = f.readlines()[-1].split()[1][:-1]
+                f.close()
+
                 logging.info("FLAG_DATABASE WHILE SECUNDARIO:")
                 logging.info(flag_database)
-                f.close()
+
                 if flag_database is "True":
                     flag_database_local = True
                 else:

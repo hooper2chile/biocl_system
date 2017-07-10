@@ -89,9 +89,7 @@ $(document).ready(function() {
 
 
 
-    //$('#aioConceptName').find(":selected").text();
-    //  $('#select').val($(this).find(":selected").text());
-    //se emiten señal de reinicio o apagado hacia el servidor
+    //se emiten señal de reinicio,apagado, grabacion y limpiaza hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
                     { action  : $('select[name=selection]').val(),
@@ -104,6 +102,13 @@ $(document).ready(function() {
         console.log($('#confirm').is(':checked'));
 
         return false;
+    });
+
+    //se escuchan desde el servidor señal de reinicio,apagado, grabacion y limpiaza
+    //para ser desplegados en todos los clientes.
+    socket.on('Setpoints', function(msg) {
+        document.getElementById('action').value    = msg.set[0];
+        document.getElementById('checked').checked = msg.set[1];
     });
 
 

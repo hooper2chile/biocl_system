@@ -120,7 +120,6 @@ def setpoints(dato):
 
     #guardo task en un archivo para depurar
     try:
-        task = str(task)
         f = open(DIR + "task.txt","a+")
         f.write(task + '\n')
         f.close()

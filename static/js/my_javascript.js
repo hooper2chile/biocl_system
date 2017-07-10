@@ -92,7 +92,7 @@ $(document).ready(function() {
     //se emiten señal de reinicio,apagado, grabacion y limpiaza hacia el servidor
     $('form#process').submit(function(event) {
         socket.emit('power',
-                    { action  : $('myselect').val(),
+                    { action  : $('myselect[name=selection]').val(),
                       checked : $('#confirm').is(':checked')
                    });
 
@@ -115,7 +115,7 @@ $(document).ready(function() {
 
 
         console.log('Recibiendo Valores de Acción');
-        console.log($('myselect').val());
+        console.log($('myselect[name=selection]').val());
         console.log(msg.set[0]);
         console.log(msg.set[1]);
     });

@@ -152,13 +152,13 @@ def setpoints(dato):
         elif task[0] == "limpiar":
             try:
                 os.system("bash /home/pi/biocl_system/killallpython")
-                os.system("sleep 2")
-                os.system("rm -rf /home/pi/biocl_system/csv/*.csv")
-                os.system("rm -rf /home/pi/biocl_system/log/*.log")
-                os.system("rm -rf /home/pi/biocl_system/log/my.log.*")
-                os.system("rm -rf /home/pi/biocl_system/database/*.db")
-                os.system("rm -rf /home/pi/biocl_system/database/*.db-journal")
-                os.system("sleep 2")
+                #os.system("sleep 2")
+                #os.system("rm -rf /home/pi/biocl_system/csv/*.csv")
+                #os.system("rm -rf /home/pi/biocl_system/log/*.log")
+                #os.system("rm -rf /home/pi/biocl_system/log/my.log.*")
+                #os.system("rm -rf /home/pi/biocl_system/database/*.db")
+                #os.system("rm -rf /home/pi/biocl_system/database/*.db-journal")
+                #os.system("sleep 2")
                 os.system("bash /home/pi/biocl_system/running")
 
             except:

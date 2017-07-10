@@ -113,8 +113,7 @@ $(document).ready(function() {
 
         console.log('Recibiendo Valores de Acción');
         console.log($('myselect').val());
-        console.log(msg.set[0]);
-        console.log(msg.set[1]);
+        console.log($('#confirm').is(':checked'));
     });
 
 

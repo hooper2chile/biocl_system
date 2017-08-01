@@ -2,7 +2,7 @@
 
 #include "SoftwareSerial.h"
 SoftwareSerial mySerial(2, 3);  //RX(Digital2), TX(Digital3) Software serial port.
-SoftwareSerial mySerial2(4, 5); //for control in mezclador
+SoftwareSerial mixer1(4, 5); //for control in mezclador
 
 
 #define  INT(x)   (x-48)  //ascii convertion
@@ -12,7 +12,7 @@ SoftwareSerial mySerial2(4, 5); //for control in mezclador
 #define SPEED_MAX 150     //[RPM]
 #define TEMP_MAX  130     //[ºC]
 
-#define Ts        1000     //1000ms
+//#define Ts        1000     //1000ms
 
 #define Gap_temp0 0.5
 #define Gap_temp1 1.0       //1ºC
@@ -59,7 +59,11 @@ float   mytempset = 0;
 
 uint8_t myfeed    = 0;
 uint8_t myunload  = 0;
-uint8_t mymix     = 0;
+uint16_t mymix     = 0;
+
+int i = 0;
+int data = 0;
+int data_cero = 0;
 
 
 float umbral_a = SPEED_MAX;
@@ -300,27 +304,6 @@ void daqmx() {
   Byte5 = Itemp1;
   Byte6 = Itemp2;
 
-  //debug ph
-  /*
-  Byte0 = pH;
-  Byte1 = myphset;//oD;
-  Byte2 = u_ph;//Temp1;
-  Byte3 = dpH; //Iph;
-  Byte4 = 0;//Iod;
-  Byte5 = 0;//Itemp1;
-  Byte6 = 0;//Itemp2;
-  */
-
-  //debug temp
-  /*
-  Byte0 = Temp1;///pH;
-  Byte1 = mytemp;//oD;
-  Byte2 = u_temp;//Temp1;
-  Byte3 = dTemp; //Iph;
-  Byte4 = 0;//Iod;
-  Byte5 = 0;//Itemp1;
-  Byte6 = 0;//Itemp2;
-  */
 
   dtostrf(Byte0, 7, 2, cByte0);
   dtostrf(Byte1, 7, 2, cByte1);
@@ -341,8 +324,6 @@ void daqmx() {
 
   //for debug
   Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__myphset="+String(myphset)+"__pH="+String(pH)+"__dpH="+String(dpH)+"__u_ph="+String(u_ph)+"__ph_select="+String(ph_select));  Serial.print("\t");
-
-
   Serial.print("\n");
 
   return;
@@ -452,12 +433,61 @@ void control_ph() {
 
 
 
+void Motor_set_RPM(int high, int low)
+{
+  int checksum = (177 + high + low) & 0xff;
+
+  mixer1.write(254);
+  delay(100);
+  mixer1.write(177);
+  delay(100);
+  mixer1.write(high);
+  delay(100);
+  mixer1.write(low);
+  delay(100);
+  mixer1.write(data_cero);
+  delay(100);
+  mixer1.write(checksum);
+}
+//254 160 0 0 0 160       254 160 0 0 0 160     254 177 0 0 0 177       254 177 0 0 0 177      254 177 0 d 0 21      254 177
+void Motor_conectar()
+{
+  delay(100);
+  mixer1.write(254);
+  delay(100);
+  mixer1.write(160);
+  delay(100);
+  data = 0;
+  mixer1.write(data);  // data = 0
+  delay(100);
+  mixer1.write(data);
+  delay(100);
+  mixer1.write(data);
+  delay(100);
+  mixer1.write(160);
+}
+
+void agitador(uint16_t s_rpm) {
+  int rpm_h = (s_rpm >> 8) & 0xff;
+  int rpm_l = s_rpm & 0xff;
+
+  while ( i <= 1 ) {
+     Motor_conectar();
+     Motor_set_RPM(rpm_h, rpm_l);
+    i++;
+  }
+  i = 0;
+
+}
+
 
 void setpoint() {
-  //eventualmente, aca hay que programar el mezclador y usar crumble() para obtener el dato
-
   //acá se leen los nuevos setpoint para los lazos de control
   write_crumble();
+
+  //aca hay que programar el mezclador y usar crumble() para obtener el dato
+  agitador(mymix);
+
 
   Serial.println("good setpoint");
   return;

@@ -60,17 +60,7 @@ void loop() {
         time_setup(mytemp, &count_m5_set, &count_m5);  //setear en otra función que reciba este mensaje desde un lazo de control
         mytemp_save = mytemp;
       }
-/*
-      //PH TEST: TIME SETUP
-      if ( myph1 != myph1_save ) {
-        time_setup(myph1, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
-        myph1_save = myph1;
-      }
 
-      if ( myph2 != myph2_save ) {
-        time_setup(myph2, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
-        myph2_save = myph2;
-*/
       if ( myph_a != myph_a_save ) {
         time_setup(myph_a, &count_m1_set, &count_m1);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph_a_save = myph_a;
@@ -80,15 +70,6 @@ void loop() {
         time_setup(myph_b, &count_m2_set, &count_m2);  //setear en otra función que reciba este mensaje desde un lazo de control
         myph_b_save = myph_b;
       }
-
-
-
-      setup_dir_rst( _BV(RST_PHa), _BV(DIR_PH), &myph_a, &rst3, &dir2, &PORTD, &PORTC );
-      setup_dir_rst( _BV(RST_PHb), _BV(DIR_PH), &myph_b, &rst6, &dir2, &PORTD, &PORTC );
-
-
-
-
 
 
       //RST and DIR SETTING:
@@ -106,19 +87,19 @@ void loop() {
       setup_dir_rst( _BV(RST_TEMP), _BV(DIR_TEMP),
                      &mytemp, &rst5, &dir3,
                      &PORTC,  &PORTB );
-/*
-      //pH: rst3, dir2:
-      setup_dir_rst( _BV(RST_PH), _BV(DIR_PH),
-                     &myphset, &rst3, &dir2,
-                     &PORTD, &PORTC );
-*/
+
+      //PH
+      setup_dir_rst( _BV(RST_PHa), _BV(DIR_PH), &myph_a, &rst3, &dir2, &PORTD, &PORTC );
+      setup_dir_rst( _BV(RST_PHb), _BV(DIR_PH), &myph_b, &rst6, &dir2, &PORTD, &PORTC );
+
 
 
 
       clean_strings();
       wdt_reset();
     }
-    else{
+
+    else {
       Serial.println("BAD message");
       clean_strings();
     }

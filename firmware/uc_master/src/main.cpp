@@ -11,7 +11,7 @@ void setup() {
 
   Serial.begin(9600);
   mySerial.begin(9600);
-  mySerial2.begin(9600);
+  mixer1.begin(9600);
 
   message.reserve(65);
 

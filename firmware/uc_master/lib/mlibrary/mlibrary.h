@@ -64,7 +64,7 @@ uint16_t mymix     = 0;
 int i = 0;
 int data = 0;
 int data_cero = 0;
-
+uint16_t s_rpm_save = 0;
 
 float umbral_a = SPEED_MAX;
 float umbral_b = SPEED_MAX;
@@ -467,17 +467,22 @@ void Motor_conectar()
   mixer1.write(160);
 }
 
-void agitador(uint16_t s_rpm) {
-  int rpm_h = (s_rpm >> 8) & 0xff;
-  int rpm_l = s_rpm & 0xff;
+void agitador(uint16_t s_rpm, uint8_t rst) {
 
-  while ( i <= 1 ) {
-     Motor_conectar();
-     Motor_set_RPM(rpm_h, rpm_l);
-    i++;
+  if ( s_rpm_save != s_rpm ) {
+    s_rpm_save = s_rpm;    
+    if( rst2 ) {
+      int rpm_h = (s_rpm >> 8) & 0xff;
+      int rpm_l = s_rpm & 0xff;
+
+      while ( i <= 1 ) {
+         Motor_conectar();
+         Motor_set_RPM(rpm_h, rpm_l);
+        i++;
+      }
+      i = 0;
+    }
   }
-  i = 0;
-
 }
 
 
@@ -486,7 +491,7 @@ void setpoint() {
   write_crumble();
 
   //aca hay que programar el mezclador y usar crumble() para obtener el dato
-  agitador(mymix);
+  agitador(mymix,rst2);
 
 
   Serial.println("good setpoint");

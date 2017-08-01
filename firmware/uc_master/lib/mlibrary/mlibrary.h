@@ -468,12 +468,25 @@ void Motor_conectar()
 }
 
 void agitador(uint16_t s_rpm, uint8_t rst) {
-
-  if ( s_rpm_save != s_rpm ) {
-    s_rpm_save = s_rpm;
     if( !rst2 ) {
-      int rpm_h = (s_rpm >> 8) & 0xff;
-      int rpm_l = s_rpm & 0xff;
+      if ( s_rpm_save != s_rpm ) {
+        s_rpm_save = s_rpm;
+        int rpm_h = (s_rpm >> 8) & 0xff;
+        int rpm_l = s_rpm & 0xff;
+
+        while ( i <= 1 ) {
+           Motor_conectar();
+           Motor_set_RPM(rpm_h, rpm_l);
+          i++;
+        }
+        i = 0;
+      }
+    }
+    else if ( rst ) {
+      data_cero = 0;
+      s_rpm_save = data_cero;
+      int rpm_h = (data_cero >> 8) & 0xff;
+      int rpm_l = data_cero & 0xff;
 
       while ( i <= 1 ) {
          Motor_conectar();
@@ -482,7 +495,6 @@ void agitador(uint16_t s_rpm, uint8_t rst) {
       }
       i = 0;
     }
-  }
 }
 
 

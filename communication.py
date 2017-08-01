@@ -242,11 +242,11 @@ def cook_setpoint(set_data):
         set_data[0] = 0
 
     #Mezclar
-    if set_data[1] > SPEED_MAX:  #cambiar a SPEED_MAX_MIX cuando este listo el protocolo que tambien hay que modificar
-        set_data[1] = SPEED_MAX
+    if set_data[1] > SPEED_MAX_MIX:  #cambiar a SPEED_MAX_MIX cuando este listo el protocolo que tambien hay que modificar
+        set_data[1] = SPEED_MAX_MIX
 
-    elif set_data[1] < 0:
-        set_data[1] = 0
+    elif set_data[1] < 50:
+        set_data[1] = 50
 
     #ph
     if set_data[2] > PH_MAX:

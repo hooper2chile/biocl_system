@@ -470,8 +470,8 @@ void Motor_conectar()
 void agitador(uint16_t s_rpm, uint8_t rst) {
 
   if ( s_rpm_save != s_rpm ) {
-    s_rpm_save = s_rpm;    
-    if( rst2 ) {
+    s_rpm_save = s_rpm;
+    if( !rst2 ) {
       int rpm_h = (s_rpm >> 8) & 0xff;
       int rpm_l = s_rpm & 0xff;
 

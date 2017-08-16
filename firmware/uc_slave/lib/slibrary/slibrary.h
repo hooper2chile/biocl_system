@@ -8,6 +8,10 @@
   * rst2, dir456: mymix
   * rst5, dir3: mytemp
   * rst6, dir6: rst6 is myph_b, dir2 is for two bombs  dir6 is FREE !
+
+
+    write by: Felipe Hooper
+    Electronic Engineer
 */
 
 

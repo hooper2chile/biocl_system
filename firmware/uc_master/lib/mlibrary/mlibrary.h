@@ -284,9 +284,6 @@ void hamilton_sensors() {
   oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
 
-  //for debug
-  //pH =    Iph/3.57;
-  //Temp1 = Iph/0.5;
   return;
 }
 

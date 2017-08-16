@@ -8,6 +8,10 @@
   * rst2, dir456: mymix
   * rst5, dir3: mytemp
   * rst6, dir6: FREE !
+
+  write by: Felipe Hooper
+  Electronic Engineer
+
 */
 
 #include <avr/wdt.h>

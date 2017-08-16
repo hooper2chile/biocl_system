@@ -1,5 +1,7 @@
 /*
 *  uc_master
+Write by: Felipe Hooper
+Electronic Engineer
 */
 
 #include <avr/wdt.h>

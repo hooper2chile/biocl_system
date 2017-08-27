@@ -194,17 +194,17 @@ void sensor_calibrate(){
   n   = message.substring(8,14).toFloat();
 
   switch (var) {
-    case '0':
+    case '0': //pH case for calibration
       m0 = m;
       n0 = n;
       break;
 
-    case '1':
+    case '1': //Oxigen disolve case for calibration
       m1 = m;
       n1 = n;
       break;
 
-    case '2':
+    case '2': //Temperature case for calibration
       m2 = m;
       n2 = n;
       break;

@@ -310,7 +310,7 @@ def calibrar_od(dato):
         od_set = [0,0,0,0]
 
 
-    if (od_set[3] - od_set[1])!=0 and od_set[0]!=0 and od_set[1]!=0:
+    if (od_set[3] - od_set[1])!=0 and od_set[1]!=0:
         m_od = float(format(( od_set[2] - od_set[0] )/( od_set[3] - od_set[1] ), '.2f'))
         n_od = float(format(  od_set[0] - od_set[1]*(m_od), '.2f'))
 
@@ -318,7 +318,7 @@ def calibrar_od(dato):
         m_od = 0
         n_od = 0
 
-    if od_set[0]!=0 and od_set[1]!=0 and od_set[2]!=0 and od_set[3]!=0 and m_od!=0 and n_od!=0:
+    if od_set[1]!=0 and od_set[3]!=0 and m_od!=0 and n_od!=0:
         try:
             coef_od_set = [m_od, n_od]
             f = open(DIR + "coef_od_set.txt","w")

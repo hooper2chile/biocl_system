@@ -42,7 +42,7 @@ def login():
     global error
 
     if request.method == 'POST':
-        if request.form['username'] != 'biocl' or request.form['password'] != 'felipe':
+        if request.form['username'] != 'biocl' or request.form['password'] != 'reactor':
             error = "Credencial Invalida"
             return render_template("login.html", error=error)
         else:
@@ -60,7 +60,7 @@ def test():
     global error
 
     if request.method == 'POST':
-        if request.form['username'] != 'biocl' or request.form['password'] != 'felipe':
+        if request.form['username'] != 'biocl' or request.form['password'] != 'reactor':
             error = "Credencial Invalida"
             return render_template("login.html", error=error)
         else:

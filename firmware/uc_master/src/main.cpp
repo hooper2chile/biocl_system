@@ -1,7 +1,7 @@
 /*
 *  uc_master
-Write by: Felipe Hooper
-Electronic Engineer
+*  Writed by: Felipe Hooper
+*  Electronic Engineer
 */
 
 #include <avr/wdt.h>
@@ -27,7 +27,7 @@ void setup() {
 void loop() {
   if ( stringComplete  ) {
       if ( validate() ) {
-          PORTB = 1<<PB0;
+          //PORTB = 1<<PB0;
 
           switch ( message[0] ) {
               case 'r':
@@ -43,6 +43,7 @@ void loop() {
                 control_ph();
                 control_temp();
                 broadcast_setpoint(1);
+		daqmx();
                 break;
 
               case 'c':
@@ -58,7 +59,7 @@ void loop() {
                 break;
           }
 
-          PORTB = 0<<PB0;
+          //PORTB = 0<<PB0;
       }
       else {
         Serial.println("bad validate");

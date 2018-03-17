@@ -11,7 +11,7 @@ $(document).ready(function() {
 
     //Se escuchan las mediciones de ph, OD, Temp.
     socket.on('Medidas', function(msg) {
-        $('#med1').text('Ph: '    + msg.data[0]          ).html();
+        $('#med1').text('pH: '    + msg.data[0]          ).html();
         $('#med2').text('OD: '    + msg.data[1] + ' %'   ).html();
         $('#med3').text('Temp: '  + msg.data[2] + ' º[C]').html();
     });

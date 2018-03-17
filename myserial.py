@@ -71,10 +71,7 @@ def rs232(q1,q2):
     flag = False
     while not flag:
         try:
-            if sys.platform=='darwin':
-                ser = serial.Serial(port='/dev/cu.wchusbserial1420', baudrate=9600)
-            else:
-                ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
+            ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600)
 
             #necesario para setear correctamente el puerto serial
             ser.setDTR(True)
@@ -126,15 +123,17 @@ def rs232(q1,q2):
                         else:
                             try:
                                 ser.write(action+'\n')
-                                logging.info(action)
                                 result = ser.readline().split()
-                                save_setpoint = action
+                                logging.info(action)
+				save_setpoint = action
                                 #print result
                                 logging.info(result)
 
                             except:
                                 #print "no se pudo escribir al uc"
                                 logging.info("no se pudo escribir al uc")
+				save_setpoint = action
+				logging.info("the last setpoint save")
                                 ser.close()
                                 flag = False
 

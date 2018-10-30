@@ -20,6 +20,8 @@ void setup() {
   DDRB = DDRB | (1<<PB0) | (1<<PB5);
   PORTB = (0<<PB0) | (1<<PB5);
 
+  analogReference(EXTERNAL);
+
   wdt_enable(WDTO_8S);
 }
 

@@ -10,7 +10,7 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/cloud.log', level=loggin
 
 
 
-TIME_SYNC = 5 #3600 #sync for 3600 [s] = 1 [hr]
+TIME_SYNC = 60 #3600 #sync for 3600 [s] = 1 [hr]
 ID = '0B3jT9_WfcyT9SXg3eExUdWoxRUU'
 
 if(sys.platform=='darwin'):

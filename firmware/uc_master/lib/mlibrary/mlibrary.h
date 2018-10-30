@@ -499,7 +499,7 @@ void setpoint() {
   //acá se leen los nuevos setpoint para los lazos de control
   write_crumble();
 
-  //aca hay que programar el mezclador y usar crumble() para obtener el dato
+  //aca se programa el agitador DLAB
   agitador(mymix,rst2);
 
 
@@ -524,6 +524,8 @@ void format_message(int var) {
 
   return;
 }
+
+
 //Re-transmition commands to slave micro controller
 void broadcast_setpoint(uint8_t select) {
 

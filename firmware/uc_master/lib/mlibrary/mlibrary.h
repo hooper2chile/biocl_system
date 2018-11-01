@@ -85,8 +85,8 @@ const int SENSOR_TEMP1 = A1;
 const int SENSOR_TEMP2 = A2;
 const int SENSOR_OD    = A3;
 
-const int VOLTAGE_REF  = 5;  // Reference voltage for analog read
-const int RS = 10;          // Shunt resistor value (in ohms)
+const int VOLTAGE_REF  = 2.5;  // before: 5  // Reference voltage for analog read
+const int RS = 10;             // Shunt resistor value (in ohms)
 const int N  = 200; //500
 
 //calibrate function()
@@ -103,8 +103,8 @@ float m1 = +6.02;
 float n1 = -20.42;
 
 //Temp1=:(m2,n2)
-float m2 = 8.58;//11.0;//+5.31;
-float n2 = -68.89;//-106.86;//-42.95;
+float m2 = +14.95; //vrer= 2.5   //vref=5   8.58;//11.0;//+5.31;
+float n2 = -91.67; //vref= 2.5   //vref=5  -68.89;//-106.86;//-42.95;
 
 
 float Iph = 0;

@@ -269,7 +269,7 @@ void hamilton_sensors() {
      Iph    += analogRead(SENSOR_PH);
      Iod    += analogRead(SENSOR_OD);
      Itemp1 += analogRead(SENSOR_TEMP1);
-     Itemp2 += analogRead(SENSOR_TEMP2);
+     //Itemp2 += analogRead(SENSOR_TEMP2);
      delayMicroseconds(200);
   }
 
@@ -500,7 +500,7 @@ void setpoint() {
   write_crumble();
 
   //aca se programa el agitador DLAB
-  agitador(mymix,rst2);
+  if( rst2 == 0 ) agitador(mymix,rst2);
 
 
   Serial.println("good setpoint");

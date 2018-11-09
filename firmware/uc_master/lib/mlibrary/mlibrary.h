@@ -87,7 +87,7 @@ const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 2.5;  // before: 5  // Reference voltage for analog read
 const int RS = 10;             // Shunt resistor value (in ohms)
-const int N  = 200; //500
+const int N  = 300; //500
 
 //calibrate function()
 char  var = '0';
@@ -125,11 +125,15 @@ float dTemp= 0;
 float dpH  = 0;
 
 
-
-
 //for sensors 4-20mA
 #define mA 1000.0
 #define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
+
+
+//medidas anti ruido motores
+#define NOISE 0.05
+float rst_NOISE = 0;
+
 
 
 //for hardware serial
@@ -273,11 +277,18 @@ void hamilton_sensors() {
      delayMicroseconds(200);
   }
 
-  Iph    = (K * Iph  );
-  Itemp1 = (K * Itemp1);
+  
+  if ( rst1 == 0 || rst2 == 0 || rst3 == 0 || rst4 == 0 || rst5 == 0 || rst6 == 0 )
+       rst_NOISE = 1;
+  
+  else rst_NOISE = 0;
 
-  Iod    = (K * Iod);
-  Itemp2 = (K * Itemp2);
+
+  Iph    = (K * Iph  )  + (rst_NOISE * NOISE);
+  Itemp1 = (K * Itemp1) + (rst_NOISE * NOISE);
+
+  Iod    = (K * Iod)    + (rst_NOISE * NOISE);
+  //Itemp2 = (K * Itemp2);
 
   //Update measures
   pH    = m0 * Iph    + n0;

@@ -88,7 +88,7 @@ const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 2.5;  // before: 5  // Reference voltage for analog read
 const int RS = 10;             // Shunt resistor value (in ohms)
-const int N  = 600; //300; //500
+const int N  = 200; //500
 
 //calibrate function()
 char  var = '0';
@@ -112,7 +112,17 @@ float Iph = 0;
 float Iod = 0;
 float Itemp1 = 0;
 float Itemp2 = 0;
-                                   //   DEFAULT:
+
+/*
+int Iph_[N] = {0};
+int Iod_[N] = {0};
+int Itemp1_[N] = {0};
+int Itemp2_[N] = {0};
+*/
+
+int temporal[N] = {0};
+
+//   DEFAULT:
 float pH    = m0*Iph    + n0;      //   ph = 0.75*IpH   - 3.5
 float oD    = m1*Iod    + n1;
 float Temp1 = m2*Itemp1 + n2;      // Temp = 5.31*Itemp - 42.95;
@@ -132,8 +142,8 @@ float dpH  = 0;
 
 
 //medidas anti ruido motores
-#define NOISE 0.05
-float rst_NOISE = 0;
+//#define NOISE 0.05
+//float rst_NOISE = 0;
 
 
 
@@ -263,81 +273,79 @@ void actuador_umbral(){
   return;
 }
 
-// NUEVO: Arreglo circular
-const int windowSize = 5;
-int circularBuffer[windowSize];
-int* circularBufferAccessor = circularBuffer;
-int temporal = 0;
 
-long sum; int elementCount; float mean;
 
-int values[N] = {0};
-int valuesLength = sizeof(values) / sizeof(int);
-
-int getMeasure(){
-	  int static index = 0;
-	  index++;
-	  return values[index - 1];
-}
-int appendToBuffer(int value){
-	 *circularBufferAccessor = value;
-	  circularBufferAccessor++;
-	  if (circularBufferAccessor >= circularBuffer + windowSize)  circularBufferAccessor = circularBuffer;
-}
-float AddValue(int value){
-	  sum -= *circularBufferAccessor;
-	  sum += value;
-	  appendToBuffer(value);
-	  if (elementCount < windowSize) ++elementCount;
-	  return (float) sum / elementCount;
-}
-
-float media_movil(){
-	float med = 0;
-	for (int iCount = 0; iCount < valuesLength; iCount++){
-		med = AddValue(getMeasure());
+void QuickSortAsc(int* arr, const int left, const int right)
+{
+   int i = left, j = right;
+   int tmp;
+	       
+   int pivot = arr[(left + right) / 2];
+   while (i <= j) {
+	while (arr[i]<pivot) i++;
+	while (arr[j]>pivot) j--;
+	if (i <= j) {
+		tmp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = tmp;
+		i++;
+		j--;
 	}
-	return med;
+    };
+    if (left<j)	 QuickSortAsc(arr, left, j);
+    if (i<right) QuickSortAsc(arr, i, right);
 }
 
-// FIN DE LO NUEVO
 
 
 void hamilton_sensors() {
-//probare quitando esta inicializacion con cada llamada de funcion.
-//  Iph    = 0;   Iod    = 0;
-//  Itemp1 = 0;   Itemp2 = 0;
-
-  for (int i = 0; i < N; i++) {
-     Iph    += analogRead(SENSOR_PH);
-     Iod    += analogRead(SENSOR_OD);
-     Itemp1 += analogRead(SENSOR_TEMP1);
-     //temporal = analogRead(SENSOR_TEMP1);
-     //Itemp1   += temporal;
-     //values[i] = temporal; 
-     //Itemp2 += analogRead(SENSOR_TEMP2);
-     delayMicroseconds(200);
+ /* 
+ for ( int i = 0; i < N; i++) {
+  	Iph_[i] = analogRead(SENSOR_PH);
+	Iod_[i] = analogRead(SENSOR_OD);
+  	
+	Itemp1_[i] = analogRead(SENSOR_TEMP1);
+  	Itemp2_[i] = analogRead(SENSOR_TEMP2);
+	
+	delayMicroseconds(200);
   }
 
+  //calculo de las medianas:
+  QuickSortAsc(Iph_   , 0, N - 1);
+  QuickSortAsc(Iod_   , 0, N - 1);
+  QuickSortAsc(Itemp1_, 0, N - 1);
+  QuickSortAsc(Itemp2_, 0, N - 1);
+  */
+
+  for ( int i = 0; i < N; i++) 
+  	temporal[i] = analogRead(SENSOR_PH);
+  QuickSortAsc(temporal, 0, N - 1);  
+  Iph = float ( K * N * temporal[(N/2)-1] );
   
-  if ( rst1 == 0 || rst2 == 0 || rst3 == 0 || rst4 == 0 || rst5 == 0 || rst6 == 0 )
-       rst_NOISE = 1;
-  
-  else rst_NOISE = 0;
 
-
-  Iph    = (K * Iph  )  + (rst_NOISE * NOISE);
-  Itemp1 = (K * Itemp1) + (rst_NOISE * NOISE);
-
-  Iod    = (K * Iod)    + (rst_NOISE * NOISE);
-  //Itemp2 = (K * Itemp2);
+  for ( int i = 0; i < N; i++)
+	temporal[i] = analogRead(SENSOR_OD);
+  QuickSortAsc(temporal, 0, N - 1);
+  Iod = float ( K * N * temporal[(N/2)-1] );
   
 
+  for ( int i = 0; i < N; i++)
+	temporal[i] = analogRead(SENSOR_TEMP1);
+  QuickSortAsc(temporal, 0, N - 1);
+  Itemp1 = float ( K * N * temporal[(N/2)-1] );
+  
+
+  for ( int i = 0; i < N; i++)
+	temporal[i] = analogRead(SENSOR_TEMP2);
+  QuickSortAsc(temporal, 0, N - 1);
+  Itemp2 = float ( K * N * temporal[(N/2)-1] );
+  
   //Update measures
   pH    = m0 * Iph    + n0;
   oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
   Temp2 = m2 * Itemp2 + n2;
+
   return;
 }
 

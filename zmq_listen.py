@@ -25,12 +25,23 @@ string = ['','','','']
   Byte4 = Iod;
   Byte5 = Itemp1;
   Byte6 = Itemp2;
+
+  Byte7 = Temp2; //Nuevo
 '''
+
 os.system("clear")
 while True:
    
     string = socket_sub.recv().split()
     os.system("clear")
-    print "\n   pH,     oD,     Temp1,     Iph,    Iod,    Itemp1,   Itemp2"
-    print string[1:8]
+    print "\n   pH,     oD,   Temp1,    Iph,   Iod,   Itemp1,   Itemp2,  Temp2"
+    #print string[1:8]
+    print string[1:9]
+    print "\n"
+    print "Itemp1     Itemp2"
+    print string[6] + "       " + string[7] + "\n\n"
+
+    print "Temp1      Temp2"
+    print string[3] + "       " + string[8] + "\n"
+
     time.sleep(0.25)

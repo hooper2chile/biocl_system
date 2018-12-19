@@ -11,7 +11,7 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/cloud.log', level=loggin
 
 
 TIME_SYNC = 60 #3600 #sync for 3600 [s] = 1 [hr]
-ID = '0B3jT9_WfcyT9SXg3eExUdWoxRUU'
+ID = '1A4PjVa_G6g6ZsI560ifHU2UNzvOfJ3bm'
 
 if(sys.platform=='darwin'):
     gdrive = './gdrive-osx-x64'

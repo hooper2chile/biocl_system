@@ -78,6 +78,7 @@ float Byte3 = 0;  char cByte3[15] = "";
 float Byte4 = 0;  char cByte4[15] = "";
 float Byte5 = 0;  char cByte5[15] = "";
 float Byte6 = 0;  char cByte6[15] = "";
+float Byte7 = 0;  char cByte7[15] = "";  //for Temp2
 
 // Sensors
 const int SENSOR_PH    = A0;  // Input pin for measuring Vout
@@ -87,7 +88,7 @@ const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 2.5;  // before: 5  // Reference voltage for analog read
 const int RS = 10;             // Shunt resistor value (in ohms)
-const int N  = 300; //500
+const int N  = 600; //300; //500
 
 //calibrate function()
 char  var = '0';
@@ -115,7 +116,7 @@ float Itemp2 = 0;
 float pH    = m0*Iph    + n0;      //   ph = 0.75*IpH   - 3.5
 float oD    = m1*Iod    + n1;
 float Temp1 = m2*Itemp1 + n2;      // Temp = 5.31*Itemp - 42.95;
-//float Temp2;
+float Temp2;
 
 
 //variable for control
@@ -190,7 +191,7 @@ void write_crumble() {
 
 
 
-//c2+00.75-03.50e   (0=>ph) (1=>od) (2=>temp)
+//c2+00.75-03.50e // c: (0=>ph) (1=>od) (2=>temp)
 void sensor_calibrate(){
   //calibrate function for "message"
   var = message[1];
@@ -262,17 +263,58 @@ void actuador_umbral(){
   return;
 }
 
+// NUEVO: Arreglo circular
+const int windowSize = 5;
+int circularBuffer[windowSize];
+int* circularBufferAccessor = circularBuffer;
+int temporal = 0;
+
+long sum; int elementCount; float mean;
+
+int values[N] = {0};
+int valuesLength = sizeof(values) / sizeof(int);
+
+int getMeasure(){
+	  int static index = 0;
+	  index++;
+	  return values[index - 1];
+}
+int appendToBuffer(int value){
+	 *circularBufferAccessor = value;
+	  circularBufferAccessor++;
+	  if (circularBufferAccessor >= circularBuffer + windowSize)  circularBufferAccessor = circularBuffer;
+}
+float AddValue(int value){
+	  sum -= *circularBufferAccessor;
+	  sum += value;
+	  appendToBuffer(value);
+	  if (elementCount < windowSize) ++elementCount;
+	  return (float) sum / elementCount;
+}
+
+float media_movil(){
+	float med = 0;
+	for (int iCount = 0; iCount < valuesLength; iCount++){
+		med = AddValue(getMeasure());
+	}
+	return med;
+}
+
+// FIN DE LO NUEVO
 
 
 void hamilton_sensors() {
+//probare quitando esta inicializacion con cada llamada de funcion.
+//  Iph    = 0;   Iod    = 0;
+//  Itemp1 = 0;   Itemp2 = 0;
 
-  Iph    = 0;   Iod    = 0;
-  Itemp1 = 0;   Itemp2 = 0;
-
-  for (int i = 1; i <= N; i++) {
+  for (int i = 0; i < N; i++) {
      Iph    += analogRead(SENSOR_PH);
      Iod    += analogRead(SENSOR_OD);
      Itemp1 += analogRead(SENSOR_TEMP1);
+     //temporal = analogRead(SENSOR_TEMP1);
+     //Itemp1   += temporal;
+     //values[i] = temporal; 
      //Itemp2 += analogRead(SENSOR_TEMP2);
      delayMicroseconds(200);
   }
@@ -289,12 +331,13 @@ void hamilton_sensors() {
 
   Iod    = (K * Iod)    + (rst_NOISE * NOISE);
   //Itemp2 = (K * Itemp2);
+  
 
   //Update measures
   pH    = m0 * Iph    + n0;
   oD    = m1 * Iod    + n1;
   Temp1 = m2 * Itemp1 + n2;
-
+  Temp2 = m2 * Itemp2 + n2;
   return;
 }
 
@@ -311,6 +354,7 @@ void daqmx() {
   Byte4 = Iod;
   Byte5 = Itemp1;
   Byte6 = Itemp2;
+  Byte7 = Temp2;   //Nuevo: para promedio movil o exponencial
 
 
   dtostrf(Byte0, 7, 2, cByte0);
@@ -320,6 +364,7 @@ void daqmx() {
   dtostrf(Byte4, 7, 2, cByte4);
   dtostrf(Byte5, 7, 2, cByte5);
   dtostrf(Byte6, 7, 2, cByte6);
+  dtostrf(Byte7, 7, 2, cByte7);
 
   //tx of measures
   Serial.print(cByte0);  Serial.print("\t");
@@ -329,6 +374,7 @@ void daqmx() {
   Serial.print(cByte4);  Serial.print("\t");
   Serial.print(cByte5);  Serial.print("\t");
   Serial.print(cByte6);  Serial.print("\t");
+  Serial.print(cByte7);  Serial.print("\t");
 
   //for debug
   Serial.print("__ua="+String(umbral_a)+"__ub="+String(umbral_b)+"__myphset="+String(myphset)+"__pH="+String(pH)+"__dpH="+String(dpH)+"__u_ph="+String(u_ph)+"__ph_select="+String(ph_select));  Serial.print("\t");

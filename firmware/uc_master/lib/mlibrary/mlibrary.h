@@ -4,6 +4,10 @@
 SoftwareSerial mySerial(2, 3);  //RX(Digital2), TX(Digital3) Software serial port.
 SoftwareSerial mixer1(4, 5); //for control in mezclador
 
+#include <Wire.h>
+#include "Adafruit_ADS1015.h"
+Adafruit_ADS1115 ads1;
+Adafruit_ADS1115 ads2(0x49);
 
 #define  INT(x)   (x-48)  //ascii convertion
 #define iINT(x)   (x+48)  //inverse ascii convertion
@@ -12,7 +16,7 @@ SoftwareSerial mixer1(4, 5); //for control in mezclador
 #define SPEED_MAX 150     //[RPM]
 #define TEMP_MAX  130     //[ºC]
 
-//#define Ts        1000     //1000ms
+#define PGA 0.125F
 
 #define Gap_temp0 0.5
 #define Gap_temp1 1.0       //1ºC
@@ -59,7 +63,7 @@ float   mytempset = 0;
 
 uint8_t myfeed    = 0;
 uint8_t myunload  = 0;
-uint16_t mymix     = 0;
+uint16_t mymix    = 0;
 
 int i = 0;
 int data = 0;
@@ -86,9 +90,9 @@ const int SENSOR_TEMP1 = A1;
 const int SENSOR_TEMP2 = A2;
 const int SENSOR_OD    = A3;
 
-const int VOLTAGE_REF  = 2.5;  // before: 5  // Reference voltage for analog read
+const int VOLTAGE_REF  = 5;  // before: 5  // Reference voltage for analog read
 const int RS = 10;             // Shunt resistor value (in ohms)
-const int N  = 200; //500
+const int N  = 5; //500
 
 //calibrate function()
 char  var = '0';
@@ -113,12 +117,6 @@ float Iod = 0;
 float Itemp1 = 0;
 float Itemp2 = 0;
 
-/*
-int Iph_[N] = {0};
-int Iod_[N] = {0};
-int Itemp1_[N] = {0};
-int Itemp2_[N] = {0};
-*/
 
 int temporal[N] = {0};
 
@@ -138,13 +136,8 @@ float dpH  = 0;
 
 //for sensors 4-20mA
 #define mA 1000.0
-#define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
-
-
-//medidas anti ruido motores
-//#define NOISE 0.05
-//float rst_NOISE = 0;
-
+//#define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
+#define K  ( 1 /( 10.0 * RS ) / N )
 
 
 //for hardware serial
@@ -157,7 +150,6 @@ void serialEvent() {
     }
   }
 }
-
 
 
 //desmenuza el string de comandos
@@ -275,71 +267,21 @@ void actuador_umbral(){
 
 
 
-void QuickSortAsc(int* arr, const int left, const int right)
-{
-   int i = left, j = right;
-   int tmp;
-	       
-   int pivot = arr[(left + right) / 2];
-   while (i <= j) {
-	while (arr[i]<pivot) i++;
-	while (arr[j]>pivot) j--;
-	if (i <= j) {
-		tmp = arr[i];
-		arr[i] = arr[j];
-		arr[j] = tmp;
-		i++;
-		j--;
-	}
-    };
-    if (left<j)	 QuickSortAsc(arr, left, j);
-    if (i<right) QuickSortAsc(arr, i, right);
-}
-
-
-
 void hamilton_sensors() {
- /* 
- for ( int i = 0; i < N; i++) {
-  	Iph_[i] = analogRead(SENSOR_PH);
-	Iod_[i] = analogRead(SENSOR_OD);
-  	
-	Itemp1_[i] = analogRead(SENSOR_TEMP1);
-  	Itemp2_[i] = analogRead(SENSOR_TEMP2);
-	
-	delayMicroseconds(200);
+  for ( int i = 0; i < N; i++) {
+ 	 Iph    += ads1.readADC_Differential_0_1();
+   Iod    += ads1.readADC_Differential_2_3();
+
+   Itemp1 += ads2.readADC_Differential_0_1();
+   Itemp2 += ads2.readADC_Differential_2_3();
+   //delayMicroseconds(20);
   }
 
-  //calculo de las medianas:
-  QuickSortAsc(Iph_   , 0, N - 1);
-  QuickSortAsc(Iod_   , 0, N - 1);
-  QuickSortAsc(Itemp1_, 0, N - 1);
-  QuickSortAsc(Itemp2_, 0, N - 1);
-  */
+  Iph    = (PGA) * K * (Iph   );
+  Iod    = (PGA) * K * (Iod   );
+  Itemp1 = (PGA) * K * (Itemp1);
+  Itemp2 = (PGA) * K * (Itemp2);
 
-  for ( int i = 0; i < N; i++) 
-  	temporal[i] = analogRead(SENSOR_PH);
-  QuickSortAsc(temporal, 0, N - 1);  
-  Iph = float ( K * N * temporal[(N/2)-1] );
-  
-
-  for ( int i = 0; i < N; i++)
-	temporal[i] = analogRead(SENSOR_OD);
-  QuickSortAsc(temporal, 0, N - 1);
-  Iod = float ( K * N * temporal[(N/2)-1] );
-  
-
-  for ( int i = 0; i < N; i++)
-	temporal[i] = analogRead(SENSOR_TEMP1);
-  QuickSortAsc(temporal, 0, N - 1);
-  Itemp1 = float ( K * N * temporal[(N/2)-1] );
-  
-
-  for ( int i = 0; i < N; i++)
-	temporal[i] = analogRead(SENSOR_TEMP2);
-  QuickSortAsc(temporal, 0, N - 1);
-  Itemp2 = float ( K * N * temporal[(N/2)-1] );
-  
   //Update measures
   pH    = m0 * Iph    + n0;
   oD    = m1 * Iod    + n1;
@@ -348,7 +290,6 @@ void hamilton_sensors() {
 
   return;
 }
-
 
 
 

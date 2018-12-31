@@ -2,7 +2,7 @@
 # --*- coding: utf-8 -*--
 import sys, zmq, time, logging
 
-logging.basicConfig(filename='/home/pi/biocl_system/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+#logging.basicConfig(filename='/home/pi/biocl_system/log/communication.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 DIR="/home/pi/biocl_system/"
 
@@ -117,7 +117,8 @@ def calibrate(var, coef):
         published_setpoint(coef_cook)
 
     except:
-        logging.info("no se pudo guardar set de calibrate()")
+        pass
+        #logging.info("no se pudo guardar set de calibrate()")
 
 
 
@@ -188,7 +189,8 @@ def actuador(var,u_set):
         published_setpoint(u_cook);
 
     except:
-        logging.info("no se pudo guardar set de actuador()")
+        pass
+        #logging.info("no se pudo guardar set de actuador()")
 
 
 
@@ -231,7 +233,7 @@ def cook_setpoint(set_data):
 
     except ValueError:
         set_data = temp_save_set_data #esto permite reenviar el ultimo si hay una exception
-        logging.info("exception de set_data")
+        #logging.info("exception de set_data")
 
     #threshold setting:
     #alimentar
@@ -328,7 +330,7 @@ def cook_setpoint(set_data):
     command = 'wph' + string_ph + 'feed' + string_feed + 'unload' + string_unload + 'mix' + string_mix + \
               'temp' + string_temp + 'rst' + string_rst + 'dir' + string_dir + '\n'
 
-    logging.info('\n' + command + '\n')
+    #logging.info('\n' + command + '\n')
 
     #published for put in queue and write in serial port
     published_setpoint(command)
@@ -339,7 +341,8 @@ def cook_setpoint(set_data):
         f.close()
 
     except OSError:
-        logging.info("no se pudo guardar el command en el archivo de texto")
+        pass
+        #logging.info("no se pudo guardar el command en el archivo de texto")
 
     return True
 
@@ -347,7 +350,9 @@ def cook_setpoint(set_data):
 
 def main():
     while True:
-        logging.info("communication.py")
+        pass
+        time.sleep(0.05)
+        #logging.info("communication.py")
 
 
 if __name__ == '__main__':

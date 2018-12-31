@@ -68,7 +68,7 @@ def update_db(real_data, connector, c, first_time, BACKUP):
 def main():
     i = 0
     first_time = time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y")
-    TIME_BCK = 30#120
+    TIME_BCK = 600  #10 min
     connector = sqlite3.connect(':memory:', detect_types = sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
     c = connector.cursor()
 
@@ -97,18 +97,18 @@ def main():
         except:
             logging.info("no se pudo leer el flag en el while principal")
 
-        time.sleep(5)
+        time.sleep(10)
 
         #depuracion log
         if flag_database_local is False:
             if i is 10:
                 try:
                     f = open(DIR + "db_log.txt","a+")
-                    f.write("Grabando OFF\n")
+                    f.write("Grabando OFF: " + time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y") + "\n" )
                     f.close()
 
                     i = 0
-                    logging.info("GRABANDO OFF")
+                    logging.info("GRABANDO OFF: " + time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y") + "\n")
 
                 except:
                     logging.info("no se pudo leer grabar el log de grabar off")
@@ -157,11 +157,11 @@ def main():
             if i is 10:
                 try:
                     f = open(DIR + "db_log.txt","a+")
-                    f.write("Grabando ON\n")
+                    f.write("Grabando ON: " + time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y") + "\n")
                     f.close()
 
                     i = 0
-                    logging.info("GRABANDO ON")
+                    logging.info("GRABANDO ON: " + time.strftime("Hora__%H_%M_%S__Fecha__%d-%m-%y") + "\n")
 
                 except:
                     logging.info("no se pudo leer grabar el log de grabar on")

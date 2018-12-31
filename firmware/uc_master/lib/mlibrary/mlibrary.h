@@ -16,7 +16,10 @@ Adafruit_ADS1115 ads2(0x49);
 #define SPEED_MAX 150     //[RPM]
 #define TEMP_MAX  130     //[ºC]
 
-#define PGA 0.125F
+#define PGA1 0.125F
+#define PGA2 0.0625F
+
+//#define alpha 0.2F
 
 #define Gap_temp0 0.5
 #define Gap_temp1 1.0       //1ºC
@@ -84,15 +87,10 @@ float Byte5 = 0;  char cByte5[15] = "";
 float Byte6 = 0;  char cByte6[15] = "";
 float Byte7 = 0;  char cByte7[15] = "";  //for Temp2
 
-// Sensors
-const int SENSOR_PH    = A0;  // Input pin for measuring Vout
-const int SENSOR_TEMP1 = A1;
-const int SENSOR_TEMP2 = A2;
-const int SENSOR_OD    = A3;
 
 const int VOLTAGE_REF  = 5;  // before: 5  // Reference voltage for analog read
 const int RS = 10;             // Shunt resistor value (in ohms)
-const int N  = 5; //500
+
 
 //calibrate function()
 char  var = '0';
@@ -118,8 +116,6 @@ float Itemp1 = 0;
 float Itemp2 = 0;
 
 
-int temporal[N] = {0};
-
 //   DEFAULT:
 float pH    = m0*Iph    + n0;      //   ph = 0.75*IpH   - 3.5
 float oD    = m1*Iod    + n1;
@@ -136,9 +132,8 @@ float dpH  = 0;
 
 //for sensors 4-20mA
 #define mA 1000.0
-//#define K  ( mA * ( ( (VOLTAGE_REF/1023.0) / ( 10.0 * RS ) ) / N ) )
-#define K  ( 1 /( 10.0 * RS ) / N )
-
+//#define K  1.0/( 10.0 * RS )
+#define K 1.0 / (10.0 * RS )
 
 //for hardware serial
 void serialEvent() {
@@ -268,19 +263,11 @@ void actuador_umbral(){
 
 
 void hamilton_sensors() {
-  for ( int i = 0; i < N; i++) {
- 	 Iph    += ads1.readADC_Differential_0_1();
-   Iod    += ads1.readADC_Differential_2_3();
-
-   Itemp1 += ads2.readADC_Differential_0_1();
-   Itemp2 += ads2.readADC_Differential_2_3();
-   //delayMicroseconds(20);
-  }
-
-  Iph    = (PGA) * K * (Iph   );
-  Iod    = (PGA) * K * (Iod   );
-  Itemp1 = (PGA) * K * (Itemp1);
-  Itemp2 = (PGA) * K * (Itemp2);
+  float alpha = 0.2;
+  Iph     = alpha * (PGA1 * K ) * ads1.readADC_Differential_0_1() + (1 - alpha) * Iph;
+  Iod     = alpha * (PGA1 * K ) * ads1.readADC_Differential_2_3() + (1 - alpha) * Iod;
+  Itemp1  = alpha * (PGA1 * K ) * ads2.readADC_Differential_0_1() + (1 - alpha) * Itemp1;
+  Itemp2  = alpha * (PGA1 * K ) * ads2.readADC_Differential_2_3() + (1 - alpha) * Itemp2;
 
   //Update measures
   pH    = m0 * Iph    + n0;

@@ -8,9 +8,9 @@ logging.basicConfig(filename='/home/pi/biocl_system/log/myserial.log', level=log
 #5557: for publisher data
 
 tau_zmq_connect     = 0.5   # 0.3=300 [ms]
-tau_zmq_while_write = 0.5   # 0.3=300 [ms]
-tau_zmq_while_read  = 0.5   # 0.3=300 [ms]
-tau_serial          = 0.02  #  0.01=10 [ms]
+tau_zmq_while_write = 0.1   # 0.5=500 [ms]
+tau_zmq_while_read  = 0.5   # 0.5=500 [ms]
+tau_serial          = 0.01   #0.02  #  0.01=10 [ms]
 
 ##### Queue data: q1 is for put data to   serial port #####
 ##### Queue data: q2 is for get data from serial port #####

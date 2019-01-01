@@ -98,8 +98,8 @@ float m = 0;
 float n = 0;
 
 //pH=:(m0,n0)
-float m0 = +0.75;
-float n0 = -3.5;
+float m0 = +0.864553;//+0.75;
+float n0 = -3.634006;//-3.5;
 
 //oD=:(m1,n1)
 float m1 = +6.02;
@@ -261,13 +261,36 @@ void actuador_umbral(){
 }
 
 
-
+#define N 2
 void hamilton_sensors() {
-  float alpha = 0.2;
+  float alpha = 0.35;
+/*
+  float ads1a = 0, ads1b = 0, ads2a = 0, ads2b = 0;
+  for (int i = 0; i < N; i++) {
+    ads1a += ads1.readADC_Differential_0_1();
+    ads1b += ads1.readADC_Differential_2_3();
+
+    ads2a += ads2.readADC_Differential_0_1();
+    ads2b += ads2.readADC_Differential_2_3();
+  }
+  ads1a /= N;
+  ads1b /= N;
+  ads2a /= N;
+  ads2b /= N;
+
+  Iph     = alpha * (PGA1 * K ) * ads1a + (1 - alpha) * Iph;
+  Iod     = alpha * (PGA1 * K ) * ads1b + (1 - alpha) * Iod;
+  Itemp1  = alpha * (PGA1 * K ) * ads2a + (1 - alpha) * Itemp1;
+  Itemp2  = alpha * (PGA1 * K ) * ads2b + (1 - alpha) * Itemp2;
+*/
+
+  //Filtros de media exponencial
   Iph     = alpha * (PGA1 * K ) * ads1.readADC_Differential_0_1() + (1 - alpha) * Iph;
   Iod     = alpha * (PGA1 * K ) * ads1.readADC_Differential_2_3() + (1 - alpha) * Iod;
   Itemp1  = alpha * (PGA1 * K ) * ads2.readADC_Differential_0_1() + (1 - alpha) * Itemp1;
   Itemp2  = alpha * (PGA1 * K ) * ads2.readADC_Differential_2_3() + (1 - alpha) * Itemp2;
+
+
 
   //Update measures
   pH    = m0 * Iph    + n0;

@@ -13,12 +13,12 @@ void setup() {
   Serial.begin(9600);
 
   ads1.begin();
-  ads2.begin();
+//ads2.begin();
   //                                                              ADS1015  ADS1115
   //                                                              -------  -------
   ads1.setGain(GAIN_ONE);        // 1x gain   +/- 4.096V  1 bit = 2mV      0.125mV
-  ads2.setGain(GAIN_ONE);
-  //ads.setGain(GAIN_TWO);       // 2x gain   +/- 2.048V  1 bit = 1mV      0.0625mV
+//ads2.setGain(GAIN_ONE);
+//ads.setGain(GAIN_TWO);       // 2x gain   +/- 2.048V  1 bit = 1mV      0.0625mV
 
 
   mySerial.begin(9600);

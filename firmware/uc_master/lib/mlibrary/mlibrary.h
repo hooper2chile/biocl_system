@@ -7,7 +7,7 @@ SoftwareSerial mixer1(4, 5); //for control in mezclador
 #include <Wire.h>
 #include "Adafruit_ADS1015.h"
 Adafruit_ADS1115 ads1;
-Adafruit_ADS1115 ads2(0x49);
+//Adafruit_ADS1115 ads2(0x49);
 
 #define  INT(x)   (x-48)  //ascii convertion
 #define iINT(x)   (x+48)  //inverse ascii convertion
@@ -261,35 +261,14 @@ void actuador_umbral(){
 }
 
 
-#define N 2
 void hamilton_sensors() {
   float alpha = 0.35;
-/*
-  float ads1a = 0, ads1b = 0, ads2a = 0, ads2b = 0;
-  for (int i = 0; i < N; i++) {
-    ads1a += ads1.readADC_Differential_0_1();
-    ads1b += ads1.readADC_Differential_2_3();
-
-    ads2a += ads2.readADC_Differential_0_1();
-    ads2b += ads2.readADC_Differential_2_3();
-  }
-  ads1a /= N;
-  ads1b /= N;
-  ads2a /= N;
-  ads2b /= N;
-
-  Iph     = alpha * (PGA1 * K ) * ads1a + (1 - alpha) * Iph;
-  Iod     = alpha * (PGA1 * K ) * ads1b + (1 - alpha) * Iod;
-  Itemp1  = alpha * (PGA1 * K ) * ads2a + (1 - alpha) * Itemp1;
-  Itemp2  = alpha * (PGA1 * K ) * ads2b + (1 - alpha) * Itemp2;
-*/
 
   //Filtros de media exponencial
-  Iph     = alpha * (PGA1 * K ) * ads1.readADC_Differential_0_1() + (1 - alpha) * Iph;
-  Iod     = alpha * (PGA1 * K ) * ads1.readADC_Differential_2_3() + (1 - alpha) * Iod;
-  Itemp1  = alpha * (PGA1 * K ) * ads2.readADC_Differential_0_1() + (1 - alpha) * Itemp1;
-  Itemp2  = alpha * (PGA1 * K ) * ads2.readADC_Differential_2_3() + (1 - alpha) * Itemp2;
-
+  Iph     = alpha * (PGA1 * K ) * ads1.readADC_SingleEnded(0) + (1 - alpha) * Iph;
+  Iod     = alpha * (PGA1 * K ) * ads1.readADC_SingleEnded(1) + (1 - alpha) * Iod;
+  Itemp1  = alpha * (PGA1 * K ) * ads1.readADC_SingleEnded(2) + (1 - alpha) * Itemp1;
+  Itemp2  = alpha * (PGA1 * K ) * ads1.readADC_SingleEnded(3) + (1 - alpha) * Itemp2;
 
 
   //Update measures
